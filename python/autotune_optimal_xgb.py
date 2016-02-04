@@ -4,8 +4,6 @@ __author__ = 'mpearmain'
 
 import pandas as pd
 import xgboost as xgb
-from sklearn.metrics import log_loss
-from sklearn.calibration import CalibratedClassifierCV
 from sklearn.isotonic import IsotonicRegression
 import datetime
 
