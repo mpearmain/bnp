@@ -80,7 +80,7 @@ if __name__ == '__main__':
             y1 = ytrain[ytrain.index.isin(idx1)]
 
             # fit the model on observations associated with subject whichSubject in this fold
-            clf.fit(x0, y0, eval_set=[(x1, y1)])
+            clf.fit(x0, y0, eval_metric='logloss', eval_set=[(x1, y1)])
             print 'Logloss on fold:', log_loss(y1, clf.predict_proba(x1)[:,1])
             mvalid[idx1,i] = clf.predict_proba(x1)[:,1]
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
                                 colsample_bytree=x[2],
                                 gamma=x[2],
                                 seed=seed_value)
-        bst.fit(xtrain, ytrain)
+        bst.fit(xtrain, ytrain, eval_metric='logloss')
         mfull[:,i] = bst.predict_proba(xtest)[:,1]
 
 
