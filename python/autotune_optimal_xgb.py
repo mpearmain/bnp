@@ -42,13 +42,7 @@ for k in range(no_bags):
                             seed=k*100+22,
                             silent=True)
     clf.fit(xtrain, ytrain, eval_metric='logloss')
-    clf_preds = clf.predict_proba(xtest)[:,1]
-    # Now calibrate
-    isopreds = clf.predict_proba(xtrain)[:,1]
-    iso = IsotonicRegression()
-    iso.fit(isopreds, ytrain)
-    preds = iso.predict(clf_preds)
-
+    preds = clf.predict_proba(xtest)[:,1]
     if type(pred_average) == bool:
         pred_average = preds.copy()/no_bags
     else:
