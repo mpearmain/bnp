@@ -76,7 +76,7 @@ if __name__ == "__main__":
                                       'min_child_weight': (int(1), int(20))  
                                      })
 
-    xgboostBO.maximize(init_points=7, restarts=250, n_iter=20)
+    xgboostBO.maximize(init_points=7, restarts=500, n_iter=100)
     print('-' * 53)
 
     print('Final Results')
