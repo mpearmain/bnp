@@ -1,19 +1,18 @@
 import numpy as np
 import pandas as pd
 from keras.models import Sequential
-from keras.layers.core import Dropout, Activation
+from keras.layers.core import Dropout, Activation, Dense
 from keras.layers.normalization import BatchNormalization
 from keras.layers.advanced_activations import PReLU
 from keras.utils import np_utils
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import log_loss
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
-from keras.layers.core import Dense
 import datetime
 
 ## settings
 projPath = './'
-dataset_version = "mp4"
+dataset_version = "mp1"
 model_type = "keras"
 seed_value = 578943
 todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -39,17 +38,15 @@ def getDummy(df,col):
     return df
 
 train = pd.read_csv(projPath + 'input/xtrain_'+ dataset_version + '.csv')
-id_train = train.QuoteNumber
-y_train_quote_flag = train.QuoteConversion_Flag
-y_train = train.QuoteConversion_Flag
-train.drop('QuoteNumber', axis = 1, inplace = True)
-train.drop('QuoteConversion_Flag', axis = 1, inplace = True)
-train.drop(['PropertyField6', 'GeographicField10A'], axis=1, inplace = True)
+id_train = train.ID
+y_train_target = train.target
+y_train = train.target
+train.drop('ID', axis = 1, inplace = True)
+train.drop('target', axis = 1, inplace = True)
 
 test = pd.read_csv(projPath + 'input/xtest_'+ dataset_version + '.csv')
-id_test = test.QuoteNumber
-test.drop('QuoteNumber', axis = 1, inplace = True)
-test.drop(['PropertyField6', 'GeographicField10A'], axis=1, inplace = True)
+id_test = test.ID
+test.drop('ID', axis = 1, inplace = True)
 
 for f in test.columns:#
     if train[f].dtype=='object':
@@ -102,9 +99,7 @@ print dims, 'dims'
 auc_scores=[]
 best_score=-1
 
-param_grid = [[1024, 0.1, 0.6, 1024, 0.6, 420, 0.6, 400],
-              [1324, 0.15, 0.6, 712, 0.8, 520, 0.7, 400],
-              [96, 0.05, 0.4, 1512, 0.4, 330, 0.6, 400]]
+param_grid = [[1024, 0.1, 0.6, 1024, 0.6, 420, 0.6, 50]]
 
 # storage structure for forecasts
 mvalid = np.zeros((train.shape[0],len(param_grid)))
@@ -135,7 +130,7 @@ for i in range(len(param_grid)):
             model.add(Dropout(x[6]))
             model.add(Dense(nb_classes))
             model.add(Activation('softmax'))
-            model.compile(loss='binary_crossentropy', optimizer="sgd")
+            model.compile(loss='binary_crossentropy', optimizer="adam")
 
             idx0 = np.where(fold_index != j)
             idx1 = np.where(fold_index == j)
@@ -145,11 +140,11 @@ for i in range(len(param_grid)):
             y1 = np.array(y_train)[idx1]
 
             # fit the model on observations associated with subject whichSubject in this fold
-            model.fit(x0, y0, nb_epoch=x[7], batch_size=1256)
+            model.fit(x0, y0, nb_epoch=x[7], batch_size=2256)
             mvalid[idx1,i] = model.predict_proba(x1)[:,1]
             y_pre = model.predict_proba(x1)[:,1]
-            scores = roc_auc_score(y1[:,1],y_pre)
-            print 'AUC score', scores
+            scores = log_loss(y1[:,1],y_pre)
+            print 'LogLoss score', scores
             del model
             print "finished fold:", j
 
@@ -172,10 +167,10 @@ for i in range(len(param_grid)):
         model.add(Dropout(x[6]))
         model.add(Dense(nb_classes))
         model.add(Activation('softmax'))
-        model.compile(loss='binary_crossentropy', optimizer="sgd")
+        model.compile(loss='binary_crossentropy', optimizer="adam")
         # fit on complete dataset
 
-        model.fit(np.array(train), y_train, nb_epoch=x[7], batch_size=1256)
+        model.fit(np.array(train), y_train, nb_epoch=x[7], batch_size=2256)
         mfull[:,i] = model.predict_proba(np.array(test))[:,1]
 
         del model
@@ -185,12 +180,12 @@ for i in range(len(param_grid)):
 # add indices etc
 mvalid = pd.DataFrame(mvalid)
 mvalid.columns = [model_type + str(i) for i in range(0, mvalid.shape[1])]
-mvalid['QuoteNumber'] = id_train
-mvalid['QuoteConversion_Flag'] = y_train_quote_flag
+mvalid['ID'] = id_train
+mvalid['target'] = y_train_target
 
 mfull = pd.DataFrame(mfull)
 mfull.columns = [model_type + str(i) for i in range(0, mfull.shape[1])]
-mfull['QuoteNumber'] = id_test
+mfull['ID'] = id_test
 
 
 # save the files
