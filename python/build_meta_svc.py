@@ -1,37 +1,32 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Dec 10 14:45:37 2015
-
-@author: konrad
-"""
 
 import numpy as np
 import pandas as pd
 from sklearn.svm import SVC
 from sklearn.ensemble import BaggingClassifier
+from sklearn.metrics import log_loss
 from itertools import product
 import datetime
 
 if __name__ == '__main__':
-
-    ## settings
+    # settings
     projPath = './'
-    dataset_version = "kb4"
-    model_type = "logreg"
+    dataset_version = "mp1"
+    model_type = "svc"
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    	    
-    ## data
+
+    # data
     # read the training and test sets
-    xtrain = pd.read_csv(projPath + 'input/xtrain_'+ dataset_version + '.csv')     
-    id_train = xtrain.QuoteNumber
-    ytrain = xtrain.QuoteConversion_Flag
-    xtrain.drop('QuoteNumber', axis = 1, inplace = True)
-    xtrain.drop('QuoteConversion_Flag', axis = 1, inplace = True)
-    
-    xtest = pd.read_csv(projPath + 'input/xtest_'+ dataset_version + '.csv')     
-    id_test = xtest.QuoteNumber
-    xtest.drop('QuoteNumber', axis = 1, inplace = True)
+    xtrain = pd.read_csv(projPath + 'input/xtrain_'+ dataset_version + '.csv')
+    id_train = xtrain.ID
+    ytrain = xtrain.target
+    xtrain.drop('ID', axis = 1, inplace = True)
+    xtrain.drop('target', axis = 1, inplace = True)
+
+    xtest = pd.read_csv(projPath + 'input/xtest_'+ dataset_version + '.csv')
+    id_test = xtest.ID
+    xtest.drop('ID', axis = 1, inplace = True)
         
     # folds
     xfolds = pd.read_csv(projPath + 'input/xfolds.csv')
@@ -40,9 +35,9 @@ if __name__ == '__main__':
     fold_index = np.array(fold_index) - 1
     n_folds = len(np.unique(fold_index))
     
-    ## model
+    # model
     # setup model instances
-    model = BaggingClassifier(base_estimator=SVC(probability = True, random_state= seed_value),
+    model = BaggingClassifier(base_estimator=SVC(probability=True, random_state= seed_value),
                               n_estimators=16,
                               n_jobs=8,
                               max_samples = 10000,
@@ -58,7 +53,7 @@ if __name__ == '__main__':
     mvalid = np.zeros((xtrain.shape[0],len(param_grid)))
     mfull = np.zeros((xtest.shape[0],len(param_grid)))
     
-    ## build 2nd level forecasts
+    # build 2nd level forecasts
     for i in range(len(param_grid)):        
             print "processing parameter combo:", i
             # configure model with j-th combo of parameters
@@ -72,29 +67,27 @@ if __name__ == '__main__':
                 idx1 = np.where(fold_index == j)
                 x0 = np.array(xtrain)[idx0,:][0]; x1 = np.array(xtrain)[idx1,:][0]
                 y0 = np.array(ytrain)[idx0]; y1 = np.array(ytrain)[idx1]
-			
+
                 # fit the model on observations associated with subject whichSubject in this fold
                 model.fit(x0, y0)
                 mvalid[idx1,i] = model.predict_proba(x1)[:,1]
-                
+                print 'Logloss on fold:', log_loss(y1, model.predict_proba(x1)[:,1])
+                print "finished fold:", j
             # fit on complete dataset
             model.fit(xtrain, ytrain)
             mfull[:,i] = model.predict_proba(xtest)[:,1]
-            
-        
-    ## store the results
+
+    # store the results
     # add indices etc
     mvalid = pd.DataFrame(mvalid)
     mvalid.columns = [model_type + str(i) for i in range(0, mvalid.shape[1])]
-    mvalid['QuoteNumber'] = id_train
-    mvalid['QuoteConversion_Flag'] = ytrain
-    
+    mvalid['ID'] = id_train
+    mvalid['target'] = ytrain
+
     mfull = pd.DataFrame(mfull)
     mfull.columns = [model_type + str(i) for i in range(0, mfull.shape[1])]
-    mfull['QuoteNumber'] = id_test
-    
+    mfull['ID'] = id_test
 
-    # save the files            
+    # save the files
     mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
     mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    

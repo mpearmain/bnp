@@ -11,7 +11,7 @@ import datetime
 projPath = './'
 dataset_version = "ensemble_base"
 todate = datetime.datetime.now().strftime("%Y%m%d")    
-no_bags = 5
+no_bags = 20
     
 ## data
 # read the training and test sets
@@ -31,14 +31,14 @@ pred_average = True
 
 for k in range(no_bags):
     print 'Building bag:', k
-    clf = xgb.XGBClassifier(n_estimators=573,
+    clf = xgb.XGBClassifier(n_estimators=668,
                             nthread=-1,
-                            max_depth=5,
-                            min_child_weight = 4.686493440588162,
-                            learning_rate= 0.0085483037718426733,
-                            subsample=0.830,
-                            colsample_bytree=0.82,
-                            gamma=0.00020709838670210425,
+                            max_depth=9,
+                            min_child_weight = 9.3990898152906937,
+                            learning_rate= 0.0083448206764984816,
+                            subsample= 0.84436176592642664,
+                            colsample_bytree=0.85469693813676129,
+                            gamma=0.00058227567837996846,
                             seed=k*100+22,
                             silent=True)
     clf.fit(xtrain, ytrain, eval_metric='logloss')

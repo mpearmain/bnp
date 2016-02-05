@@ -99,7 +99,8 @@ print dims, 'dims'
 auc_scores=[]
 best_score=-1
 
-param_grid = [[1024, 0.1, 0.6, 1024, 0.6, 420, 0.6, 50]]
+param_grid = [[1024, 0.1, 0.6, 1024, 0.6, 420, 0.6, 50],
+              [512, 0.1, 0.5, 512, 0.5, 512, 0.5, 100]]
 
 # storage structure for forecasts
 mvalid = np.zeros((train.shape[0],len(param_grid)))

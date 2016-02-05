@@ -89,19 +89,18 @@ if __name__ == '__main__':
             mfull[:,i] = model.predict_proba(xtest)[:,1]
             print "finished full prediction"
             
-    ## store the results
+    # store the results
     # add indices etc
     mvalid = pd.DataFrame(mvalid)
     mvalid.columns = [model_type + str(i) for i in range(0, mvalid.shape[1])]
     mvalid['ID'] = id_train
     mvalid['target'] = ytrain
-    
+
     mfull = pd.DataFrame(mfull)
     mfull.columns = [model_type + str(i) for i in range(0, mfull.shape[1])]
     mfull['ID'] = id_test
-    
 
-    # save the files            
+
+    # save the files
     mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
     mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    
