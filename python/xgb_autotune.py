@@ -8,6 +8,7 @@ import datetime
 from xgboost import XGBClassifier
 from sklearn.metrics import log_loss
 from bayesian_optimization import BayesianOptimization
+import os
 
 def xgboostcv(max_depth,
               learning_rate,
@@ -32,32 +33,32 @@ def xgboostcv(max_depth,
                         seed=seed,
                         objective="binary:logistic")
 
-    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)])
+    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)], early_stopping_rounds = 25)
     ll = -log_loss(y1, clf.predict_proba(x1)[:,1])
     return ll
 
 if __name__ == "__main__":
 
     # settings
-    projPath = './'
-    dataset_version = "ensemble_base"
+    projPath = os.getcwd()
+    dataset_version = "kb1"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     no_bags = 1
 
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv(projPath + 'input/xvalid_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
 
-    xtest = pd.read_csv(projPath + 'input/xfull_'+ dataset_version + '.csv')
+    xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
 
     # folds
-    xfolds = pd.read_csv(projPath + 'input/xfolds.csv')
+    xfolds = pd.read_csv('../input/xfolds.csv')
     # work with validation split
     idx0 = xfolds[xfolds.valid == 0].index
     idx1 = xfolds[xfolds.valid == 1].index
