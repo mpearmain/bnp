@@ -1,5 +1,5 @@
 # bnp
-Kaggle BNP Paribus challenge
+Kaggle BNP Paribas challenge
 
 ## Data
 All input files and created datasets are stored in `/input` but ignored from git.
@@ -7,6 +7,13 @@ All input files and created datasets are stored in `/input` but ignored from git
 All metafeature datasets are stored in `metafeatures` and a seperate gDrive account is active to share these (rather than run and reproduce) and ignored from git.
 
 All submissions are stored in `submissions` but ignored from git.
+
+### Dataset building
+
+All datasets are generated using the script `./R/build_datasets.R`
+
+#### KB v1
+
 
 ## Running
 
