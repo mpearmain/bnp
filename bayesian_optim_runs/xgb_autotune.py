@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "kb1"
+    dataset_version = "kb2099"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     no_bags = 1
 
@@ -69,15 +69,15 @@ if __name__ == "__main__":
 
     xgboostBO = BayesianOptimization(xgboostcv,
                                      {'max_depth': (int(4), int(20)),
-                                      'learning_rate': (0.02, 0.01),
+                                      'learning_rate': (0.001, 0.01),
                                       'n_estimators': (int(500), int(2000)),
-                                      'subsample': (0.8, 0.9),
-                                      'colsample_bytree': (0.8, 0.9),
+                                      'subsample': (0.7, 0.9),
+                                      'colsample_bytree': (0.7, 0.9),
                                       'gamma': (0.0001, 0.001),
-                                      'min_child_weight': (int(1), int(5))
+                                      'min_child_weight': (int(1), int(15))
                                      })
 
-    xgboostBO.maximize(init_points=7, restarts=500, n_iter=100)
+    xgboostBO.maximize(init_points=7, restarts=500, n_iter=25)
     print('-' * 53)
 
     print('Final Results')
