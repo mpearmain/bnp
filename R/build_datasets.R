@@ -145,5 +145,5 @@ buildKB1 <- function()
   
   rm(xtrain)
   rm(xtest)
-  return(cat("MP1 dataset built"))
+  return(cat("KB1 dataset built"))
 }
