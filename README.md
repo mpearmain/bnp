@@ -1,11 +1,20 @@
 # Kaggle BNP Paribas challenge
 
+
 ## Data
 All input files and created datasets are stored in `/input` but ignored from git.
 
 All metafeature datasets are stored in `metafeatures` and a seperate gDrive account is active to share these (rather than run and reproduce) and ignored from git.
 
 All submissions are stored in `submissions` but ignored from git.
+
+## Python Dependencies ##
+
+* numpy
+* scipy
+* bottleneck
+* scikit-learn
+* statsmodels
 
 ## Strategy 
 In this challenge, BNP Paribas Cardif is providing an anonymized database with two categories of
@@ -25,7 +34,8 @@ optimize each stage.
 2.  Stacking of level 1 models - For different datasets we create metafeatures based on a variety of
 models (XGboost, Extratrees, Factorization Machines, etc.)
 3.  Feature selection from level 1 stacked meta features, from the potential 1,000s of new features
-created we must eliminate features for second level stacking and ensembling. 
+created we must eliminate features for second level stacking and ensembling. (`bortua2.py` or caret
+linear combinations)
 4. Final blending of level 2 stacked features (based on classic train / validation)
 5. Submission.
 
