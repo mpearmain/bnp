@@ -48,4 +48,5 @@ xfolds[subrange,4] <- 1
 # store 
 xfolds <- data.frame(xfolds)
 colnames(xfolds) <- c("ID", "fold5", "fold10", "valid")
-write_csv(xfolds, path = "./input/xfolds.csv")
+xfolds$ID <- as.character(id_train)
+write.table(xfolds, file = "./input/xfolds.csv", row.names = F, col.names = T, sep = ",", quote = F)
