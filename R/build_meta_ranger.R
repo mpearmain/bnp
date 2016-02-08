@@ -31,14 +31,14 @@ auc<-function (actual, predicted) {
 # read actual data
 xtrain <- read_csv(paste("./input/xtrain_",dataset_version,".csv", sep = ""))
 xtest <- read_csv(paste("./input/xtest_",dataset_version,".csv", sep = ""))
-y <- xtrain$QuoteConversion_Flag; xtrain$QuoteConversion_Flag <- NULL
-id_train <- xtrain$QuoteNumber
-id_test <- xtest$QuoteNumber
-xtrain$QuoteNumber <- xtest$QuoteNumber <- NULL
+y <- xtrain$target; xtrain$target <- NULL
+id_train <- xtrain$ID
+id_test <- xtest$ID
+xtrain$ID <- xtest$ID <- NULL
 
 # division into folds: 5-fold
 xfolds <- read_csv("./input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
-xfolds <- xfolds[,c("QuoteNumber", "fold_index")]
+xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
 
 # SFSG # 
@@ -46,8 +46,8 @@ nfolds <- length(unique(xfolds$fold_index))
 ## fit models ####
 # parameter grid
 param_grid <- expand.grid(ntree = c(1750),
-                          mtry = c(30, 50),
-                          nsize = c(10,25))
+                          mtry = c(15, 30, 50),
+                          nsize = c(1, 10,25))
 
 # storage structures 
 mtrain <- array(0, c(nrow(xtrain), nrow(param_grid)))
@@ -95,10 +95,6 @@ for (ii in 1:nrow(param_grid))
   msg(ii)
 }
 
-
-
-
-
 ## store complete versions ####
 mtrain <- data.frame(mtrain)
 mtest <- data.frame(mtest)
@@ -107,6 +103,10 @@ mtrain$QuoteNumber <- id_train
 mtest$QuoteNumber <- id_test
 mtrain$QuoteConversion_Flag <- y
 
+# store the metas
 write_csv(mtrain, path = paste("./metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 write_csv(mtest, path = paste("./metafeatures/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+
+# store the parameters
+write_csv(param_grid, path = paste("./mf_params/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
