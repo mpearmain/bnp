@@ -8,7 +8,7 @@
 import numpy as np
 import pandas as pd
 import datetime
-import xgboost as xgb
+import pylibfm
 from sklearn.metrics import log_loss
 
 if __name__ == '__main__':
