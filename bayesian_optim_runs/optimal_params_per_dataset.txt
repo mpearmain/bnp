@@ -19,3 +19,5 @@ Created on Fri Feb  5 18:22:49 2016
                | Time taken: 24 minutes and 21.138281 seconds
 
 ## KB2099
+Optimization finished with maximum: -0.455469, at position: {'colsample_bytree': 0.80593745880982681, 'learning_rate': 0.0082146884051916974, 'min_child_weight': 15.0, 'n_estimators': 1616.8855922903572, 'subsample': 0.85156798908501274, 'max_depth': 20.0, 'gamma': 0.0001}.
+Time taken: 1066 minutes and 11.796122 seconds.
