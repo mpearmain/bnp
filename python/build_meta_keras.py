@@ -12,12 +12,12 @@ import datetime
 
 ## settings
 projPath = './'
-dataset_version = "mp1"
+dataset_version = "kb1"
 model_type = "keras"
-seed_value = 578943
+seed_value = 10994
 todate = datetime.datetime.now().strftime("%Y%m%d")
 np.random.seed(seed_value)
-np.random.seed(1778)  # for reproducibility
+np.random.seed(2256)  # for reproducibility
 need_normalise=True
 need_categorical=False
 
@@ -99,8 +99,9 @@ print dims, 'dims'
 auc_scores=[]
 best_score=-1
 
-param_grid = [[1024, 0.1, 0.6, 1024, 0.6, 420, 0.6, 50],
-              [512, 0.1, 0.5, 512, 0.5, 512, 0.5, 100]]
+param_grid = [[1024, 0.1, 0.6, 1024, 0.6, 420, 0.6, 30],
+              [512, 0.1, 0.5, 512, 0.5, 512, 0.5, 30],
+              [1512, 0.1, 0.5, 1512, 0.5, 1512, 0.5, 50]]
 
 # storage structure for forecasts
 mvalid = np.zeros((train.shape[0],len(param_grid)))
@@ -131,7 +132,7 @@ for i in range(len(param_grid)):
             model.add(Dropout(x[6]))
             model.add(Dense(nb_classes))
             model.add(Activation('softmax'))
-            model.compile(loss='binary_crossentropy', optimizer="adam")
+            model.compile(loss='binary_crossentropy', optimizer="adadelta")
 
             idx0 = np.where(fold_index != j)
             idx1 = np.where(fold_index == j)
@@ -168,7 +169,7 @@ for i in range(len(param_grid)):
         model.add(Dropout(x[6]))
         model.add(Dense(nb_classes))
         model.add(Activation('softmax'))
-        model.compile(loss='binary_crossentropy', optimizer="adam")
+        model.compile(loss='binary_crossentropy', optimizer="adadelta")
         # fit on complete dataset
 
         model.fit(np.array(train), y_train, nb_epoch=x[7], batch_size=2256)

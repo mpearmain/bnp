@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.metrics import log_loss
 from itertools import product
 import datetime
@@ -11,8 +12,8 @@ if __name__ == '__main__':
 
     ## settings
     projPath = './'
-    dataset_version = "mp1"
-    model_type = "logreg"
+    dataset_version = "kb1"
+    model_type = "logreg_calib"
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
@@ -68,16 +69,16 @@ if __name__ == '__main__':
                 idx1 = np.where(fold_index == j)
                 x0 = np.array(xtrain)[idx0,:][0]; x1 = np.array(xtrain)[idx1,:][0]
                 y0 = np.array(ytrain)[idx0]; y1 = np.array(ytrain)[idx1]
-			
                 # fit the model on observations associated with subject whichSubject in this fold
-                model.fit(x0, y0)
-                mvalid[idx1,i] = model.predict_proba(x1)[:,1]
-                print 'Logloss on fold:', log_loss(y1, model.predict_proba(x1)[:,1])
+                model_calib = CalibratedClassifierCV(base_estimator=model, cv=5, method='isotonic')
+                model_calib.fit(x0, y0)
+                mvalid[idx1,i] = model_calib.predict_proba(x1)[:,1]
+                print 'Logloss on fold:', log_loss(y1, model_calib.predict_proba(x1)[:,1])
                 print "finished fold:", j
                 
             # fit on complete dataset
-            model.fit(xtrain, ytrain)
-            mfull[:,i] = model.predict_proba(xtest)[:,1]
+            model_calib.fit(xtrain, ytrain)
+            mfull[:,i] = model_calib.predict_proba(xtest)[:,1]
             print "finished full prediction"
         
     ## store the results
