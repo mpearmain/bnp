@@ -1,4 +1,6 @@
 import pandas as pd
+import os
+from glob import glob
 from sklearn.ensemble import RandomForestClassifier
 from bortua2 import BorutaPy2
 
@@ -8,9 +10,22 @@ from bortua2 import BorutaPy2
 # methods, i.e bortua or linear combination reductions for the second level
 # metas.
 
-# load X and y
-X = pd.read_csv('my_X_table.csv', index_col=0).values
-y = pd.read_csv('my_y_vector.csv', index_col=0).values
+projPath = './metafeatures'
+trainFiles = glob(projPath + "/prval*.csv")
+
+
+for i, file in enumerate(trainFiles):
+    print i, file
+    df = pd.read_csv(os.path.join(file), index_col='ID')
+    if i == 0:
+        trainFrame = df.copy()
+        print trainFrame.shape
+        continue
+    print df.shape
+    df.drop('target', axis=1, inplace=True)
+    trainFrame = trainFrame.join(df)
+    print trainFrame.shape
+
 
 
 # define random forest classifier, with utilising all cores and
