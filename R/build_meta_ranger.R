@@ -31,14 +31,16 @@ auc<-function (actual, predicted) {
 # read actual data
 xtrain <- read_csv(paste("./input/xtrain_",dataset_version,".csv", sep = ""))
 xtest <- read_csv(paste("./input/xtest_",dataset_version,".csv", sep = ""))
-y <- xtrain$QuoteConversion_Flag; xtrain$QuoteConversion_Flag <- NULL
-id_train <- xtrain$QuoteNumber
-id_test <- xtest$QuoteNumber
-xtrain$QuoteNumber <- xtest$QuoteNumber <- NULL
+y <- xtrain$target; 
+xtrain$target <- NULL
+id_train <- xtrain$ID
+id_test <- xtest$ID
+xtrain$ID <- xtest$ID <- NULL
 
 # division into folds: 5-fold
-xfolds <- read_csv("./input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
-xfolds <- xfolds[,c("QuoteNumber", "fold_index")]
+xfolds <- read_csv("./input/xfolds.csv");
+xfolds$fold_index <- xfolds$fold5
+xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
 
 # SFSG # 
@@ -66,7 +68,8 @@ for (ii in 1:nrow(param_grid))
     x0 <- xtrain[isTrain,]; x1 <- xtrain[isValid,]
     y0 <- factor(y)[isTrain]; y1 <- factor(y)[isValid]
     
-    ranger.model <- ranger(y0 ~ ., data = x0, 
+    ranger.model <- ranger(y0 ~ ., 
+                           data = x0, 
                            mtry = param_grid$mtry[ii],
                            num.trees = param_grid$ntree[ii],
                            write.forest = T,
@@ -96,16 +99,13 @@ for (ii in 1:nrow(param_grid))
 }
 
 
-
-
-
 ## store complete versions ####
 mtrain <- data.frame(mtrain)
 mtest <- data.frame(mtest)
 colnames(mtrain) <- colnames(mtest) <- paste(model_type, 1:ncol(mtrain), sep = "")
-mtrain$QuoteNumber <- id_train
-mtest$QuoteNumber <- id_test
-mtrain$QuoteConversion_Flag <- y
+mtrain$ID <- id_train
+mtest$ID <- id_test
+mtrain$target <- y
 
 write_csv(mtrain, path = paste("./metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 write_csv(mtest, path = paste("./metafeatures/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
