@@ -31,7 +31,12 @@ auc<-function (actual, predicted) {
 # read actual data
 xtrain <- read_csv(paste("./input/xtrain_",dataset_version,".csv", sep = ""))
 xtest <- read_csv(paste("./input/xtest_",dataset_version,".csv", sep = ""))
+<<<<<<< HEAD
 y <- xtrain$target; xtrain$target <- NULL
+=======
+y <- xtrain$target; 
+xtrain$target <- NULL
+>>>>>>> d1c14d1f32f41d50c17daafb57bb6ec99bde6429
 id_train <- xtrain$ID
 id_test <- xtest$ID
 xtrain$ID <- xtest$ID <- NULL
@@ -66,7 +71,8 @@ for (ii in 1:nrow(param_grid))
     x0 <- xtrain[isTrain,]; x1 <- xtrain[isValid,]
     y0 <- factor(y)[isTrain]; y1 <- factor(y)[isValid]
     
-    ranger.model <- ranger(y0 ~ ., data = x0, 
+    ranger.model <- ranger(y0 ~ ., 
+                           data = x0, 
                            mtry = param_grid$mtry[ii],
                            num.trees = param_grid$ntree[ii],
                            write.forest = T,
@@ -99,9 +105,9 @@ for (ii in 1:nrow(param_grid))
 mtrain <- data.frame(mtrain)
 mtest <- data.frame(mtest)
 colnames(mtrain) <- colnames(mtest) <- paste(model_type, 1:ncol(mtrain), sep = "")
-mtrain$QuoteNumber <- id_train
-mtest$QuoteNumber <- id_test
-mtrain$QuoteConversion_Flag <- y
+mtrain$ID <- id_train
+mtest$ID <- id_test
+mtrain$target <- y
 
 # store the metas
 write_csv(mtrain, path = paste("./metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
