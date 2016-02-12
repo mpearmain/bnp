@@ -2,6 +2,7 @@
 require(readr)
 require(earth)
 require(stringr)
+require(Metrics)
 
 dataset_version <- "kb2099"
 seed_value <- 1901
@@ -56,6 +57,7 @@ for (ii in 1:nrow(param_grid))
     mars.model <- earth(x = x0, y = y0, degree = param_grid$deg[ii], glm=list(family=binomial))
     
     pred_valid <- predict(mars.model, x1, type = "response")
+    print(logLoss(y1, pred_valid))
     mtrain[isValid,ii] <- pred_valid
   }
   

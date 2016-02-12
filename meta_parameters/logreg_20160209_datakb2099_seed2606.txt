@@ -1,0 +1,15 @@
+logreg_20160209_datakb2099_seed2606
+build using build_meta_logreg.py
+
+
+## model
+    # setup model instances
+    model = LogisticRegression()
+
+    # parameter grids
+    c_vals = [0.01, 0.05, 0.1, 0.25, 0.9]
+    pen_vals = ['l1']
+    f_vals = [ True]
+    c_weights = ['auto']
+    param_grid = tuple([c_vals,pen_vals,f_vals,c_weights])
+    param_grid = list(product(*param_grid))
