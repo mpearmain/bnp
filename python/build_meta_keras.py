@@ -12,7 +12,7 @@ import datetime
 
 ## settings
 projPath = './'
-dataset_version = "kb1"
+dataset_version = "kb2095"
 model_type = "keras"
 seed_value = 10994
 todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -101,7 +101,7 @@ best_score=-1
 
 param_grid = [[1024, 0.1, 0.6, 1024, 0.6, 420, 0.6, 30],
               [512, 0.1, 0.5, 512, 0.5, 512, 0.5, 30],
-              [1512, 0.1, 0.5, 1512, 0.5, 1512, 0.5, 50]]
+              [225, 0.1, 0.5, 237, 0.5, 221, 0.5, 30]]
 
 # storage structure for forecasts
 mvalid = np.zeros((train.shape[0],len(param_grid)))

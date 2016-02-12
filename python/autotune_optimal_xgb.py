@@ -4,14 +4,13 @@ __author__ = 'mpearmain'
 
 import pandas as pd
 import xgboost as xgb
-from sklearn.isotonic import IsotonicRegression
 import datetime
 
 # settings
 projPath = './'
 dataset_version = "ensemble_base"
 todate = datetime.datetime.now().strftime("%Y%m%d")    
-no_bags = 5
+no_bags = 10
     
 ## data
 # read the training and test sets
