@@ -1,0 +1,23 @@
+xgb_20160205_datamp1_seed123
+built using  build_meta_xgboost.py
+
+    ## model
+    # parameter grids: LR + range of training subjects to subset to
+    '''
+    Staying with index convention.
+        child_weight = 0
+        max_depth = 1
+        colsample = 2
+        rowsample = 3
+        gamma_val = 4
+        eta_val = 5
+        ntrees = 6
+    '''
+    param_grid = [(1, 7, 0.75, 0.68, 0.0, 0.01, 1800),
+                  (1, 20, 0.85, 0.8, 0.00008, 0.015, 232),
+                  (4, 5, 0.85, 0.81, 0.000363, 0.017483, 1535),
+                  (3, 12, 0.83, 0.885, 0.000247, 0.01970, 446),
+                  (1, 10, 0.81, 0.839, 0.000746, 0.01222, 771),
+                  (1, 12, 0.845, 0.892, 0.0004782, 0.01877, 216),
+                  (1, 6, 0.84, 0.892, 0.000502716, 0.018, 600)
+                  ]

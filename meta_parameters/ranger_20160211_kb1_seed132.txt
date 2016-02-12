@@ -1,0 +1,6 @@
+ranger_20160211_datakb1_seed132
+Built using build_meta_ranger.R
+
+param_grid <- expand.grid(ntree = c(1750),
+                          mtry = c(30, 50),
+                          nsize = c(10,25))
