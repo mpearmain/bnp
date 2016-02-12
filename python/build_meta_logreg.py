@@ -12,9 +12,9 @@ if __name__ == '__main__':
 
     ## settings
     projPath = './'
-    dataset_version = "kb1"
-    model_type = "logreg_calib"
-    seed_value = 123
+    dataset_version = "kb2099"
+    model_type = "logreg"
+    seed_value = 2606
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -70,15 +70,14 @@ if __name__ == '__main__':
                 x0 = np.array(xtrain)[idx0,:][0]; x1 = np.array(xtrain)[idx1,:][0]
                 y0 = np.array(ytrain)[idx0]; y1 = np.array(ytrain)[idx1]
                 # fit the model on observations associated with subject whichSubject in this fold
-                model_calib = CalibratedClassifierCV(base_estimator=model, cv=5, method='isotonic')
-                model_calib.fit(x0, y0)
-                mvalid[idx1,i] = model_calib.predict_proba(x1)[:,1]
-                print 'Logloss on fold:', log_loss(y1, model_calib.predict_proba(x1)[:,1])
+                model.fit(x0, y0)
+                mvalid[idx1,i] = model.predict_proba(x1)[:,1]
+                print 'Logloss on fold:', log_loss(y1, model.predict_proba(x1)[:,1])
                 print "finished fold:", j
                 
             # fit on complete dataset
-            model_calib.fit(xtrain, ytrain)
-            mfull[:,i] = model_calib.predict_proba(xtest)[:,1]
+            model.fit(xtrain, ytrain)
+            mfull[:,i] = model.predict_proba(xtest)[:,1]
             print "finished full prediction"
         
     ## store the results
