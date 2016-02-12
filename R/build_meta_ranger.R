@@ -31,12 +31,7 @@ auc<-function (actual, predicted) {
 # read actual data
 xtrain <- read_csv(paste("./input/xtrain_",dataset_version,".csv", sep = ""))
 xtest <- read_csv(paste("./input/xtest_",dataset_version,".csv", sep = ""))
-<<<<<<< HEAD
 y <- xtrain$target; xtrain$target <- NULL
-=======
-y <- xtrain$target; 
-xtrain$target <- NULL
->>>>>>> d1c14d1f32f41d50c17daafb57bb6ec99bde6429
 id_train <- xtrain$ID
 id_test <- xtest$ID
 xtrain$ID <- xtest$ID <- NULL
@@ -114,5 +109,5 @@ write_csv(mtrain, path = paste("./metafeatures/prval_",model_type,"_", todate, "
 write_csv(mtest, path = paste("./metafeatures/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 # store the parameters
-write_csv(param_grid, path = paste("./mf_params/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(param_grid, path = paste("./meta_parameters/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
