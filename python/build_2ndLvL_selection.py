@@ -11,22 +11,26 @@ from bortua2 import BorutaPy2
 # metas.
 
 projPath = './metafeatures'
-trainFiles = glob(projPath + "/prval*.csv")
+trainFiles = glob(projPath + "/prval*\.csv")
 
-
-for i, file in enumerate(trainFiles):
-    print i, file
-    df = pd.read_csv(os.path.join(file), index_col='ID')
-    if i == 0:
-        trainFrame = df.copy()
+def load_merge(metas_dir):
+    trainFrame = 0
+    for i, file in enumerate(metas_dir):
+        print i, file
+        df = pd.read_csv(os.path.join(file), index_col='ID')
+        if i == 0:
+            trainFrame = df.copy()
+            print trainFrame.shape
+            continue
+        print df.shape
+        df.drop('target', axis=1, inplace=True)
+        trainFrame = trainFrame.join(df)
         print trainFrame.shape
-        continue
-    print df.shape
-    df.drop('target', axis=1, inplace=True)
-    trainFrame = trainFrame.join(df)
-    print trainFrame.shape
+    y = trainFrame.target
+    x = trainFrame.drop('target', axis=1, inplace=True)
+    return x, y
 
-
+xtrain, ytrain = load_merge(trainFiles)
 
 # define random forest classifier, with utilising all cores and
 # sampling in proportion to y labels

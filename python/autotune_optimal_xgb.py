@@ -10,7 +10,7 @@ import datetime
 projPath = './'
 dataset_version = "ensemble_base"
 todate = datetime.datetime.now().strftime("%Y%m%d")    
-no_bags = 10
+no_bags = 20
     
 ## data
 # read the training and test sets

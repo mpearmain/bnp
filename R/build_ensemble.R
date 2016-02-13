@@ -186,8 +186,10 @@ for (ii in 1:nfolds)
   # mix with glmnet: average over multiple alpha parameters 
   isTrain <- which(xfolds$fold_index != ii)
   isValid <- which(xfolds$fold_index == ii)
-  x0 <- xvalid[isTrain,];   x1 <- xvalid[isValid,]
-  y0 <- y[isTrain];  y1 <- y[isValid]
+  x0 <- xvalid[isTrain,];   
+  x1 <- xvalid[isValid,]
+  y0 <- y[isTrain];  
+  y1 <- y[isValid]
   prx1 <- y1 * 0
   for (jj in 1:11)
   {
@@ -210,17 +212,16 @@ for (ii in 1:nfolds)
     clf <- xgb.train(booster = "gbtree", 
                      maximize = TRUE, 
                      print.every.n = 50, 
-                     nrounds = 621,
-                     eta = 0.021700388765921064, 
+                     nrounds = 668,
+                     eta = 0.0083448206764984816, 
                      max.depth = 9,
-                     colsample_bytree = 0.83914630981480487, 
-                     subsample = 0.87375172168899873,
-                     min_child_weight = 19.343366117536888,
+                     colsample_bytree = 0.85469693813676129, 
+                     subsample = 0.84436176592642664,
+                     min_child_weight = 9.3990898152906937,
+                     gamma=0.00058227567837996846,
                      data = x0d, 
                      objective = "binary:logistic",
-                     watchlist = watch, 
-                     eval_metric = "logloss",
-                     gamma= 0.00012527443501287444)
+                     eval_metric = "logloss")
     prx <- predict(clf, x1d)
     prx2 <- prx2 + prx
   }
@@ -247,11 +248,15 @@ for (ii in 1:nfolds)
   xvalid2[isValid,4] <- prx4
   
   # mix with random forest
-  rf0 <- ranger(factor(y0) ~ ., data = x0, 
-         mtry = 25, num.trees = 350,
-         write.forest = T, probability = T,
-         min.node.size = 10, seed = seed_value,
-         num.threads = 4)
+  rf0 <- ranger(factor(y0) ~ ., 
+                data = x0, 
+                mtry = 25, 
+                num.trees = 350,
+                write.forest = T, 
+                probability = T,
+                min.node.size = 10, 
+                seed = seed_value,
+                num.threads = 8)
   prx5 <- predict(rf0, x1)$predictions[,2]
   storage_matrix[ii,5] <- logLoss(y1,prx5)
   xvalid2[isValid,5] <- prx5
@@ -283,17 +288,16 @@ for (jj in 1:nbag)
   clf <- xgb.train(booster = "gbtree", 
                    maximize = TRUE, 
                    print.every.n = 50, 
-                   nrounds = 621,
-                   eta = 0.021700388765921064, 
+                   nrounds = 668,
+                   eta = 0.0083448206764984816, 
                    max.depth = 9,
-                   colsample_bytree = 0.83914630981480487, 
-                   subsample = 0.87375172168899873,
-                   min_child_weight = 19.343366117536888,
+                   colsample_bytree = 0.85469693813676129, 
+                   subsample = 0.84436176592642664,
+                   min_child_weight = 9.3990898152906937,
+                   gamma=0.00058227567837996846,
                    data = x0d, 
                    objective = "binary:logistic",
-                   # watchlist = watch, 
-                   eval_metric = "logloss",
-                   gamma= 0.00012527443501287444)
+                   eval_metric = "logloss")
   prx <- predict(clf, x1d)
   prx2 <- prx2 + prx
 }
@@ -317,29 +321,21 @@ prx4 <- as.matrix(xfull) %*% as.matrix(par0)
 xfull2[,4] <- prx4
 
 # mix with ranger
-rf0 <- ranger(factor(y) ~ ., data = xvalid, 
-              mtry = 25, num.trees = 350,
-              write.forest = T, probability = T,
-              min.node.size = 10, seed = seed_value,
-              num.threads = 4)
+rf0 <- ranger(factor(y) ~ ., 
+              data = xvalid, 
+              mtry = 25, 
+              num.trees = 350,
+              write.forest = T, 
+              probability = T,
+              min.node.size = 10, 
+              seed = seed_value,
+              num.threads = 8)
 prx5 <- predict(rf0, xfull)$predictions[,2]
 xfull2[,5] <- prx5
 
 rm(y0,y1, x0d, x1d, rf0, prx1,prx2,prx3,prx4,prx5)
 rm(par0, net0, mod0,mod_class, clf,x0, x1)
 
-# dump the 2nd level forecasts
-xvalid2 <- data.frame(xvalid2)
-xvalid2$target <- y 
-xvalid2$ID <- id_valid
-write.csv(xvalid2, paste("./input/xvalid_lvl2_",todate,"_bag",nbag,".csv", sep = ""), row.names = F)
-xvalid2$target <- NULL
-xvalid2$ID <- NULL
-
-xfull2 <- data.frame(xfull2)
-xfull2$ID <- id_full
-write.csv(xfull2, paste("./input/xfull_lvl2_",todate,"_bag",nbag,".csv", sep = ""), row.names = F)
-xfull2$ID <- NULL
 
 ## final ensemble forecasts ####
 # evaluate performance across folds
@@ -351,8 +347,10 @@ for (ii in 1:nfolds)
   isValid <- which(xfolds$fold_index == ii)
   x0 <- apply(xvalid2[isTrain,],2,rank)/length(isTrain)
   x1 <- apply(xvalid2[isValid,],2,rank)/length(isValid)
-  x0 <- data.frame(x0); x1 <- data.frame(x1)
-  y0 <- y[isTrain];  y1 <- y[isValid]
+  x0 <- data.frame(x0)
+  x1 <- data.frame(x1)
+  y0 <- y[isTrain]
+  y1 <- y[isValid]
   
   par0 <- buildEnsemble(c(1,15, 5,0.6), x0,y0)
   pr1 <- as.matrix(x1) %*% as.matrix(par0)
@@ -370,7 +368,7 @@ xfull2 <- data.frame(xfull2)
 # construct forecast
 par0 <- buildEnsemble(c(1,15, 5,0.6), xvalid2,y)
 prx <- as.matrix(xfull2) %*% as.matrix(par0)
-xfor <- data.frame(ID = id_full, target = prx)
+xfor <- data.frame(ID = id_full, PredictedProb = prx)
 
 print(paste("mean: ", mean(storage2[,1])))
 print(paste("sd: ", sd(storage2[,1])))

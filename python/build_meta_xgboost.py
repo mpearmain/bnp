@@ -10,9 +10,9 @@ if __name__ == '__main__':
 
     ## settings
     projPath = './'
-    dataset_version = "mp1"
+    dataset_version = "kb2099"
     model_type = "xgb"
-    seed_value = 123
+    seed_value = 675
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -26,6 +26,11 @@ if __name__ == '__main__':
     xtest = pd.read_csv(projPath + 'input/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
+
+
+    # Get rid of incorrect names for xgboost (scv-rbf) cannot handle '-'
+    xtrain = xtrain.rename(columns=lambda x: x.replace('_', ''))
+    xtest = xtest.rename(columns=lambda x: x.replace('_', ''))
 
     # folds
     xfolds = pd.read_csv(projPath + 'input/xfolds.csv')
@@ -52,8 +57,8 @@ if __name__ == '__main__':
                   (3, 12, 0.83, 0.885, 0.000247, 0.01970, 446),
                   (1, 10, 0.81, 0.839, 0.000746, 0.01222, 771),
                   (1, 12, 0.845, 0.892, 0.0004782, 0.01877, 216),
-                  (1, 6, 0.84, 0.892, 0.000502716, 0.018, 600)
-                  ]
+                  (1, 6, 0.84, 0.892, 0.000502716, 0.018, 600),
+                  (15, 20, 0.85, 0.80, 0.0001, 0.008214688, 1616)]
 
     # storage structure for forecasts
     mvalid = np.zeros((xtrain.shape[0],len(param_grid)))
@@ -119,3 +124,7 @@ if __name__ == '__main__':
     # save the files
     mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
     mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+
+    # Save params
+    params = pd.DataFrame(param_grid)
+    params.to_csv(projPath + 'meta_parameters/' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False)
