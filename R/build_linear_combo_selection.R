@@ -1,11 +1,7 @@
 ## wd etc ####
 require(readr)
 require(stringr)
-require(glmnet)
 require(caret)
-require(xgboost)
-require(nnet)
-require(ranger)
 require(Metrics)
 
 seed_value <- 450
