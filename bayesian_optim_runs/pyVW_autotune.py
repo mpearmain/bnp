@@ -5,21 +5,20 @@ __author__ = 'michael.pearmain'
 
 import datetime
 import pandas as pd
-import numpy as np
 from scipy.sparse import csc_matrix
-from fastFM import sgd
+import python.sklearn_vw
 from sklearn.metrics import log_loss
 from bayesian_optimization import BayesianOptimization
 
 
-def FMcv(n_iter,
+def vwcv(n_iter,
          init_stdev,
          l2_reg_w,
          l2_reg_V,
          rank,
          step_size):
 
-    fm = sgd.FMClassification(n_iter=n_iter,
+    foo = pyvw(n_iter=n_iter,
                               init_stdev=init_stdev,
                               l2_reg_w=l2_reg_w,
                               l2_reg_V=l2_reg_V,

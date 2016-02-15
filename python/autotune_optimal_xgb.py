@@ -30,14 +30,14 @@ pred_average = True
 
 for k in range(no_bags):
     print 'Building bag:', k
-    clf = xgb.XGBClassifier(n_estimators=668,
+    clf = xgb.XGBClassifier(n_estimators=534,
                             nthread=-1,
-                            max_depth=9,
-                            min_child_weight = 9.3990898152906937,
-                            learning_rate= 0.0083448206764984816,
-                            subsample= 0.84436176592642664,
-                            colsample_bytree=0.85469693813676129,
-                            gamma=0.00058227567837996846,
+                            max_depth=10,
+                            min_child_weight = 25,
+                            learning_rate= 0.016,
+                            subsample= 0.62,
+                            colsample_bytree=0.70,
+                            gamma=0.0005,
                             seed=k*100+22,
                             silent=True)
     clf.fit(xtrain, ytrain, eval_metric='logloss')

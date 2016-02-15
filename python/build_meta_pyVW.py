@@ -8,15 +8,15 @@
 import numpy as np
 import pandas as pd
 import datetime
-import pylibfm
+import pyvw
 from sklearn.metrics import log_loss
 
 if __name__ == '__main__':
 
     ## settings
     projPath = './'
-    dataset_version = "mp1"
-    model_type = "xgb"
+    dataset_version = "kb2099"
+    model_type = "vw"
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
