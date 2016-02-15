@@ -4,9 +4,7 @@ import numpy as np
 from datetime import datetime
 from sklearn.gaussian_process import GaussianProcess
 from scipy.optimize import minimize
-from .helpers import UtilityFunction, unique_rows, print_info
-
-__author__ = 'fmfn'
+from helpers import UtilityFunction, unique_rows, print_info
 
 
 def acq_max(ac, gp, y_max, restarts, bounds):

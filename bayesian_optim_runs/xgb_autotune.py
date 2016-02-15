@@ -85,16 +85,16 @@ if __name__ == "__main__":
                                       'min_child_weight': (int(10), int(100))
                                      })
     # Use last times best as a start point
-    print("Running previous best 0.443059")
-    xgboostBO.explore({'colsample_bytree': [0.69999999999999996],
-                       'learning_rate': [0.016],
-                       'min_child_weight': [25.0],
-                       'n_estimators': [534],
-                       'subsample': [0.62],
-                       'max_depth': [10],
-                       'gamma': [0.005]})
+    # print("Running previous best 0.443059")
+    # xgboostBO.explore({'colsample_bytree': [0.69999999999999996],
+    #                    'learning_rate': [0.016],
+    #                    'min_child_weight': [25.0],
+    #                    'n_estimators': [534],
+    #                    'subsample': [0.62],
+    #                    'max_depth': [10],
+    #                    'gamma': [0.005]})
 
-    xgboostBO.maximize(init_points=7, restarts=1000, n_iter=50)
+    xgboostBO.maximize(init_points=5, restarts=1000, n_iter=15)
     print('-' * 53)
 
     print('Final Results')
