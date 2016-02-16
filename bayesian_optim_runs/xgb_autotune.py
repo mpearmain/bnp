@@ -7,7 +7,6 @@ import pandas as pd
 import datetime
 from xgboost import XGBClassifier
 from sklearn.metrics import log_loss
-from sklearn.preprocessing import PolynomialFeatures
 from bayesian_optimization import BayesianOptimization
 import os
 
@@ -42,28 +41,21 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "ensemble_base"
+    dataset_version = "secondLvL_meta"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     no_bags = 1
 
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('./input/xvalid_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('./input/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
 
-    xtest = pd.read_csv('./input/xfull_'+ dataset_version + '.csv')
+    xtest = pd.read_csv('./input/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
-
-
-    # Lets develop all interactions of the top N vars.
-    poly = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False)
-
-    xtrain = pd.DataFrame(poly.fit_transform(xtrain))
-    xtest = pd.DataFrame(poly.fit_transform(xtest))
 
     # folds
     xfolds = pd.read_csv('./input/xfolds.csv')
@@ -76,13 +68,13 @@ if __name__ == "__main__":
     y1 = ytrain[ytrain.index.isin(idx1)]
 
     xgboostBO = BayesianOptimization(xgboostcv,
-                                     {'max_depth': (int(6), int(50)),
-                                      'learning_rate': (0.005, 0.02),
+                                     {'max_depth': (int(6), int(25)),
+                                      'learning_rate': (0.008, 0.02),
                                       'n_estimators': (int(500), int(2000)),
                                       'subsample': (0.6, 0.85),
                                       'colsample_bytree': (0.6, 0.85),
                                       'gamma': (0.00001, 0.01),
-                                      'min_child_weight': (int(10), int(100))
+                                      'min_child_weight': (int(4), int(15))
                                      })
     # Use last times best as a start point
     # print("Running previous best 0.443059")
