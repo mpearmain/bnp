@@ -53,6 +53,7 @@ train['ID'] = id_train
 train['target'] = ytrain
 test['ID'] = id_test
 
+print 'Writing Data Files.'
 train.to_csv("./input/xtrain_secondLvL_meta.csv", index = False, header = True)
 test.to_csv("./input/xtest_secondLvL_meta.csv", index = False, header = True)
 
