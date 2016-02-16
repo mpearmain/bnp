@@ -10,10 +10,10 @@ All submissions are stored in `submissions` but ignored from git.
 
 ## Python Dependencies ##
 
-* numpy
-* scipy
+* numpy (1.10.4)
+* scipy (0.17.0)
 * bottleneck
-* scikit-learn
+* scikit-learn (<0.16.1)
 * statsmodels
 
 ## Strategy 
@@ -74,6 +74,13 @@ All datasets are generated using the script `./R/build_datasets.R`. Each dataset
 
 1. Run in `dataset_creation` run `data_preperation.R`
 2. Run all `build_meta_XX.py` in the python subdir
-3. Run build_ensemble
+3. We have now produced many metafile that need to be joined into a single dataset
+  * `build_linear_combo_selection.R` is an R script to merge all metafiles and remove any 
+  linear combinations from the dataset.
+  * `build_2ndlLvl_selection.py` takes the output form the above and then build more features by
+  ranking the top N results and taking interactions of these vars.
+4. TODO: PRODUCE SECOND LEVEL MODELS -> NN / XGB / RF / ET (Only best models)
+5. Final stage is to blend the above models weights. (python L-BFGS-L or other optim methos in scipy - mpearmian to produce.)
+
 
 To avoid local running problems all files should be run from the top level bnp dir to avoid errors. i.e `./`
