@@ -320,12 +320,12 @@ buildKB5 <- function(cut_level = 0.99)
   
   xtrain$target <- y
   
-  write.csv(xtrain, paste('input/xtrain_kb2',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
-  write.csv(xtest, paste('input/xtest_kb2',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
+  write.csv(xtrain, paste('input/xtrain_kb5',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('input/xtest_kb5',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
   
   rm(xtrain)
   rm(xtest)
-  return(cat("KB2 dataset built"))
+  return(cat("KB5 dataset built"))
 }
 
 # KB4 with extras:
@@ -436,12 +436,12 @@ buildKB6 <- function(cut_level = 0.99)
   ix <- which(colnames(xtest) %in% factor_vars)
   xtest <- xtest[,-ix]
   
-  write.csv(xtrain, 'input/xtrain_kb3.csv', row.names = F)
-  write.csv(xtest, 'input/xtest_kb3.csv', row.names = F)
+  write.csv(xtrain, 'input/xtrain_kb6.csv', row.names = F)
+  write.csv(xtest, 'input/xtest_kb6.csv', row.names = F)
   
   rm(xtrain)
   rm(xtest)
-  return(cat("KB3 dataset built"))
+  return(cat("KB6 dataset built"))
   
 }
 
