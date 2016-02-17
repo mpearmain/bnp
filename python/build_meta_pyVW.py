@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Using Factorization machines in the style of libFM
-# https://github.com/coreylynch/pyFM
-
-
+# https://github.com/JohnLangford/vowpal_wabbit/tree/master/python
 
 import numpy as np
 import pandas as pd
@@ -38,6 +35,20 @@ if __name__ == '__main__':
     fold_index = xfolds.fold5
     fold_index = np.array(fold_index) - 1
     n_folds = len(np.unique(fold_index))
+
+
+
+
+    # Need to figure out how to call and build VW models from python.
+    # sklearn_vw is taken from the VW/python github so it *should* be
+    # ok to get it all running.
+
+
+
+
+
+
+
 
     ## model
     # parameter grids: LR + range of training subjects to subset to

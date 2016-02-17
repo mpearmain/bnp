@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 from sklearn.metrics import log_loss
 from itertools import product
 import datetime
