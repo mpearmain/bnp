@@ -41,8 +41,6 @@ xfolds <- read_csv("./input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
 xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
 
-# SFSG # 
-
 ## fit models ####
 # parameter grid
 param_grid <- expand.grid(ntree = c(1750),
