@@ -4,37 +4,17 @@ from __future__ import division
 __author__ = 'michael.pearmain'
 
 import datetime
+import numpy as np
 import pandas as pd
-from scipy.sparse import csc_matrix
-import python.sklearn_vw
-from sklearn.metrics import log_loss
-from bayesian_optimization import BayesianOptimization
+from python.sklearn_vw import VWClassifier
 
-
-def vwcv(n_iter,
-         init_stdev,
-         l2_reg_w,
-         l2_reg_V,
-         rank,
-         step_size):
-
-    foo = pyvw(n_iter=n_iter,
-                              init_stdev=init_stdev,
-                              l2_reg_w=l2_reg_w,
-                              l2_reg_V=l2_reg_V,
-                              rank=rank,
-                              step_size=step_size)
-    fm.fit(x0, y0)
-    ll = -log_loss(y1, fm.predict_proba(x0)[:,1])
-    return ll
 
 if __name__ == "__main__":
 
     # settings
     projPath = './'
-    dataset_version = "mp1"
+    dataset_version = "kb1"
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    no_bags = 1
 
     ## data
     # read the training and test sets
@@ -53,23 +33,38 @@ if __name__ == "__main__":
     # work with validation split
     idx0 = xfolds[xfolds.valid == 0].index
     idx1 = xfolds[xfolds.valid == 1].index
-    x0 = csc_matrix((xtrain[xtrain.index.isin(idx0)]).as_matrix())
-    x1 = csc_matrix((xtrain[xtrain.index.isin(idx1)]).as_matrix())
-    y0 = ytrain[ytrain.index.isin(idx0)].as_matrix()
-    y0[y0 == 0] = -1
-    y1 = ytrain[ytrain.index.isin(idx1)].as_matrix()
-    y1[y1 == 0] = -1
-    FMcvBO = BayesianOptimization(FMcv,
-                                     {'n_iter': (int(500), int(1000)),
-                                      'init_stdev': (0.05, 0.2),
-                                      'l2_reg_w': (0.0, 0.000001),
-                                      'l2_reg_V': (0.0, 0.000001),
-                                      'rank': (int(8), int(20)),
-                                      'step_size': (0.2, 0.05)
-                                     })
+    x0 = xtrain[xtrain.index.isin(idx0)]
+    x1 = xtrain[xtrain.index.isin(idx1)]
+    y0 = ytrain[ytrain.index.isin(idx0)]
+    # VW expects -1 not 0 values.
+    y0[y0==0] = -1
+    y1 = ytrain[ytrain.index.isin(idx1)]
+    y1[y1==0] = -1
 
-    FMcvBO.maximize(init_points=7, restarts=500, n_iter=25)
-    print('-' * 53)
+    # Need to be numpy array
+    x0 = x0.astype(np.float32).as_matrix()
+    y0 = y0.astype(np.float32).as_matrix()
+    x1 = x1.astype(np.float32).as_matrix()
+    y1 = y1.astype(np.float32).as_matrix()
 
-    print('Final Results')
-    print('Factorization Machines: %f' % FMcvBO.res['max']['max_val'])
+    # build vowpal wabbit model
+    model = VWClassifier(probabilities=None,
+                         random_seed=1234,
+                         learning_rate=0.15,
+                         l=None,
+                         power_t=None,
+                         decay_learning_rate=None,
+                         input_feature_regularizer=None,
+                         progress=True,
+                         P=None,
+                         quiet=False,
+                         b=22,
+                         min_prediction=1e-15,
+                         max_prediction=1-1e-15,
+                         loss_function='logistic',
+                         quantile_tau=None,
+                         l1=2,
+                         l2=2,
+                         passes=5)
+    model.fit(x0, y0)
+    model.score(x1,y1)
