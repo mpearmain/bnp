@@ -649,12 +649,12 @@ buildKB6 <- function(cut_level = 0.99)
   ix <- which(colnames(xtest) %in% factor_vars)
   xtest <- xtest[,-ix]
   
-  write.csv(xtrain, 'input/xtrain_kb3.csv', row.names = F)
-  write.csv(xtest, 'input/xtest_kb3.csv', row.names = F)
+  write.csv(xtrain, 'input/xtrain_kb6.csv', row.names = F)
+  write.csv(xtest, 'input/xtest_kb6.csv', row.names = F)
   
   rm(xtrain)
   rm(xtest)
-  return(cat("KB3 dataset built"))
+  return(cat("KB6 dataset built"))
   
 }
 
@@ -668,3 +668,4 @@ buildKB4()
 # buildKB5(cut_level = 0.95)
 # buildKB6(cut_level = 0.99)
 # buildKB6(cut_level = 0.95)
+
