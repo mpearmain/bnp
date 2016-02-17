@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     xgboostBO = BayesianOptimization(xgboostcv,
                                      {'max_depth': (int(6), int(15)),
-                                      'learning_rate': (0.008, 0.015),
+                                      'learning_rate': (0.008, 0.015)xgb_autotune.py,
                                       'n_estimators': (int(300), int(1500)),
                                       'subsample': (0.75, 0.9),
                                       'colsample_bytree': (0.75, 0.9),
