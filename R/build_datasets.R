@@ -223,8 +223,6 @@ buildKB2 <- function()
   msg("KB2 dataset built")
 }
 
-# SFSG # 
-
 # KB1 with extras:
 # - all factors mapped to response rates
 buildKB3 <- function()
@@ -324,7 +322,7 @@ buildKB3 <- function()
     x <- myLMERDF[,2][match(xtest[, varname], myLMERDF[,1])]
     x[is.na(x)] <- mean(y)
     xtest[,paste(varname, "dmp", sep = "")] <- x
-    msg(varname)
+    # msg(varname)
   }
   
   # drop the factors
@@ -332,6 +330,8 @@ buildKB3 <- function()
   xtrain <- xtrain[,-ix]
   ix <- which(colnames(xtest) %in% factor_vars)
   xtest <- xtest[,-ix]
+  
+  xtrain$target <- y
   
   write.csv(xtrain, 'input/xtrain_kb3.csv', row.names = F)
   write.csv(xtest, 'input/xtest_kb3.csv', row.names = F)
@@ -458,6 +458,7 @@ buildKB4 <- function()
   ix <- which(colnames(xtest) %in% factor_vars)
   xtest <- xtest[,-ix]
   
+  xtrain$target <- y
   write.csv(xtrain, 'input/xtrain_kb4.csv', row.names = F)
   write.csv(xtest, 'input/xtest_kb4.csv', row.names = F)
   
@@ -472,16 +473,16 @@ buildKB4 <- function()
 # - cutoff parameter for correlated pairs as argument
 buildKB5 <- function(cut_level = 0.99)
 {
-  train <- read_csv('input/train.csv')
-  test <- read_csv('input/test.csv')
-  
+  xtrain <- read_csv('input/xtrain_kb3.csv')
+  xtest <- read_csv('input/xtest_kb3.csv')
+
   # Lets first align the datasets for equal vars to work with.
-  y <- train$target; train$target <- NULL
-  train$dset <- 0; test$dset <- 1
+  y <- xtrain$target; xtrain$target <- NULL
+  xtrain$dset <- 0; xtest$dset <- 1
   
   # Join the datasets for simple manipulations.
-  bigD <- rbind(train, test)
-  rm(list = c('train', 'test'))
+  bigD <- rbind(xtrain, xtest)
+  rm(list = c('xtrain', 'xtest'))
   ID <- bigD$ID; bigD$ID <- NULL
   dset <- bigD$dset; bigD$dset <- NULL
   
@@ -490,22 +491,6 @@ buildKB5 <- function(cut_level = 0.99)
   numeric_columns <- which(column_types == "numeric")
   character_columns <- which(column_types == "character")
   character_names <- colnames(bigD)[character_columns]
-  # Count NAs across the data set
-  count_nas <- rowSums(is.na(bigD))
-  
-  # attach to the dataset
-  bigD$count_nas <- count_nas; rm(count_nas)
-  
-  # replace NA with -1
-  bigD[is.na(bigD)] <- -1
-  
-  # create bivariate combos of factors
-  xcomb <- combn(character_columns,2)
-  for (ii in 1:ncol(xcomb))
-  {
-    xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], sep = "")
-    bigD[,xname] <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], sep = "")
-  }
   
   ## analysis of correlations
   xnum <- bigD[,numeric_columns]; bigD <- bigD[,-numeric_columns]
@@ -548,12 +533,12 @@ buildKB5 <- function(cut_level = 0.99)
   
   xtrain$target <- y
   
-  write.csv(xtrain, paste('input/xtrain_kb2',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
-  write.csv(xtest, paste('input/xtest_kb2',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
+  write.csv(xtrain, paste('input/xtrain_kb5',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('input/xtest_kb5',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
   
   rm(xtrain)
   rm(xtest)
-  return(cat("KB2 dataset built"))
+  return(cat("KB5 dataset built"))
 }
 
 # KB4 with extras:
