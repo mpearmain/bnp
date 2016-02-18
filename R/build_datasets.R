@@ -44,7 +44,7 @@ buildMP1 <- function()
   
   ## Data Manipulations 
   # Count -1's across the data set
-  bigD[, V_NAs := rowSums(is.na(.SD)), .SDcols = grep("v", names(bigD))]
+  bigD[, VNAs := rowSums(is.na(.SD)), .SDcols = grep("v", names(bigD))]
   
   # simple hack for NA's to -1
   replaceNA(bigD)
@@ -101,10 +101,10 @@ buildKB1 <- function()
   character_columns <- which(column_types == "character")
   character_names <- colnames(bigD)[character_columns]
   # Count NAs across the data set
-  count_nas <- rowSums(is.na(bigD))
+  countnas <- rowSums(is.na(bigD))
  
   # attach to the dataset
-  bigD$count_nas <- count_nas; rm(count_nas)
+  bigD$countnas <- countnas; rm(countnas)
   
   # replace NA with -1
   bigD[is.na(bigD)] <- -1
@@ -166,10 +166,10 @@ buildKB2 <- function()
   character_columns <- which(column_types == "character")
   character_names <- colnames(bigD)[character_columns]
   # Count NAs across the data set
-  count_nas <- rowSums(is.na(bigD))
+  countnas <- rowSums(is.na(bigD))
   
   # attach to the dataset
-  bigD$count_nas <- count_nas; rm(count_nas)
+  bigD$countnas <- countnas; rm(countnas)
   
   # replace NA with -1
   bigD[is.na(bigD)] <- -1
@@ -238,10 +238,10 @@ buildKB3 <- function()
   character_columns <- which(column_types == "character")
   character_names <- colnames(bigD)[character_columns]
   # Count NAs across the data set
-  count_nas <- rowSums(is.na(bigD))
+  countnas <- rowSums(is.na(bigD))
   
   # attach to the dataset
-  bigD$count_nas <- count_nas; rm(count_nas)
+  bigD$countnas <- countnas; rm(countnas)
   
   # replace NA with -1
   bigD[is.na(bigD)] <- -1
@@ -354,10 +354,10 @@ buildKB4 <- function()
   character_columns <- which(column_types == "character")
   character_names <- colnames(bigD)[character_columns]
   # Count NAs across the data set
-  count_nas <- rowSums(is.na(bigD))
+  countnas <- rowSums(is.na(bigD))
   
   # attach to the dataset
-  bigD$count_nas <- count_nas; rm(count_nas)
+  bigD$countnas <- countnas; rm(countnas)
   
   # replace NA with -1
   bigD[is.na(bigD)] <- -1
