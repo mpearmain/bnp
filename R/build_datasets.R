@@ -532,7 +532,7 @@ buildKB6 <- function(cut_level = 0.99)
   
   # column types
   column_types <- sapply(bigD, class)
-  numeric_columns <- which(column_types == "numeric")
+  numeric_columns <- which(column_types != "character")
   character_columns <- which(column_types == "character")
   character_names <- colnames(bigD)[character_columns]
   
@@ -580,5 +580,6 @@ buildKB4()
 buildKB5(cut_level = 0.99)
 buildKB5(cut_level = 0.95)
 buildKB6(cut_level = 0.99)
-buildKB6(cut_level = 0.95)
+# drop KB6 with cut_level = 0.95 since its HUGE
+# buildKB6(cut_level = 0.95)
 
