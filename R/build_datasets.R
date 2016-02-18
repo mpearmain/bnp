@@ -544,10 +544,11 @@ buildKB6 <- function(cut_level = 0.99)
   corr_pairs <- corr_pairs[corr_pairs[,1] > corr_pairs[,2],]
   # create new features
   xnum1 <- array(0, c(nrow(xnum), nrow(corr_pairs)))
+  
   for (ii in 1:nrow(corr_pairs))
   {
     xnum1[,ii] <- apply(xnum[,corr_pairs[ii,]],1,diff)
-    # msg(ii)
+    msg(ii)
   }
   colnames(xnum1) <- paste("diff", 1:ncol(xnum1), sep = "")
   xnum <- xnum[,-flc]; xnum <- data.frame(xnum, xnum1)
