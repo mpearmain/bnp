@@ -126,15 +126,11 @@ buildKB1 <- function()
     }
   }
   
-  bigD$dset <- dset
   bigD$ID <- ID
   ## Split files & Export 
-  xtrain <- bigD[dset == 0, ]
-  xtest <- bigD[dset == 1, ]
+  xtrain <- bigD[which(dset == 0), ]
+  xtest <- bigD[which(dset == 1), ]
   rm(bigD)
-  
-  xtrain$dset <- NULL
-  xtest$dset <- NULL
   
   xtrain$target <- y
   
@@ -203,15 +199,11 @@ buildKB2 <- function()
     }
   }
   
-  bigD$dset <- dset
   bigD$ID <- ID
   ## Split files & Export 
-  xtrain <- bigD[dset == 0, ]
-  xtest <- bigD[dset == 1, ]
+  xtrain <- bigD[which(dset == 0), ]
+  xtest <- bigD[which(dset == 1), ]
   rm(bigD)
-  
-  xtrain$dset <- NULL
-  xtest$dset <- NULL
   
   xtrain$target <- y
   
@@ -262,14 +254,11 @@ buildKB3 <- function()
     bigD[,xname] <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], sep = "")
   }
   
-  bigD$dset <- dset
   bigD$ID <- ID
   ## Split files & Export 
-  xtrain <- bigD[dset == 0, ]
-  xtest <- bigD[dset == 1, ]
+  xtrain <- bigD[which(dset == 0), ]
+  xtest <- bigD[which(dset == 1), ]
   rm(bigD)
-  
-  xtrain$dset <- xtest$dset <- NULL
   
   # replace categorical ones with response rates
   xfold <- read_csv(file = "./input/xfolds.csv")
@@ -390,13 +379,10 @@ buildKB4 <- function()
   }
   
   
-  bigD$dset <- dset
   bigD$ID <- ID
-  xtrain <- bigD[dset == 0, ]
-  xtest <- bigD[dset == 1, ]
+  xtrain <- bigD[which(dset == 0), ]
+  xtest <- bigD[which(dset == 1), ]
   rm(bigD)
-  
-  xtrain$dset <- xtest$dset <- NULL
   
   # replace categorical ones with response rates
   xfold <- read_csv(file = "./input/xfolds.csv")
@@ -449,7 +435,7 @@ buildKB4 <- function()
     x <- myLMERDF[,2][match(xtest[, varname], myLMERDF[,1])]
     x[is.na(x)] <- mean(y)
     xtest[,paste(varname, "dmp", sep = "")] <- x
-    msg(varname)
+    # msg(varname)
   }
   
   # drop the factors
@@ -503,33 +489,18 @@ buildKB5 <- function(cut_level = 0.99)
   for (ii in 1:nrow(corr_pairs))
   {
     xnum1[,ii] <- apply(xnum[,corr_pairs[ii,]],1,diff)
-    msg(ii)
+    # msg(ii)
   }
   colnames(xnum1) <- paste("diff", 1:ncol(xnum1), sep = "")
   xnum <- xnum[,-flc]; xnum <- data.frame(xnum, xnum1)
   bigD <- data.frame(bigD, xnum)
   
-    
-  # Map all categoricals into numeric.
-  cat("Assuming text variables are categorical & replacing them with numeric ids\n")
-  for (f in colnames(bigD)) {
-    if (class(bigD[[f]])=="character") {
-      print(f)
-      levels <- unique(bigD[[f]])
-      bigD[[f]] <- as.integer(factor(bigD[[f]], levels=levels))
-    }
-    print(f)
-  }
   
-  bigD$dset <- dset
   bigD$ID <- ID
   ## Split files & Export 
-  xtrain <- bigD[dset == 0, ]
-  xtest <- bigD[dset == 1, ]
+  xtrain <- bigD[which(dset == 0), ]
+  xtest <- bigD[which(dset == 1), ]
   rm(bigD)
-  
-  xtrain$dset <- NULL
-  xtest$dset <- NULL
   
   xtrain$target <- y
   
@@ -546,16 +517,16 @@ buildKB5 <- function(cut_level = 0.99)
 # - cutoff parameter for correlated pairs as argument
 buildKB6 <- function(cut_level = 0.99)
 {
-  train <- read_csv('input/train.csv')
-  test <- read_csv('input/test.csv')
+  xtrain <- read_csv('input/xtrain_kb4.csv')
+  xtest <- read_csv('input/xtest_kb4.csv')
   
   # Lets first align the datasets for equal vars to work with.
-  y <- train$target; train$target <- NULL
-  train$dset <- 0; test$dset <- 1
+  y <- xtrain$target; xtrain$target <- NULL
+  xtrain$dset <- 0; xtest$dset <- 1
   
   # Join the datasets for simple manipulations.
-  bigD <- rbind(train, test)
-  rm(list = c('train', 'test'))
+  bigD <- rbind(xtrain, xtest)
+  rm(list = c('xtrain', 'xtest'))
   ID <- bigD$ID; bigD$ID <- NULL
   dset <- bigD$dset; bigD$dset <- NULL
   
@@ -564,98 +535,39 @@ buildKB6 <- function(cut_level = 0.99)
   numeric_columns <- which(column_types == "numeric")
   character_columns <- which(column_types == "character")
   character_names <- colnames(bigD)[character_columns]
-  # Count NAs across the data set
-  count_nas <- rowSums(is.na(bigD))
   
-  # attach to the dataset
-  bigD$count_nas <- count_nas; rm(count_nas)
-  
-  # replace NA with -1
-  bigD[is.na(bigD)] <- -1
-  
-  # create bivariate combos of factors
-  xcomb <- combn(character_columns,2)
-  for (ii in 1:ncol(xcomb))
+  ## analysis of correlations
+  xnum <- bigD[,numeric_columns]; bigD <- bigD[,-numeric_columns]
+  xcor <- cor(xnum)
+  flc <- findCorrelation(xcor, cut_level)
+  corr_pairs <- which(xcor > cut_level, arr.ind = T)
+  corr_pairs <- corr_pairs[corr_pairs[,1] > corr_pairs[,2],]
+  # create new features
+  xnum1 <- array(0, c(nrow(xnum), nrow(corr_pairs)))
+  for (ii in 1:nrow(corr_pairs))
   {
-    xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], sep = "")
-    bigD[,xname] <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], sep = "")
+    xnum1[,ii] <- apply(xnum[,corr_pairs[ii,]],1,diff)
+    # msg(ii)
   }
+  colnames(xnum1) <- paste("diff", 1:ncol(xnum1), sep = "")
+  xnum <- xnum[,-flc]; xnum <- data.frame(xnum, xnum1)
+  bigD <- data.frame(bigD, xnum)
   
-  # cleanup
-  bigD$dset <- dset; bigD$ID <- ID
-  ## Split files  
-  xtrain <- bigD[dset == 0, ]; xtest <- bigD[dset == 1, ]; rm(bigD)
   
-  xtrain$dset <- xtest$dset <- NULL
+  bigD$ID <- ID
+  ## Split files & Export 
+  xtrain <- bigD[which(dset == 0), ]
+  xtest <- bigD[which(dset == 1), ]
+  rm(bigD)
+  
   xtrain$target <- y
   
-  
-  # replace categorical ones with response rates
-  xfold <- read_csv(file = "./input/xfolds.csv")
-  idFix <- list()
-  for (ii in 1:5)
-  {
-    idFix[[ii]] <- which(xfold$fold5 == ii)
-  }
-  rm(xfold,ii)  
-  
-  col_types <- sapply(xtrain, class)
-  factor_vars <- colnames(xtrain)[which(col_types == "character")]
-  for (varname in factor_vars)
-  {
-    # placeholder for the new variable values
-    x <- rep(NA, nrow(xtrain))
-    for (ii in seq(idFix))
-    {
-      # separate ~ fold
-      idx <- idFix[[ii]]
-      x0 <- xtrain[-idx, factor_vars]; x1 <- xtrain[idx, factor_vars]
-      y0 <- y[-idx]; y1 <- y[idx]
-      # take care of factor lvl mismatches
-      x0[,varname] <- factor(as.character(x0[,varname]))
-      # fit LMM model
-      myForm <- as.formula (paste ("y0 ~ (1|", varname, ")"))
-      myLME <- lmer (myForm, x0, REML=FALSE, verbose=F)
-      myFixEf <- fixef (myLME); myRanEf <- unlist (ranef (myLME))
-      # table to match to the original
-      myLMERDF <- data.frame (levelName = as.character(levels(x0[,varname])), myDampVal = myRanEf+myFixEf)
-      rownames(myLMERDF) <- NULL
-      x[idx] <- myLMERDF[,2][match(xtrain[idx, varname], myLMERDF[,1])]
-      x[idx][is.na(x[idx])] <- mean(y0)
-    }
-    rm(x0,x1,y0,y1, myLME, myLMERDF, myFixEf, myRanEf)
-    # add the new variable
-    xtrain[,paste(varname, "dmp", sep = "")] <- x
-    
-    # create the same on test set
-    xtrain[,varname] <- factor(as.character(xtrain[,varname]))
-    x <- rep(NA, nrow(xtest))
-    # fit LMM model
-    myForm <- as.formula (paste ("y ~ (1|", varname, ")"))
-    myLME <- lmer (myForm, xtrain[,factor_vars], REML=FALSE, verbose=F)
-    myFixEf <- fixef (myLME); myRanEf <- unlist (ranef (myLME))
-    # table to match to the original
-    myLMERDF <- data.frame (levelName = as.character(levels(xtrain[,varname])), myDampVal = myRanEf+myFixEf)
-    rownames(myLMERDF) <- NULL
-    x <- myLMERDF[,2][match(xtest[, varname], myLMERDF[,1])]
-    x[is.na(x)] <- mean(y)
-    xtest[,paste(varname, "dmp", sep = "")] <- x
-    msg(varname)
-  }
-  
-  # drop the factors
-  ix <- which(colnames(xtrain) %in% factor_vars)
-  xtrain <- xtrain[,-ix]
-  ix <- which(colnames(xtest) %in% factor_vars)
-  xtest <- xtest[,-ix]
-  
-  write.csv(xtrain, 'input/xtrain_kb6.csv', row.names = F)
-  write.csv(xtest, 'input/xtest_kb6.csv', row.names = F)
+  write.csv(xtrain, paste('input/xtrain_kb6',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('input/xtest_kb6',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
   
   rm(xtrain)
   rm(xtest)
   return(cat("KB6 dataset built"))
-  
 }
 
 ## actual construction ####
