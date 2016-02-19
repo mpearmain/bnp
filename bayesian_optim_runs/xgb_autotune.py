@@ -47,34 +47,15 @@ if __name__ == "__main__":
 
     ## data
     # read the training and test sets
-<<<<<<< HEAD
     xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
-=======
-    xtrain = pd.read_csv('./input/xtrain_'+ dataset_version + '.csv')
->>>>>>> 4bb604e63d19af7e943bbc4c9593a2d197d32dfc
     id_train = xtrain.ID
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
-
-<<<<<<< HEAD
     xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
 
-
-    # Lets develop all interactions of the top N vars.
-    #poly = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False)
-
-    #xtrain = pd.DataFrame(poly.fit_transform(xtrain))
-    # xtest = pd.DataFrame(poly.fit_transform(xtest))
-
-=======
-    xtest = pd.read_csv('./input/xtest_'+ dataset_version + '.csv')
-    id_test = xtest.ID
-    xtest.drop('ID', axis = 1, inplace = True)
-
->>>>>>> 4bb604e63d19af7e943bbc4c9593a2d197d32dfc
     # folds
     xfolds = pd.read_csv('../input/xfolds.csv')
     # work with validation split
@@ -87,7 +68,7 @@ if __name__ == "__main__":
 
     xgboostBO = BayesianOptimization(xgboostcv,
                                      {'max_depth': (int(6), int(15)),
-                                      'learning_rate': (0.008, 0.015)xgb_autotune.py,
+                                      'learning_rate': (0.008, 0.015),
                                       'n_estimators': (int(300), int(1500)),
                                       'subsample': (0.75, 0.9),
                                       'colsample_bytree': (0.75, 0.9),
@@ -95,14 +76,14 @@ if __name__ == "__main__":
                                       'min_child_weight': (int(4), int(15))
                                      })
     # Use last times best as a start point
-    print("Running previous best 0.443059")
-    xgboostBO.explore({'colsample_bytree': [0.69999999999999996],
-                       'learning_rate': [0.016],
-                       'min_child_weight': [25.0],
-                       'n_estimators': [534],
-                       'subsample': [0.62],
-                       'max_depth': [10],
-                       'gamma': [0.005]})
+    # print("Running previous best 0.443059")
+    # xgboostBO.explore({'colsample_bytree': [0.69999999999999996],
+    #                    'learning_rate': [0.016],
+    #                   'min_child_weight': [25.0],
+    #                   'n_estimators': [534],
+    #                   'subsample': [0.62],
+    #                   'max_depth': [10],
+    #                   'gamma': [0.005]})
 
     xgboostBO.maximize(init_points=5, restarts=1000, n_iter=15)
     print('-' * 53)
