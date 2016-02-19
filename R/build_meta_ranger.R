@@ -43,7 +43,7 @@ nfolds <- length(unique(xfolds$fold_index))
 
 ## fit models ####
 # parameter grid
-param_grid <- expand.grid(ntree = c(1750),
+param_grid <- expand.grid(ntree = c(500, 1750),
                           mtry = c(15, 30, 50),
                           nsize = c(1, 10,25))
 
