@@ -1,5 +1,5 @@
-from __future__ import print_function
 from __future__ import division
+from __future__ import print_function
 
 __author__ = 'michael.pearmain'
 
@@ -7,7 +7,7 @@ import pandas as pd
 import datetime
 from xgboost import XGBClassifier
 from sklearn.metrics import log_loss
-from bayesian_optimization import BayesianOptimization
+from python.bayesian_optimization import BayesianOptimization
 import os
 
 def xgboostcv(max_depth,

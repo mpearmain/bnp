@@ -1,4 +1,0 @@
-mars_20160211_datakb2099_seed1901
-Build using build_meta_mars.R
-
-param_grid <- expand.grid(deg = c(2,3,4))
