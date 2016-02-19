@@ -572,9 +572,9 @@ buildKB6 <- function(cut_level = 0.99)
 }
 
 ## actual construction ####
-buildMP1()
-buildKB1()
-buildKB2()
+#buildMP1()
+#buildKB1()
+#buildKB2()
 buildKB3()
 buildKB4()
 buildKB5(cut_level = 0.99)
