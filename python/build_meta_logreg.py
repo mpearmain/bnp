@@ -11,8 +11,8 @@ import datetime
 if __name__ == '__main__':
 
     ## settings
-    projPath = './'
-    dataset_version = "kb2099"
+    projPath = '../'
+    dataset_version = "kb3"
     model_type = "logreg"
     seed_value = 2606
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -41,8 +41,8 @@ if __name__ == '__main__':
     model = LogisticRegression()
            
     # parameter grids
-    c_vals = [0.01, 0.05, 0.1, 0.25, 0.9]         
-    pen_vals = ['l1']                                
+    c_vals = [0.01, 0.1, 0.25, 1, 5, 25]         
+    pen_vals = ['l1', 'l2']                                
     f_vals = [ True]                                 
     c_weights = ['auto']
     param_grid = tuple([c_vals,pen_vals,f_vals,c_weights])
