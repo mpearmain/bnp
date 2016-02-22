@@ -18,6 +18,33 @@ Created on Fri Feb  5 18:22:49 2016
                'gamma': 0.0001}
                | Time taken: 24 minutes and 21.138281 seconds
 
-## KB2099
-Optimization finished with maximum: -0.455469, at position: {'colsample_bytree': 0.80593745880982681, 'learning_rate': 0.0082146884051916974, 'min_child_weight': 15.0, 'n_estimators': 1616.8855922903572, 'subsample': 0.85156798908501274, 'max_depth': 20.0, 'gamma': 0.0001}.
-Time taken: 1066 minutes and 11.796122 seconds.
+
+## KB3
+
+Optimization finished with maximum: -0.447410, 
+at position: {'colsample_bytree': 0.89095719586675526, 
+'learning_rate': 0.0092528248736576668, 
+'min_child_weight': 5.6470775432075406, 
+'n_estimators': 1906.3989249502754, 
+'subsample': 0.89010324821493381, 
+'max_depth': 11.079114766316712, 
+'gamma': 0.0045373086289034713}.
+Time taken: 401 minutes and 42.512091 seconds.
+-----------------------------------------------------
+Final Results
+XGBOOST: -0.447410
+
+## KB5099
+
+Optimization finished with maximum: -0.447974, 
+at position: {'colsample_bytree': 0.69999999999999996, 
+'learning_rate': 0.025000000000000001, 
+'min_child_weight': 1.633309904669616, 
+'n_estimators': 2500.0, 
+'subsample': 0.90000000000000002, 
+'max_depth': 10.266707305710934, 
+'gamma': 0.00077979306474894653}.
+Time taken: 298 minutes and 45.566568 seconds.
+-----------------------------------------------------
+Final Results
+XGBOOST: -0.447974
