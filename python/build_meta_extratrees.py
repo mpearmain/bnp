@@ -6,12 +6,11 @@ import datetime
 import os
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.metrics import log_loss
-from sklearn.cross_validation import
 
-def extratreescv('max_depth'=max_depth,
-                 'min_weight_fraction_leaf'=min_weight_fraction_leaf,
-                 'max_leaf_nodes'=max_leaf_nodes,
-                 ):
+def extratreescv(max_depth,
+                 min_weight_fraction_leaf,
+                 max_leaf_nodes,
+                 n_estimators):
 
     clf = ExtraTreesClassifier(criterion='gini',
                                n_estimators=n_estimators,
@@ -150,3 +149,7 @@ if __name__ == '__main__':
         # save the files
         mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
         mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+
+        # Save params
+        params = pd.DataFrame(param_grid)
+        params.to_csv(projPath + 'meta_parameters/' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False)
