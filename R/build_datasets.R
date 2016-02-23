@@ -218,6 +218,7 @@ buildKB2 <- function()
 # - all factors mapped to response rates
 buildKB3 <- function()
 {
+  set.seed(260681)
   train <- read_csv('input/train.csv')
   test <- read_csv('input/test.csv')
   
@@ -580,5 +581,5 @@ buildKB5(cut_level = 0.99)
 buildKB5(cut_level = 0.95)
 # buildKB6(cut_level = 0.99)
 # KB6 with cut_level = 0.95 since its HUGE - over 7000 columns
-# buildKB6(cut_level = 0.95)
+buildKB6(cut_level = 0.95)
 
