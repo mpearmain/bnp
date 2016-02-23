@@ -7,7 +7,7 @@ import pandas as pd
 import datetime
 from xgboost import XGBClassifier
 from sklearn.metrics import log_loss
-from python.bayesian_optimization import BayesianOptimization
+from bayesian_optimization import BayesianOptimization
 import os
 
 def xgboostcv(max_depth,
@@ -33,7 +33,7 @@ def xgboostcv(max_depth,
                         seed=seed,
                         objective="binary:logistic")
 
-    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)])
+    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)], early_stopping_rounds = 25)
     ll = -log_loss(y1, clf.predict_proba(x1)[:,1])
     return ll
 
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "secondLvL_meta"
+    dataset_version = "kb6099"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     no_bags = 1
 
@@ -67,23 +67,14 @@ if __name__ == "__main__":
     y1 = ytrain[ytrain.index.isin(idx1)]
 
     xgboostBO = BayesianOptimization(xgboostcv,
-                                     {'max_depth': (int(6), int(15)),
-                                      'learning_rate': (0.008, 0.015),
-                                      'n_estimators': (int(300), int(1500)),
-                                      'subsample': (0.75, 0.9),
-                                      'colsample_bytree': (0.75, 0.9),
-                                      'gamma': (0.00001, 0.01),
-                                      'min_child_weight': (int(4), int(15))
+                                     {'max_depth': (int(6), int(20)),
+                                      'learning_rate': (0.001, 0.025),
+                                      'n_estimators': (int(300), int(2500)),
+                                      'subsample': (0.7, 0.9),
+                                      'colsample_bytree': (0.7, 0.9),
+                                      'gamma': (0.000001, 0.01),
+                                      'min_child_weight': (int(1), int(15))
                                      })
-    # Use last times best as a start point
-    # print("Running previous best 0.443059")
-    # xgboostBO.explore({'colsample_bytree': [0.69999999999999996],
-    #                    'learning_rate': [0.016],
-    #                   'min_child_weight': [25.0],
-    #                   'n_estimators': [534],
-    #                   'subsample': [0.62],
-    #                   'max_depth': [10],
-    #                   'gamma': [0.005]})
 
     xgboostBO.maximize(init_points=5, restarts=1000, n_iter=15)
     print('-' * 53)
