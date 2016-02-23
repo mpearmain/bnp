@@ -48,23 +48,19 @@ if __name__ == "__main__":
     y1 = y1.astype(np.float32).as_matrix()
 
     # build vowpal wabbit model
-    model = VWClassifier(probabilities=None,
-                         random_seed=1234,
+    model = VWClassifier(random_seed=1234,
                          learning_rate=0.15,
-                         l=None,
-                         power_t=None,
                          decay_learning_rate=None,
                          input_feature_regularizer=None,
-                         progress=True,
-                         P=None,
+                         #progress=True,
+                         P=1,
                          quiet=False,
-                         b=22,
+                         b=18,
                          min_prediction=1e-15,
                          max_prediction=1-1e-15,
                          loss_function='logistic',
-                         quantile_tau=None,
                          l1=2,
                          l2=2,
-                         passes=5)
+                         passes=2)
     model.fit(x0, y0)
     model.score(x1,y1)
