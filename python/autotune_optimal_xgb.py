@@ -10,7 +10,7 @@ import datetime
 projPath = os.getcwd()
 dataset_version = "kb3"
 todate = datetime.datetime.now().strftime("%Y%m%d")    
-no_bags = 5
+no_bags = 20
     
 ## data
 # read the training and test sets
