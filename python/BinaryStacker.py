@@ -65,7 +65,6 @@ class BinaryStackingClassifier():
 
     def predict_proba(self, X):
         """
-
         :param X: The data to apply the fitted model from fit
         :return: The predicted_proba of the different classifiers
         """
