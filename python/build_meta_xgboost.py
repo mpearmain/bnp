@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     ## settings
     projPath = './'
-    dataset_version = "kb2099"
+    dataset_version = "kb1"
     model_type = "xgb"
     seed_value = 675
     todate = datetime.datetime.now().strftime("%Y%m%d")
