@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "kb4"
+    dataset_version = "kb5099"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     no_bags = 1
 
