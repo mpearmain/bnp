@@ -19,6 +19,11 @@ class BinaryStackingClassifier():
                    6,   3
                    8,   1
                    In this class the names do not matter it is positional.
+
+                   ##############################
+                   Fold number must start from 1.
+                   ##############################
+
     :param evaluation: optional evaluation metric (y_true, y_score) to check metric at each fold.
                     expected use case might be evaluation=sklearn.Metrics.logLoss
 
@@ -32,7 +37,7 @@ class BinaryStackingClassifier():
         # Build an empty pandas dataframe to store the meta results to.
         # As many rows as the folds data, as many cols as base classifiers
         self.stack_cols = ["v" + str(n) for n in range(len(self.base_classifiers))]
-        self.stacking_train = pd.DataFrame(np.nan, index=self.xfolds.ix[:,0], columns=self.stack_cols)
+        self.stacking_train = pd.DataFrame(np.nan, index=self.xfolds.index, columns=self.stack_cols)
 
     def fit(self, X, y, **kwargs):
         """ A generic fit method for meta stacking.
@@ -42,13 +47,12 @@ class BinaryStackingClassifier():
         :param kwargs: Any optional params to give the fit method, i.e in xgboost we may use eval_metirc='auc'
         :return:
         """
-
         # Loop over the different classifiers.
         n_folds = self.xfolds.ix[:,1].unique()
 
         for model_no in range(len(self.base_classifiers)):
-            print("Running Model ", model_no, "of", len(self.base_classifiers))
-            for j in enumerate(n_folds):
+            print("Running Model ", model_no+1, "of", len(self.base_classifiers))
+            for j in range(1, len(n_folds)+1):
                 idx0 = self.xfolds[self.xfolds.ix[:,1] != j].index
                 idx1 = self.xfolds[self.xfolds.fold5 == j].index
                 x0 = X[X.index.isin(idx0)]
@@ -59,7 +63,7 @@ class BinaryStackingClassifier():
                 predicted_y_proba = self.base_classifiers[model_no].predict_proba(x1)[:, 1]
                 if self.evaluation is not None:
                     print("Current Loss = ", self.evaluation(y1, predicted_y_proba))
-                self.stacking_train[x1, model_no] = predicted_y_proba
+                self.stacking_train.ix[self.stacking_train.index.isin(idx1), model_no] = predicted_y_proba
             # Finally fit against all the data
             self.base_classifiers[model_no].fit(X, y, **kwargs)
 
@@ -75,7 +79,7 @@ class BinaryStackingClassifier():
         return stacking_predict_data
 
     @property
-    def as_train_stacking(self):
+    def meta_train(self):
         """
         A return method for the underlying meta data prediction from the training data set as a pandas dataframe
         Use the predict_proba method to score new data for each classifier.
