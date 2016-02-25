@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "kb1"
+    dataset_version = "kb3"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     no_bags = 1
 
@@ -66,3 +66,4 @@ if __name__ == "__main__":
 
     print('Final Results')
     print('Extra Trees: %f' % extratreesBO.res['max']['max_val'])
+    print(extratreesBO.res['max']['max_params'])

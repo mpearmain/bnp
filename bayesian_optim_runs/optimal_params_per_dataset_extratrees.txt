@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+## MP1
+
 
 ## KB1
-
-Optimization finished with maximum: -0.466993, at position: {'n_estimators': 712, 'min_samples_split': 2, 'min_samples_leaf': 2}.
-Final Result Logloss -0.466993
+Optimization finished with maximum: -0.46678, at position: {'n_estimators': 1665, 'min_samples_split': 2, 'min_samples_leaf': 2}.
 
 ## KB2
 
