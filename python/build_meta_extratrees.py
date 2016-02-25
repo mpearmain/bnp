@@ -23,10 +23,10 @@ if __name__ == '__main__':
 
 
     # setup model instances
-    clf = [ExtraTreesClassifier(criterion='gini',
-                               max_depth=None,
-                               n_jobs= -1,
-                               random_state= seed_values[1])]
+    clf = [ExtraTreesClassifier(criterion='gini',max_depth=None,n_jobs= -1,random_state= seed_values[1])]
+
+
+
 
     # Create the loops over the datasets.
     for i, dataset in enumerate(dataset_version):
