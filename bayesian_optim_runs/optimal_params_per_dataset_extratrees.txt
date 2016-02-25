@@ -11,7 +11,10 @@ Optimization finished with maximum: -0.0.472673, at position: {'n_estimators': 1
 ## KB3
 Extra Trees: -0.469924
 {'n_estimators': 1258, 'min_samples_split': 4, 'min_samples_leaf': 2}
+
 ## KB4
+Extra Trees:  -0.46614
+{'n_estimators': 1972.8644, 'min_samples_split':3.1624, 'min_samples_leaf': 2}
 
 ## KB5099
 
