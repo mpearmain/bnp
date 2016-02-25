@@ -61,7 +61,7 @@ if __name__ == "__main__":
                                          'min_samples_leaf': (int(2), int(10))
                                          })
 
-    extratreesBO.maximize(init_points=5, restarts=1000, n_iter=15)
+    extratreesBO.maximize(init_points=5, n_iter=15, acq='ei')
     print('-' * 53)
 
     print('Final Results')

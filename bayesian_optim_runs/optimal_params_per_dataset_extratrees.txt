@@ -2,11 +2,8 @@
 
 ## KB1
 
-Optimization finished with maximum: -0.466993, at position: {'n_estimators': 712.94758598401336, 'min_samples_split': 2.4143978911558102, 'min_samples_leaf': 2.5055273803696587}.
-Time taken: 55 minutes and 59.270334 seconds.
------------------------------------------------------
-Final Results
-Extra Trees: -0.466993
+Optimization finished with maximum: -0.466993, at position: {'n_estimators': 712, 'min_samples_split': 2, 'min_samples_leaf': 2}.
+Final Result Logloss -0.466993
 
 ## KB2
 
