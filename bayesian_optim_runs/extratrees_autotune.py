@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "kb3"
+    dataset_version = "kb4"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     no_bags = 1
 
@@ -61,7 +61,7 @@ if __name__ == "__main__":
                                          'min_samples_leaf': (int(1), int(6))
                                          })
 
-    extratreesBO.maximize(init_points=5, n_iter=25, acq='ei')
+    extratreesBO.maximize(init_points=5, n_iter=50, acq='ei')
     print('-' * 53)
 
     print('Final Results')

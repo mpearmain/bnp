@@ -413,7 +413,8 @@ buildKB4 <- function()
       myLME <- lmer (myForm, x0, REML=FALSE, verbose=F)
       myFixEf <- fixef (myLME); myRanEf <- unlist (ranef (myLME))
       # table to match to the original
-      myLMERDF <- data.frame (levelName = as.character(levels(x0[,varname])), myDampVal = myRanEf+myFixEf)
+      myLMERDF <- data.frame (levelName = as.character(levels(x0[,varname])), 
+                              myDampVal = myRanEf+myFixEf)
       rownames(myLMERDF) <- NULL
       x[idx] <- myLMERDF[,2][match(xtrain[idx, varname], myLMERDF[,1])]
       x[idx][is.na(x[idx])] <- mean(y0)
@@ -430,7 +431,8 @@ buildKB4 <- function()
     myLME <- lmer (myForm, xtrain[,factor_vars], REML=FALSE, verbose=F)
     myFixEf <- fixef (myLME); myRanEf <- unlist (ranef (myLME))
     # table to match to the original
-    myLMERDF <- data.frame (levelName = as.character(levels(xtrain[,varname])), myDampVal = myRanEf+myFixEf)
+    myLMERDF <- data.frame (levelName = as.character(levels(xtrain[,varname])), 
+                            myDampVal = myRanEf+myFixEf)
     rownames(myLMERDF) <- NULL
     x <- myLMERDF[,2][match(xtest[, varname], myLMERDF[,1])]
     x[is.na(x)] <- mean(y)
