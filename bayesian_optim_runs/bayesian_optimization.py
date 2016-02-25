@@ -3,7 +3,7 @@ from __future__ import division
 import numpy as np
 from sklearn.gaussian_process import GaussianProcess
 from scipy.optimize import minimize
-from .helpers import UtilityFunction, unique_rows, PrintLog
+from helpers import UtilityFunction, unique_rows, PrintLog
 
 __author__ = 'fmfn'
 
