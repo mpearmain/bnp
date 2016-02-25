@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "kb2"
+    dataset_version = "kb1"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     no_bags = 1
 
@@ -57,11 +57,11 @@ if __name__ == "__main__":
 
     extratreesBO = BayesianOptimization(extratreescv,
                                         {'n_estimators': (int(250), int(2000)),
-                                         'min_samples_split': (int(2), int(10)),
-                                         'min_samples_leaf': (int(2), int(10))
+                                         'min_samples_split': (int(2), int(6)),
+                                         'min_samples_leaf': (int(1), int(6))
                                          })
 
-    extratreesBO.maximize(init_points=5, n_iter=15, acq='ei')
+    extratreesBO.maximize(init_points=5, n_iter=25, acq='ei')
     print('-' * 53)
 
     print('Final Results')
