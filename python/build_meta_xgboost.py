@@ -2,129 +2,82 @@
 
 import numpy as np
 import pandas as pd
+from xgboost import XGBClassifier
 import datetime
-import xgboost as xgb
+import os
+from python.BinaryStacker import BinaryStackingClassifier
 from sklearn.metrics import log_loss
 
 if __name__ == '__main__':
 
     ## settings
-    projPath = './'
-    dataset_version = "kb1"
-    model_type = "xgb"
-    seed_value = 675
+    projPath = os.getcwd()
+    dataset_version = ["kb1", "kb3", "kb4", "kb5099", "kb6099"]
+    model_type = "etrees"
+    # Generate the same random sequences.
+    random_seed = 1234
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
-    ## data
+    # construct colnames for the data  - Only alpha numerics as xgboost in
+    # second level metas doesnt like special chars.
+    clfnames = [model_type + str(random_seed) + str(dataset_version[n])
+                for n in range(len(dataset_version))]
+
+    # setup model instances
+    clf = [XGBClassifier(max_depth=11, learning_rate=0.01, n_estimators=1962, silent=True, nthread=-1, subsample=0.80883233339510385, colsample_bytree=0.90000000000000002, gamma=0.0001, min_child_weight = 1, seed=random_seed, objective="binary:logistic"),
+           XGBClassifier(max_depth=11, learning_rate=0.0092528248736576668, n_estimators=1906, silent=True, nthread=-1, subsample=0.89010324821493381, colsample_bytree=0.89095719586675526, gamma=0.0045373086289034713, min_child_weight = 5, seed=random_seed, objective="binary:logistic"),
+           XGBClassifier(max_depth=14, learning_rate=0.0073362638967263945, n_estimators=2408, silent=True, nthread=-1, subsample= 0.72679682406267243, colsample_bytree=0.76427399221822834, gamma=0.0071936123399884092, min_child_weight = 14, seed=random_seed, objective="binary:logistic"),
+           XGBClassifier(max_depth=10, learning_rate=0.025, n_estimators=2500, silent=True, nthread=-1, subsample=0.9, colsample_bytree=0.69999999999999996, gamma=0.00077979306474894653, min_child_weight = 1, seed=random_seed, objective="binary:logistic"),
+           # Waiting for best kb6099 params
+           XGBClassifier(max_depth=11, learning_rate=0.01, n_estimators=1962, silent=True, nthread=-1, subsample=0.80883233339510385, colsample_bytree=0.90000000000000002, gamma=0.0001, min_child_weight = 1, seed=random_seed, objective="binary:logistic")
+           ]
+
+    # Read xfolds only need the ID and fold 5.
+    print("Reading Cross folds")
+    xfolds = pd.read_csv(projPath + '/input/xfolds.csv', usecols=['ID','fold5'])
+
     # read the training and test sets
-    xtrain = pd.read_csv(projPath + 'input/xtrain_'+ dataset_version + '.csv')
-    id_train = xtrain.ID
-    ytrain = xtrain.target
-    xtrain.drop('ID', axis = 1, inplace = True)
-    xtrain.drop('target', axis = 1, inplace = True)
+    print("Reading Train set")
+    train = pd.read_csv(projPath + '/input/train.csv')
+    id_train = train.ID
+    ytrain = train.target
+    print("Reading Test set")
+    test = pd.read_csv(projPath + '/input/test.csv')
+    id_test = test.ID
 
-    xtest = pd.read_csv(projPath + 'input/xtest_'+ dataset_version + '.csv')
-    id_test = xtest.ID
-    xtest.drop('ID', axis = 1, inplace = True)
+    # Setup pandas dataframe to store full result in.
+    mvalid = pd.DataFrame(np.nan, index=train.index, columns=clfnames)
+    mfull = pd.DataFrame(np.nan, index=test.index, columns=clfnames)
 
+    del train, test
 
-    # Get rid of incorrect names for xgboost (scv-rbf) cannot handle '-'
-    xtrain = xtrain.rename(columns=lambda x: x.replace('_', ''))
-    xtest = xtest.rename(columns=lambda x: x.replace('_', ''))
+    # Create the loops over the datasets.
+    for i, dataset in enumerate(dataset_version):
+        # read the training and test sets
+        print("Reading Train set", dataset)
+        xtrain = pd.read_csv(projPath + '/input/xtrain_'+ dataset + '.csv')
+        ytrain = xtrain.target
+        xtrain.drop('ID', axis = 1, inplace = True)
+        xtrain.drop('target', axis = 1, inplace = True)
 
-    # folds
-    xfolds = pd.read_csv(projPath + 'input/xfolds.csv')
-    # work with 5-fold split
-    fold_index = xfolds.fold5
-    fold_index = np.array(fold_index) - 1
-    n_folds = len(np.unique(fold_index))
+        print("Reading Test set")
+        xtest = pd.read_csv(projPath + '/input/xtest_'+ dataset + '.csv')
+        xtest.drop('ID', axis = 1, inplace = True)
 
-    ## model
-    # parameter grids: LR + range of training subjects to subset to
-    '''
-    Staying with index convention.
-        child_weight = 0
-        max_depth = 1
-        colsample = 2
-        rowsample = 3
-        gamma_val = 4
-        eta_val = 5
-        ntrees = 6
-    '''
-    param_grid = [(1, 7, 0.75, 0.68, 0.0, 0.01, 1800),
-                  (1, 20, 0.85, 0.8, 0.00008, 0.015, 232),
-                  (4, 5, 0.85, 0.81, 0.000363, 0.017483, 1535),
-                  (3, 12, 0.83, 0.885, 0.000247, 0.01970, 446),
-                  (1, 10, 0.81, 0.839, 0.000746, 0.01222, 771),
-                  (1, 12, 0.845, 0.892, 0.0004782, 0.01877, 216),
-                  (1, 6, 0.84, 0.892, 0.000502716, 0.018, 600),
-                  (15, 20, 0.85, 0.80, 0.0001, 0.008214688, 1616)]
+        stacker = BinaryStackingClassifier(base_classifiers=[clf[i]],
+                                           xfolds=xfolds,
+                                           evaluation=log_loss)
+        stacker.fit(xtrain, ytrain, eval_metric="logloss")
 
-    # storage structure for forecasts
-    mvalid = np.zeros((xtrain.shape[0],len(param_grid)))
-    mfull = np.zeros((xtest.shape[0],len(param_grid)))
+        # Append the results for each dataset back to the master for train and test
+        mvalid.ix[:, i] = stacker.meta_train.ix[:, 0]
+        mfull.ix[:, i] = stacker.predict_proba(xtest)
 
-    ## build 2nd level forecasts
-    for i in range(len(param_grid)):
-        print "processing parameter combo:", param_grid[i]
-        # configure model with j-th combo of parameters
-        x = param_grid[i]
-        clf = xgb.XGBClassifier(n_estimators=x[6],
-                                nthread=-1,
-                                max_depth=x[1],
-                                min_child_weight=x[0],
-                                learning_rate=x[5],
-                                silent=True,
-                                subsample=x[3],
-                                colsample_bytree=x[2],
-                                gamma=x[2],
-                                seed=seed_value)
-
-        # loop over folds - Keeping as pandas for ease of use with xgb wrapper
-        for j in range(1 ,n_folds+1):
-            idx0 = xfolds[xfolds.fold5 != j].index
-            idx1 = xfolds[xfolds.fold5 == j].index
-            x0 = xtrain[xtrain.index.isin(idx0)]
-            x1 = xtrain[xtrain.index.isin(idx1)]
-            y0 = ytrain[ytrain.index.isin(idx0)]
-            y1 = ytrain[ytrain.index.isin(idx1)]
-
-            # fit the model on observations associated with subject whichSubject in this fold
-            clf.fit(x0, y0, eval_metric='logloss', eval_set=[(x1, y1)])
-            print 'Logloss on fold:', log_loss(y1, clf.predict_proba(x1)[:,1])
-            mvalid[idx1,i] = clf.predict_proba(x1)[:,1]
-
-        # fit on complete dataset
-        bst = xgb.XGBClassifier(n_estimators=x[6],
-                                nthread=-1,
-                                max_depth=x[1],
-                                min_child_weight=x[0],
-                                learning_rate=x[5],
-                                silent=True,
-                                subsample=x[3],
-                                colsample_bytree=x[2],
-                                gamma=x[2],
-                                seed=seed_value)
-        bst.fit(xtrain, ytrain, eval_metric='logloss')
-        mfull[:,i] = bst.predict_proba(xtest)[:,1]
-
-
-    ## store the results
-    # add indices etc
-    mvalid = pd.DataFrame(mvalid)
-    mvalid.columns = [model_type + str(i) for i in range(0, mvalid.shape[1])]
+    # store the results
     mvalid['ID'] = id_train
     mvalid['target'] = ytrain
-
-    mfull = pd.DataFrame(mfull)
-    mfull.columns = [model_type + str(i) for i in range(0, mfull.shape[1])]
     mfull['ID'] = id_test
 
-
     # save the files
-    mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-
-    # Save params
-    params = pd.DataFrame(param_grid)
-    params.to_csv(projPath + 'meta_parameters/' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False)
+    mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
+    mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
