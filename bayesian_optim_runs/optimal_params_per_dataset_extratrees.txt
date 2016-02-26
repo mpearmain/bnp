@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 ## MP1
-
+Extra Trees: -0.46561
+{'n_estimators': 1812, 'min_samples_split': 3, 'min_samples_leaf': 1}.
 
 ## KB1
 Extra Trees: -0.46678
