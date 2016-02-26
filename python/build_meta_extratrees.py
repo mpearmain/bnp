@@ -72,7 +72,7 @@ if __name__ == '__main__':
         stacker.fit(xtrain, ytrain)
 
         # Append the results for each dataset back to the master for train and test
-        mvalid.ix[:, i] = stacker.meta_train.ix[:, i]
+        mvalid.ix[:, i] = stacker.meta_train.ix[:, 0]
         mfull.ix[:, i] = stacker.predict_proba(xtest)
 
 
@@ -80,7 +80,6 @@ if __name__ == '__main__':
     mvalid['ID'] = id_train
     mvalid['target'] = ytrain
     mfull['ID'] = id_test
-
 
     # save the files
     mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
