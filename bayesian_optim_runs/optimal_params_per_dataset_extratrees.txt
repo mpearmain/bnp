@@ -17,6 +17,8 @@ Extra Trees:  -0.46614
 {'n_estimators': 1972.8644, 'min_samples_split':3.1624, 'min_samples_leaf': 2}
 
 ## KB5099
+Extra Trees: -0.469802
+{'n_estimators': 1577, 'min_samples_split': 4, 'min_samples_leaf': 2}
 
 ## KB6099
 
