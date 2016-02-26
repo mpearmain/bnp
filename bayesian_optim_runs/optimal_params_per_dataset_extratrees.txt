@@ -3,10 +3,12 @@
 
 
 ## KB1
-Optimization finished with maximum: -0.46678, at position: {'n_estimators': 1665, 'min_samples_split': 2, 'min_samples_leaf': 2}.
+Extra Trees: -0.46678
+{'n_estimators': 1665, 'min_samples_split': 2, 'min_samples_leaf': 2}.
 
 ## KB2
-Optimization finished with maximum: -0.0.472673, at position: {'n_estimators': 1784, 'min_samples_split': 5, 'min_samples_leaf': 3}.
+Extra Trees: -0.0.472673:
+{'n_estimators': 1784, 'min_samples_split': 5, 'min_samples_leaf': 3}.
 
 ## KB3
 Extra Trees: -0.469924
@@ -21,4 +23,5 @@ Extra Trees: -0.469802
 {'n_estimators': 1577, 'min_samples_split': 4, 'min_samples_leaf': 2}
 
 ## KB6099
-
+Extra Trees: -0.468155
+{'n_estimators': 1370, 'min_samples_split': 2, 'min_samples_leaf': 3}
