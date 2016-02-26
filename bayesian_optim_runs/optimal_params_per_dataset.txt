@@ -34,6 +34,22 @@ Time taken: 401 minutes and 42.512091 seconds.
 Final Results
 XGBOOST: -0.447410
 
+## KB4
+
+Optimization finished with maximum: -0.438287, 
+at position: {'colsample_bytree': 0.76427399221822834, 
+'learning_rate': 0.0073362638967263945, 
+'min_child_weight': 14.634866816577702, 
+'n_estimators': 2408.0792064896827, 
+'subsample': 0.72679682406267243, 
+'max_depth': 14.40730693062795, 
+'gamma': 0.0071936123399884092}.
+Time taken: 1739 minutes and 57.080603 seconds.
+-----------------------------------------------------
+Final Results
+XGBOOST: -0.438287
+
+
 ## KB5099
 
 Optimization finished with maximum: -0.447974, 
