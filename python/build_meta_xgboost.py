@@ -70,7 +70,7 @@ if __name__ == '__main__':
         stacker.fit(xtrain, ytrain, eval_metric="logloss")
 
         # Append the results for each dataset back to the master for train and test
-        mvalid.ix[:, i] = stacker.meta_train.ix[:, 0]
+        mvalid.ix[:, i] = stacker.meta_train.ix[:, i]
         mfull.ix[:, i] = stacker.predict_proba(xtest)
 
     # store the results
