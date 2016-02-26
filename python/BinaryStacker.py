@@ -28,7 +28,7 @@ class BinaryStackingClassifier():
                     expected use case might be evaluation=sklearn.Metrics.logLoss
 
     """
-    def __init__(self, base_classifiers, xfolds, evaluation=None):
+    def __init__(self, base_classifiers, xfolds, evaluation=None, colnames=None):
         self.base_classifiers = base_classifiers
         assert(xfolds.shape[1] == 2)
         self.xfolds = xfolds
@@ -36,8 +36,11 @@ class BinaryStackingClassifier():
 
         # Build an empty pandas dataframe to store the meta results to.
         # As many rows as the folds data, as many cols as base classifiers
-        self.stack_cols = ["v" + str(n) for n in range(len(self.base_classifiers))]
-        self.stacking_train = pd.DataFrame(np.nan, index=self.xfolds.index, columns=self.stack_cols)
+        self.colnames = colnames
+        if colnames is None:
+            self.colnames = ["v" + str(n) for n in range(len(self.base_classifiers))]
+        # Check we have as many colnames as classifiers
+        self.stacking_train = pd.DataFrame(np.nan, index=self.xfolds.index, columns=self.colnames)
 
     def fit(self, X, y, **kwargs):
         """ A generic fit method for meta stacking.
@@ -72,7 +75,7 @@ class BinaryStackingClassifier():
         :param X: The data to apply the fitted model from fit
         :return: The predicted_proba of the different classifiers
         """
-        stacking_predict_data = pd.DataFrame(np.nan, index=X.index, columns=self.stack_cols)
+        stacking_predict_data = pd.DataFrame(np.nan, index=X.index, columns=self.colnames)
 
         for model_no in range(len(self.base_classifiers)):
             stacking_predict_data[:, model_no] = self.base_classifiers[model_no].predict_proba(X)[:, 1]
