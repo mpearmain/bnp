@@ -9,7 +9,7 @@ import os
 
 # settings
 projPath = os.getcwd()
-dataset_version = "kb6099"
+dataset_version = "kb4"
 todate = datetime.datetime.now().strftime("%Y%m%d")    
 no_bags = 5
     
@@ -31,14 +31,14 @@ pred_average = True
 
 for k in range(no_bags):
     print 'Building bag:', k
-    clf = xgb.XGBClassifier(n_estimators=1379,
+    clf = xgb.XGBClassifier(n_estimators=2408,
                             nthread=-1,
-                            max_depth=8,
-                            min_child_weight = 13.779342345030852,
-                            learning_rate= 0.020034443933606851,
-                            subsample= 0.7552391803783991,
-                            colsample_bytree= 0.84248355921191387,
-                            gamma=0.0028508677952884232,
+                            max_depth=14,
+                            min_child_weight = 14.634866816577702,
+                            learning_rate= 0.0073362638967263945,
+                            subsample= 0.72679682406267243,
+                            colsample_bytree= 0.76427399221822834,
+                            gamma=0.0071936123399884092,
                             seed=k*100+22,
                             silent=True)
 
