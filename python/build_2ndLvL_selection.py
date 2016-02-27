@@ -1,8 +1,42 @@
 import pandas as pd
+import numpy as np
 import datetime
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import SelectFromModel
-from sklearn.preprocessing import PolynomialFeatures
+from itertools import permutations, combinations
+
+def build_new_features(xtrain, xtest, top_feats):
+    """ Generate 2way new features for a C4 dataset based on a list of feature names.
+    The idea is that we can apply a variety of feature engineering techniques that may give more accurate model
+    predictions, in this case we look to take the sum, difference, product, and quotient of the v# variables.
+    :param train: A pandas data frame object of training data
+    :param test: A pandas data frame object of test data
+    :param top_feats: A list (possible modeled using C4Data class) of variable names.
+    :return: A pandas data frame object with new features developed to the original data frame.
+    """
+    train = xtrain.copy()
+    test = xtest.copy()
+
+    diffquot2way = list(permutations(top_feats, 2))
+    sumprod2way = list(combinations(top_feats, 2))
+    for A, B in diffquot2way:
+        subdiff = "SUB".join([A, B])
+        quotient = "DIV".join([A, B])
+        train[subdiff] = train[A] - train[B]
+        test[subdiff] = test[A] - test[B]
+        train[quotient] = train[A] / train[B]
+        test[quotient] = test[A] / test[B]
+
+    for A, B in sumprod2way:
+        addsum = "ADD".join([A, B])
+        prods = "PROD".join([A, B])
+        train[addsum] = train[A] + train[B]
+        test[addsum] = test[A] + test[B]
+        train[prods] = train[A] * train[B]
+        test[prods] = test[A] * test[B]
+
+    return train, test
+
+
 
 # We need to import all the meta based predictions from ./metafeatures and
 # combine these into a single pandas dataframe.
@@ -11,6 +45,8 @@ from sklearn.preprocessing import PolynomialFeatures
 projPath = './'
 dataset_version = "ensemble_base"
 todate = datetime.datetime.now().strftime("%Y%m%d")
+# Top fetures to develop meta more interactions variables.
+topNfeatures = 5
 
 ## data
 # read the training and test sets
@@ -35,25 +71,17 @@ forest = RandomForestClassifier(n_jobs=-1,
                                 n_estimators=500)
 print "Building RF"
 forest.fit(xtrain, ytrain)
+importances = forest.feature_importances_
 # Select most important features
-model = SelectFromModel(forest, prefit=True)
-xtrain_importance = model.transform(xtrain)
-xtest_importance = model.transform(xtest)
+indices = np.argsort(importances)[::-1]
+top_n_feature_names = list(list(xtrain)[i] for i in indices[:topNfeatures])
 
-# Develop all interactions of the top N vars.
-print "Building Polynomial interactions"
-poly = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False)
-xtrain_importance = pd.DataFrame(poly.fit_transform(xtrain_importance))
-xtest_importance = pd.DataFrame(poly.fit_transform(xtest_importance))
 
-print "Combine Base and interactions"
-train = pd.concat((xtrain,xtrain_importance), axis=1)
-test = pd.concat((xtest,xtest_importance), axis=1)
-train['ID'] = id_train
-train['target'] = ytrain
-test['ID'] = id_test
+xtrain['ID'] = id_train
+xtrain['target'] = ytrain
+xtest['ID'] = id_test
 
 print 'Writing Data Files.'
-train.to_csv("./input/xtrain_secondLvL_meta.csv", index = False, header = True)
-test.to_csv("./input/xtest_secondLvL_meta.csv", index = False, header = True)
+xtrain.to_csv("./input/xtrain_secondLvL_meta.csv", index = False, header = True)
+xtest.to_csv("./input/xtest_secondLvL_meta.csv", index = False, header = True)
 
