@@ -33,7 +33,7 @@ def xgboostcv(max_depth,
                         seed=seed,
                         objective="binary:logistic")
 
-    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)], early_stopping_rounds = 25)
+    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)])
     ll = -log_loss(y1, clf.predict_proba(x1)[:,1])
     return ll
 
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "kb6099"
+    dataset_version = "mp1"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     no_bags = 1
 
@@ -76,7 +76,7 @@ if __name__ == "__main__":
                                       'min_child_weight': (int(1), int(15))
                                      })
 
-    xgboostBO.maximize(init_points=5, restarts=1000, n_iter=15)
+    xgboostBO.maximize(init_points=5, n_iter=15)
     print('-' * 53)
 
     print('Final Results')
