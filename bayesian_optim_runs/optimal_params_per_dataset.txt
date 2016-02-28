@@ -13,17 +13,11 @@ Final Results
 XGBOOST: -0.461868
 
 ## KB1
-               | Current maximum:      -0.455406 | 
-               with parameters:  {'colsample_bytree': 0.90000000000000002, 
-               'learning_rate': 0.01, 'min_child_weight': 1.0, 
-               'n_estimators': 1962.8078178129404, 
-               'subsample': 0.80883233339510385, 
-               'max_depth': 11.69753399503125, 
-               'gamma': 0.0001}
-               | Time taken: 24 minutes and 21.138281 seconds
 
 
 ## KB2
+
+ Step |   Time |      Value |   colsample_bytree |     gamma |   learning_rate |   max_depth |   min_child_weight |   n_estimators |   subsample | 
 
 
 ## KB3
