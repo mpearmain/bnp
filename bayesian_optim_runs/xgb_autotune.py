@@ -41,23 +41,22 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "mp1"
+    dataset_version = "secondLvL_meta"
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    no_bags = 1
 
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('./input/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
-    xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
+    xtest = pd.read_csv('./input/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
 
     # folds
-    xfolds = pd.read_csv('../input/xfolds.csv')
+    xfolds = pd.read_csv('./input/xfolds.csv')
     # work with validation split
     idx0 = xfolds[xfolds.valid == 0].index
     idx1 = xfolds[xfolds.valid == 1].index
@@ -67,15 +66,15 @@ if __name__ == "__main__":
     y1 = ytrain[ytrain.index.isin(idx1)]
 
     xgboostBO = BayesianOptimization(xgboostcv,
-                                     {'max_depth': (int(9), int(15)),
+                                     {'max_depth': (int(5), int(15)),
                                       'learning_rate': (0.005, 0.02),
-                                      'n_estimators': (int(1000), int(2000)),
+                                      'n_estimators': (int(500), int(2000)),
                                       'subsample': (0.75, 0.9),
                                       'colsample_bytree': (0.75, 0.9),
                                       'gamma': (0.000001, 0.01),
                                       'min_child_weight': (int(5), int(15))
                                      })
-    xgboostBO.explore(init_points=5, n_iter=15, acq='ei')
+    xgboostBO.maximize(init_points=5, n_iter=25, acq='ei')
     print('-' * 53)
 
     print('Final Results')
