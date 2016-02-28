@@ -68,14 +68,14 @@ if __name__ == "__main__":
 
     xgboostBO = BayesianOptimization(xgboostcv,
                                      {'max_depth': (int(9), int(15)),
-                                      'learning_rate': (0.005, 0.02),
+                                      'learning_rate': (0.001, 0.02),
                                       'n_estimators': (int(1000), int(2000)),
-                                      'subsample': (0.75, 0.9),
-                                      'colsample_bytree': (0.75, 0.9),
+                                      'subsample': (0.7, 0.9),
+                                      'colsample_bytree': (0.7, 0.9),
                                       'gamma': (0.000001, 0.01),
                                       'min_child_weight': (int(5), int(15))
                                      })
-    xgboostBO.explore(init_points=5, n_iter=15, acq='ei')
+    xgboostBO.maximize(init_points=5, n_iter=15, acq='ei')
     print('-' * 53)
 
     print('Final Results')
