@@ -26,7 +26,6 @@ id_test = xtest.ID
 xtest.drop('ID', axis = 1, inplace = True)
 
 sample = pd.read_csv('./input/sample_submission.csv')
-
 pred_average = True
 
 for k in range(no_bags):
