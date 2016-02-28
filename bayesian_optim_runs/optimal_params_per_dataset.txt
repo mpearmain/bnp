@@ -6,7 +6,11 @@ Created on Fri Feb  5 18:22:49 2016
 """
 
 ## MP1 
-
+ Step |   Time |      Value |   colsample_bytree |     gamma |   learning_rate |   max_depth |   min_child_weight |   n_estimators |   subsample | 
+   20 | 13m39s |   -0.46319 |             0.7000 |    0.0100 |          0.0062 |      9.0000 |             5.0000 |      1819.9846 |      0.7000 | 
+-----------------------------------------------------
+Final Results
+XGBOOST: -0.461868
 
 ## KB1
                | Current maximum:      -0.455406 | 
