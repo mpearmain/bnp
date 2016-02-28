@@ -82,5 +82,5 @@ if __name__ == '__main__':
     mfull['ID'] = id_test
 
     # save the files
-    mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
-    mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
+    mvalid.to_csv(projPath + '/metafeatures/prval_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
+    mfull.to_csv(projPath + '/metafeatures/prfull_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
