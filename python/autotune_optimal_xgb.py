@@ -9,36 +9,36 @@ import os
 
 # settings
 projPath = os.getcwd()
-dataset_version = "kb4"
+dataset_version = "secondLvL_meta"
 todate = datetime.datetime.now().strftime("%Y%m%d")    
-no_bags = 5
+no_bags = 10
     
 ## data
 # read the training and test sets
-xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
+xtrain = pd.read_csv('./input/xtrain_'+ dataset_version + '.csv')
 id_train = xtrain.ID
 ytrain = xtrain.target
 xtrain.drop('ID', axis = 1, inplace = True)
 xtrain.drop('target', axis = 1, inplace = True)
 
-xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
+xtest = pd.read_csv('./input/xtest_'+ dataset_version + '.csv')
 id_test = xtest.ID
 xtest.drop('ID', axis = 1, inplace = True)
 
-sample = pd.read_csv('../submissions/sample_submission.csv')
+sample = pd.read_csv('./input/sample_submission.csv')
 
 pred_average = True
 
 for k in range(no_bags):
     print 'Building bag:', k
-    clf = xgb.XGBClassifier(n_estimators=2408,
+    clf = xgb.XGBClassifier(n_estimators=1942,
                             nthread=-1,
-                            max_depth=14,
-                            min_child_weight = 14.634866816577702,
-                            learning_rate= 0.0073362638967263945,
-                            subsample= 0.72679682406267243,
-                            colsample_bytree= 0.76427399221822834,
-                            gamma=0.0071936123399884092,
+                            max_depth=5,
+                            min_child_weight = 5,
+                            learning_rate= 0.0058,
+                            subsample= 0.9,
+                            colsample_bytree= 0.9,
+                            gamma=0.0,
                             seed=k*100+22,
                             silent=True)
 
@@ -51,4 +51,4 @@ for k in range(no_bags):
 
 sample.PredictedProb = pred_average
 todate = datetime.datetime.now().strftime("%Y%m%d")
-sample.to_csv('../submissions/xgboost_data'+dataset_version+'_'+str(no_bags)+'bag_'+todate+'.csv', index=False)
+sample.to_csv('./submissions/meta2lvl_xgb'+dataset_version+'_'+str(no_bags)+'bag_'+todate+'.csv', index=False)
