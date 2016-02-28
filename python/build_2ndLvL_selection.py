@@ -87,4 +87,3 @@ xtest['ID'] = id_test
 print 'Writing Data Files.'
 xtrain.to_csv("./input/xtrain_secondLvL_meta.csv", index = False, header = True)
 xtest.to_csv("./input/xtest_secondLvL_meta.csv", index = False, header = True)
-
