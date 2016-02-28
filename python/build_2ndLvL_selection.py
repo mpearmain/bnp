@@ -46,7 +46,7 @@ projPath = './'
 dataset_version = "ensemble_base"
 todate = datetime.datetime.now().strftime("%Y%m%d")
 # Top fetures to develop meta more interactions variables.
-topNfeatures = 5
+topNfeatures = 8
 
 ## data
 # read the training and test sets
@@ -77,6 +77,8 @@ indices = np.argsort(importances)[::-1]
 top_n_feature_names = list(list(xtrain)[i] for i in indices[:topNfeatures])
 
 
+xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
+
 xtrain['ID'] = id_train
 xtrain['target'] = ytrain
 xtest['ID'] = id_test
@@ -84,4 +86,3 @@ xtest['ID'] = id_test
 print 'Writing Data Files.'
 xtrain.to_csv("./input/xtrain_secondLvL_meta.csv", index = False, header = True)
 xtest.to_csv("./input/xtest_secondLvL_meta.csv", index = False, header = True)
-
