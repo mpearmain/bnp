@@ -3,8 +3,9 @@ require(readr)
 require(earth)
 require(stringr)
 require(Metrics)
+require(caret)
 
-dataset_version <- "kb2099"
+dataset_version <- "kb4"
 seed_value <- 1901
 model_type <- "mars"
 todate <- str_replace_all(Sys.Date(), "-","")
@@ -76,6 +77,19 @@ colnames(mtrain) <- colnames(mtest) <- paste(model_type, 1:ncol(mtrain), sep = "
 mtrain$ID <- id_train
 mtest$ID <- id_test
 mtrain$target <- y
+
+# Remove any linear combos.
+# trim linearly dependent ones 
+print(paste("Pre linear combo trim size ", dim(mtrain)[2]))
+flc <- findLinearCombos(mtrain)
+if (length(flc$remove))
+{
+  mtrain <- mtrain[,-flc$remove]
+  mtest <- mtest[,-flc$remove]
+}
+print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
+
+
 
 write_csv(mtrain, path = paste("./metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 write_csv(mtest, path = paste("./metafeatures/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))

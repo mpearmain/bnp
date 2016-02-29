@@ -1,97 +1,131 @@
-# -*- coding: utf-8 -*-
+from __future__ import division
+from __future__ import print_function
+
+"""
+This metas creation script runs as master template for bayesian optimization and meta level staking for a single
+classifier type.
+
+The structure is:
+ 1. Run a bayesian optimization for the 'best' parameter combinations for a classifier for a dataset.
+ 2. Set the parameters for a classifier model based off 1.
+ 3. Run a stacking instance of the classifier
+ 4. Write a file which contains the meta level information and test meta data.
+ 5. Repeat for each dataset.
+
+"""
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-from sklearn.calibration import CalibratedClassifierCV
-from sklearn.metrics import log_loss
-from itertools import product
+import os
 import datetime
+from sklearn.linear_model import LogisticRegression
+from python.BinaryStacker import BinaryStackingClassifier
+from bayes_opt import BayesianOptimization
+from sklearn.metrics import log_loss
+
+
+def logistic_regression(C,
+                        max_iter,
+                        loss_metric=log_loss,
+                        maximize=False):
+
+    clf = LogisticRegression(C=C,
+                             max_iter=int(max_iter),
+                             verbose=False,
+                             random_state=random_seed,
+                             penalty='l1',
+                             n_jobs=-1)
+
+    clf.fit(x0, y0)
+    if maximize:
+        loss = loss_metric(y1, clf.predict_proba(x1)[:,1])
+    if not maximize:
+        loss = -loss_metric(y1, clf.predict_proba(x1)[:,1])
+    return loss
+
 
 if __name__ == '__main__':
-
     ## settings
-    projPath = '../'
-    dataset_version = "kb5099"
-    model_type = "logreg"
-    seed_value = 2606
+    projPath = os.getcwd()
+    dataset_version = ["kb1", "kb2", "kb3", "kb4", "kb5099", "kb6099"]
+    model_type = "LogRegL1pen"
     todate = datetime.datetime.now().strftime("%Y%m%d")
+    random_seed = 1234
 
-    ## data
-    # read the training and test sets
-    xtrain = pd.read_csv(projPath + 'input/xtrain_'+ dataset_version + '.csv')
-    id_train = xtrain.ID
-    ytrain = xtrain.target
-    xtrain.drop('ID', axis = 1, inplace = True)
-    xtrain.drop('target', axis = 1, inplace = True)
+    # construct colnames for the data  - Only alpha numerics as xgboost in
+    # second level metas doesnt like special chars.
+    clfnames = [model_type + str(random_seed) + str(dataset_version[n]) for n in range(len(dataset_version))]
+    # Setup pandas dataframe to store full result in.
+    train = pd.read_csv(projPath + '/input/train.csv')
+    test = pd.read_csv(projPath + '/input/test.csv')
 
-    xtest = pd.read_csv(projPath + 'input/xtest_'+ dataset_version + '.csv')
-    id_test = xtest.ID
-    xtest.drop('ID', axis = 1, inplace = True)
+    mvalid = pd.DataFrame(np.nan, index=train.index, columns=clfnames)
+    mfull = pd.DataFrame(np.nan, index=test.index, columns=clfnames)
 
-    # folds
-    xfolds = pd.read_csv(projPath + 'input/xfolds.csv')
-    # work with 5-fold split
-    fold_index = xfolds.fold5
-    fold_index = np.array(fold_index) - 1
-    n_folds = len(np.unique(fold_index))
-    
-    ## model
-    # setup model instances
-    model = LogisticRegression()
-           
-    # parameter grids
-    c_vals = [0.01, 0.1, 0.25, 1, 5, 25]         
-    pen_vals = ['l1', 'l2']                                
-    f_vals = [ True]                                 
-    c_weights = ['auto']
-    param_grid = tuple([c_vals,pen_vals,f_vals,c_weights])
-    param_grid = list(product(*param_grid))
+    del train, test
 
-    # storage structure for forecasts
-    mvalid = np.zeros((xtrain.shape[0],len(param_grid)))
-    mfull = np.zeros((xtest.shape[0],len(param_grid)))
-    
-    ## build 2nd level forecasts
-    for i in range(len(param_grid)):        
-            print "processing parameter combo:", i, "of", len(param_grid)
-            print "Combo:", param_grid[i]
-            # configure model with j-th combo of parameters
-            x = param_grid[i]
-            model.loss = x[0]
-            model.penalty = x[1]
-            model.l1_ratio = x[2]
-            model.alpha = x[3]            
-            
-            # loop over folds
-            for j in range(0,n_folds):
-                idx0 = np.where(fold_index != j)
-                idx1 = np.where(fold_index == j)
-                x0 = np.array(xtrain)[idx0,:][0]; x1 = np.array(xtrain)[idx1,:][0]
-                y0 = np.array(ytrain)[idx0]; y1 = np.array(ytrain)[idx1]
-                # fit the model on observations associated with subject whichSubject in this fold
-                model.fit(x0, y0)
-                mvalid[idx1,i] = model.predict_proba(x1)[:,1]
-                print 'Logloss on fold:', log_loss(y1, model.predict_proba(x1)[:,1])
-                print "finished fold:", j
-                
-            # fit on complete dataset
-            model.fit(xtrain, ytrain)
-            mfull[:,i] = model.predict_proba(xtest)[:,1]
-            print "finished full prediction"
-        
-    ## store the results
-    # add indices etc
-    mvalid = pd.DataFrame(mvalid)
-    mvalid.columns = [model_type + str(i) for i in range(0, mvalid.shape[1])]
+    ########################## Run Bayesian optimization pre dataset ####################################
+    for i, dataset in enumerate(dataset_version):
+        print('\nRunning Bayes for Dataset', dataset)
+        # read the training and test sets
+        xtrain = pd.read_csv(projPath + '/input/xtrain_' + dataset + '.csv')
+        id_train = xtrain.ID
+        ytrain = xtrain.target
+        xtrain.drop('ID', axis = 1, inplace = True)
+        xtrain.drop('target', axis = 1, inplace = True)
+        xtest = pd.read_csv(projPath + '/input/xtest_'+ dataset + '.csv')
+        id_test = xtest.ID
+        xtest.drop('ID', axis = 1, inplace = True)
+
+        # folds
+        xfolds = pd.read_csv(projPath + '/input/xfolds.csv')
+        # work with validation split
+        idx0 = xfolds[xfolds.valid == 0].index
+        idx1 = xfolds[xfolds.valid == 1].index
+        x0 = xtrain[xtrain.index.isin(idx0)]
+        x1 = xtrain[xtrain.index.isin(idx1)]
+        y0 = ytrain[ytrain.index.isin(idx0)]
+        y1 = ytrain[ytrain.index.isin(idx1)]
+
+        BO = BayesianOptimization(logistic_regression,
+                                  {'C': (0.2, 30.),
+                                   'max_iter':(int(25), int(100))
+                                   })
+
+        BO.maximize(init_points=5, n_iter=15, acq='ei')
+        print('-' * 53)
+
+        print('Final Results')
+        print('Extra Trees Loss: %f' % BO.res['max']['max_val'])
+        print('Extra Trees Params: %s' % BO.res['max']['max_params'])
+
+        del idx0, idx1, x0, x1, y0, y1
+
+        # setup model instances
+        clf = [LogisticRegression(C=BO.res['max']['max_params']['C'],
+                                  max_iter=BO.res['max']['max_params']['max_iter'],
+                                  penalty='l1',
+                                  random_state=random_seed)]
+
+        # Read xfolds only need the ID and fold 5.
+        print("Reading Cross folds")
+        xfolds = pd.read_csv(projPath + '/input/xfolds.csv', usecols=['ID','fold5'])
+
+        print("Running Stacker")
+        stacker = BinaryStackingClassifier(base_classifiers=clf,
+                                           xfolds=xfolds,
+                                           evaluation=log_loss)
+        stacker.fit(xtrain, ytrain)
+
+        # Append the results for each dataset back to the master for train and test
+        mvalid.ix[:, i] = stacker.meta_train.ix[:, 0]
+        mfull.ix[:, i] = stacker.predict_proba(xtest)
+
+    # store the results
     mvalid['ID'] = id_train
     mvalid['target'] = ytrain
-
-    mfull = pd.DataFrame(mfull)
-    mfull.columns = [model_type + str(i) for i in range(0, mfull.shape[1])]
     mfull['ID'] = id_test
 
-
     # save the files
-    mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mvalid.to_csv(projPath + '/metafeatures/prval_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
+    mfull.to_csv(projPath + '/metafeatures/prfull_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
