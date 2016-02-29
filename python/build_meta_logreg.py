@@ -87,11 +87,11 @@ if __name__ == '__main__':
         y1 = ytrain[ytrain.index.isin(idx1)]
 
         BO = BayesianOptimization(logistic_regression,
-                                  {'C': (0.2, 25.),
-                                   'max_iter':(int(5), int(10))
+                                  {'C': (0.2, 30.),
+                                   'max_iter':(int(25), int(100))
                                    })
 
-        BO.maximize(init_points=5, n_iter=5, acq='ei')
+        BO.maximize(init_points=5, n_iter=15, acq='ei')
         print('-' * 53)
 
         print('Final Results')
@@ -103,7 +103,8 @@ if __name__ == '__main__':
         # setup model instances
         clf = [LogisticRegression(C=BO.res['max']['max_params']['C'],
                                   max_iter=BO.res['max']['max_params']['max_iter'],
-                                  penalty='l1')]
+                                  penalty='l1',
+                                  random_state=random_seed)]
 
         # Read xfolds only need the ID and fold 5.
         print("Reading Cross folds")
@@ -116,7 +117,6 @@ if __name__ == '__main__':
         stacker.fit(xtrain, ytrain)
 
         # Append the results for each dataset back to the master for train and test
-
         mvalid.ix[:, i] = stacker.meta_train.ix[:, 0]
         mfull.ix[:, i] = stacker.predict_proba(xtest)
 
