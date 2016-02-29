@@ -52,9 +52,20 @@ if __name__ == '__main__':
     todate = datetime.datetime.now().strftime("%Y%m%d")
     random_seed = 1234
 
+    # construct colnames for the data  - Only alpha numerics as xgboost in
+    # second level metas doesnt like special chars.
+    clfnames = [model_type + str(random_seed) + str(dataset_version[n]) for n in range(len(dataset_version))]
+    # Setup pandas dataframe to store full result in.
+    train = pd.read_csv(projPath + '/input/train.csv')
+    test = pd.read_csv(projPath + '/input/test.csv')
+
+    mvalid = pd.DataFrame(np.nan, index=train.index, columns=clfnames)
+    mfull = pd.DataFrame(np.nan, index=test.index, columns=clfnames)
+
+
     ########################## Run Bayesian optimization pre dataset ####################################
-    for dataset in dataset_version:
-        print('Running Bayes for Dataset', dataset)
+    for i, dataset in enumerate(dataset_version):
+        print('\nRunning Bayes for Dataset', dataset)
         # read the training and test sets
         xtrain = pd.read_csv(projPath + '/input/xtrain_' + dataset + '.csv')
         id_train = xtrain.ID
@@ -77,10 +88,10 @@ if __name__ == '__main__':
 
         BO = BayesianOptimization(logistic_regression,
                                   {'C': (0.2, 25.),
-                                   'max_iter':(int(50), int(250))
+                                   'max_iter':(int(5), int(10))
                                    })
 
-        BO.maximize(init_points=5, n_iter=25, acq='ei')
+        BO.maximize(init_points=5, n_iter=5, acq='ei')
         print('-' * 53)
 
         print('Final Results')
@@ -93,19 +104,11 @@ if __name__ == '__main__':
         clf = [LogisticRegression(C=BO.res['max']['max_params']['C'],
                                   max_iter=BO.res['max']['max_params']['max_iter'],
                                   penalty='l1')]
-        print(clf)
 
         # Read xfolds only need the ID and fold 5.
         print("Reading Cross folds")
         xfolds = pd.read_csv(projPath + '/input/xfolds.csv', usecols=['ID','fold5'])
 
-        # construct colnames for the data  - Only alpha numerics as xgboost in
-        # second level metas doesnt like special chars.
-        clfnames = [model_type + str(random_seed) + str(dataset)]
-
-        # Setup pandas dataframe to store full result in.
-        mvalid = pd.DataFrame(np.nan, index=xtrain.index, columns=clfnames)
-        mfull = pd.DataFrame(np.nan, index=xtest.index, columns=clfnames)
         print("Running Stacker")
         stacker = BinaryStackingClassifier(base_classifiers=clf,
                                            xfolds=xfolds,
@@ -114,14 +117,14 @@ if __name__ == '__main__':
 
         # Append the results for each dataset back to the master for train and test
 
-        mvalid.ix[:, 0] = stacker.meta_train.ix[:, 0]
-        mfull.ix[:, 0] = stacker.predict_proba(xtest)
+        mvalid.ix[:, i] = stacker.meta_train.ix[:, 0]
+        mfull.ix[:, i] = stacker.predict_proba(xtest)
 
-        # store the results
-        mvalid['ID'] = id_train
-        mvalid['target'] = ytrain
-        mfull['ID'] = id_test
+    # store the results
+    mvalid['ID'] = id_train
+    mvalid['target'] = ytrain
+    mfull['ID'] = id_test
 
-        # save the files
-        mvalid.to_csv(projPath + '/metafeatures/prval_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
-        mfull.to_csv(projPath + '/metafeatures/prfull_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
+    # save the files
+    mvalid.to_csv(projPath + '/metafeatures/prval_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
+    mfull.to_csv(projPath + '/metafeatures/prfull_' + model_type + '_' + todate + '_seed' + str(random_seed) + '.csv', index = False, header = True)
