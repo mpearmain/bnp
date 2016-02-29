@@ -7,7 +7,7 @@ import pandas as pd
 import datetime
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.metrics import log_loss
-from bayesian_optimization import BayesianOptimization
+from bayes_opt import BayesianOptimization
 import os
 
 def extratreescv(n_estimators,

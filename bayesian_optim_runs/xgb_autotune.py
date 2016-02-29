@@ -7,7 +7,7 @@ import pandas as pd
 import datetime
 from xgboost import XGBClassifier
 from sklearn.metrics import log_loss
-from bayesian_optimization import BayesianOptimization
+from bayes_opt import BayesianOptimization
 import os
 
 def xgboostcv(max_depth,
