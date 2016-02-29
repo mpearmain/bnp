@@ -62,6 +62,7 @@ if __name__ == '__main__':
     mvalid = pd.DataFrame(np.nan, index=train.index, columns=clfnames)
     mfull = pd.DataFrame(np.nan, index=test.index, columns=clfnames)
 
+    del train, test
 
     ########################## Run Bayesian optimization pre dataset ####################################
     for i, dataset in enumerate(dataset_version):
