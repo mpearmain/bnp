@@ -30,7 +30,7 @@ def sgd_classifier(l1_ratio, n_iter, loss_metric=log_loss, maximize=False):
     clf = SGDClassifier(loss='log',
                         penalty='elasticnet',
                         l1_ratio=l1_ratio,
-                        n_iter=n_iter,
+                        n_iter=int(n_iter),
                         n_jobs=-1,
                         random_state=random_seed)
     model_calib = CalibratedClassifierCV(base_estimator=clf, cv=5, method='isotonic')
@@ -88,11 +88,11 @@ if __name__ == '__main__':
         y1 = ytrain[ytrain.index.isin(idx1)]
 
         BO = BayesianOptimization(sgd_classifier,
-                                  {'l1_ratio': (0.01, 0.2),
-                                   'n_iter':(int(2), int(50))
+                                  {'l1_ratio': (0.001, 0.1),
+                                   'n_iter':(int(150), int(500))
                                    })
 
-        BO.maximize(init_points=5, n_iter=35)
+        BO.maximize(init_points=5, n_iter=15)
         print('-' * 53)
 
         print('Final Results')
@@ -106,7 +106,7 @@ if __name__ == '__main__':
         clf = [CalibratedClassifierCV(SGDClassifier(loss='log',
                                                     penalty='elasticnet',
                                                     l1_ratio=BO.res['max']['max_params']['l1_ratio'],
-                                                    n_iter=BO.res['max']['max_params']['n_iters'],
+                                                    n_iter=int(BO.res['max']['max_params']['n_iters']),
                                                     n_jobs=-1,
                                                     random_state=random_seed),
                                       cv=5,
