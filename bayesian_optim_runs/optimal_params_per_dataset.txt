@@ -17,7 +17,16 @@ XGBOOST: -0.461868
 
 ## KB2
 
- Step |   Time |      Value |   colsample_bytree |     gamma |   learning_rate |   max_depth |   min_child_weight |   n_estimators |   subsample | 
+{'max_val': -0.45376934581723377, 
+'max_params': {'colsample_bytree': 0.69999999999999996, 
+                'learning_rate': 0.0070844977700244569, 
+                'min_child_weight': 5.5917305068934944, 
+                'n_estimators': 1781.4191934595701, 
+                'subsample': 0.7104268461290133, 
+                'max_depth': 12.799635588351101, 
+                'gamma': 0.01}}
+Final Results
+XGBOOST: -0.453769
 
 
 ## KB3
