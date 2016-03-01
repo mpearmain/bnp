@@ -1,10 +1,11 @@
 ## wd etc ####
 require(readr)
 require(ranger)
+require(caret)
 require(stringr)
 
-dataset_version <- "kb1"
-seed_value <- 132
+dataset_version <- "kb6099"
+seed_value <- 132234
 model_type <- "ranger"
 todate <- str_replace_all(Sys.Date(), "-","")
 
@@ -101,6 +102,19 @@ colnames(mtrain) <- colnames(mtest) <- paste(model_type, 1:ncol(mtrain), sep = "
 mtrain$ID <- id_train
 mtest$ID <- id_test
 mtrain$target <- y
+
+
+# Remove any linear combos.
+# trim linearly dependent ones 
+print(paste("Pre linear combo trim size ", dim(mtrain)[2]))
+flc <- findLinearCombos(mtrain)
+if (length(flc$remove))
+{
+  mtrain <- mtrain[,-flc$remove]
+  mtest <- mtest[,-flc$remove]
+}
+print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
+
 
 # store the metas
 write_csv(mtrain, path = paste("./metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
