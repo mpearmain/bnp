@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
         BO = BayesianOptimization(passive_aggressive,
                                   {'C': (0.2, 30.),
-                                   'max_iter':(int(5), int(50))
+                                   'n_iter':(int(5), int(50))
                                    })
 
         BO.maximize(init_points=5, n_iter=15, acq='ei')
