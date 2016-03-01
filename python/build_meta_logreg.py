@@ -64,7 +64,8 @@ if __name__ == '__main__':
 
     del train, test
 
-    ########################## Run Bayesian optimization pre dataset ####################################
+    ########################## Run Bayesian optimization per dataset ####################################
+
     for i, dataset in enumerate(dataset_version):
         print('\nRunning Bayes for Dataset', dataset)
         # read the training and test sets
@@ -89,7 +90,7 @@ if __name__ == '__main__':
 
         BO = BayesianOptimization(logistic_regression,
                                   {'C': (0.2, 30.),
-                                   'max_iter':(int(25), int(100))
+                                   'max_iter':(int(10), int(30))
                                    })
 
         BO.maximize(init_points=5, n_iter=15, acq='ei')
@@ -101,7 +102,8 @@ if __name__ == '__main__':
 
         del idx0, idx1, x0, x1, y0, y1
 
-        # setup model instances
+        ########################## Run Best model per dataset ####################################
+
         clf = [LogisticRegression(C=BO.res['max']['max_params']['C'],
                                   max_iter=BO.res['max']['max_params']['max_iter'],
                                   penalty='l1',
