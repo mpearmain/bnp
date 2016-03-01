@@ -18,22 +18,21 @@ import numpy as np
 import pandas as pd
 import os
 import datetime
-from sklearn.linear_model import PassiveAggressiveClassifier
+from sklearn.linear_model import SGDClassifier
 from python.BinaryStacker import BinaryStackingClassifier
 from bayes_opt import BayesianOptimization
 from sklearn.metrics import log_loss
 
 
-def passive_aggressive(C, n_iter, loss_metric=log_loss, maximize=False):
+def sgd_classifier(alpha, l1_ratio, n_iter, loss_metric=log_loss, maximize=False):
 
-    clf = PassiveAggressiveClassifier(C=C,
-                                      fit_intercept=True,
-                                      n_iter=n_iter,
-                                      shuffle=True,
-                                      verbose=0,
-                                      loss="hinge",
-                                      n_jobs=-1,
-                                      random_state=random_seed)
+    clf = SGDClassifier(loss='log',
+                        penalty='elasticnet',
+                        alpha=alpha,
+                        l1_ratio=l1_ratio,
+                        n_iter=n_iter,
+                        n_jobs=-1,
+                        random_state=random_seed)
 
     clf.fit(x0, y0)
     if maximize:
@@ -47,7 +46,7 @@ if __name__ == '__main__':
     ## settings
     projPath = os.getcwd()
     dataset_version = ["kb1", "kb2", "kb3", "kb4", "kb5099", "kb6099"]
-    model_type = "PassiveAggressive"
+    model_type = "SGD"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     random_seed = 1234
 
@@ -88,12 +87,13 @@ if __name__ == '__main__':
         y0 = ytrain[ytrain.index.isin(idx0)]
         y1 = ytrain[ytrain.index.isin(idx1)]
 
-        BO = BayesianOptimization(passive_aggressive,
-                                  {'C': (0.2, 30.),
-                                   'n_iter':(int(5), int(50))
+        BO = BayesianOptimization(sgd_classifier,
+                                  {'alpha': (0.00015, 0.00001),
+                                   'l1_ratio': (0.01, 0.2),
+                                   'n_iter':(int(5), int(500))
                                    })
 
-        BO.maximize(init_points=5, n_iter=15, acq='ei')
+        BO.maximize(init_points=5, n_iter=50)
         print('-' * 53)
 
         print('Final Results')
@@ -104,14 +104,13 @@ if __name__ == '__main__':
 
         ########################## Run Best model per dataset ####################################
 
-        clf = [PassiveAggressiveClassifier(BO.res['max']['max_params']['C'],
-                                           fit_intercept=True,
-                                           n_iter=BO.res['max']['max_params']['n_iter'],
-                                           shuffle=True,
-                                           verbose=0,
-                                           loss="hinge",
-                                           n_jobs=-1,
-                                           random_state=random_seed)]
+        clf = [SGDClassifier(loss='log',
+                             penalty='elasticnet',
+                             alpha=BO.res['max']['max_params']['alpha'],
+                             l1_ratio=BO.res['max']['max_params']['l1_ratio'],
+                             n_iter=BO.res['max']['max_params']['n_iters'],
+                             n_jobs=-1,
+                             random_state=random_seed)]
 
         # Read xfolds only need the ID and fold 5.
         print("Reading Cross folds")
