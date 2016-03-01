@@ -58,6 +58,7 @@ if __name__ == '__main__':
     train = pd.read_csv(projPath + '/input/train.csv')
     test = pd.read_csv(projPath + '/input/test.csv')
 
+    # Create Data Frames to store results.
     mvalid = pd.DataFrame(np.nan, index=train.index, columns=clfnames)
     mfull = pd.DataFrame(np.nan, index=test.index, columns=clfnames)
 
