@@ -77,3 +77,11 @@ XGBOOST: -0.447974
 
 ## KB6099
 
+Optimization finished with maximum: -0.435542,
+at position: {'colsample_bytree': 0.77245797080355449,
+              'learning_rate': 0.013901402098648891,
+              'min_child_weight': 12.326654624743421,
+              'n_estimators': 1519.460224467919,
+               'subsample': 0.80499400546083566,
+               'max_depth': 10.667248872700966,
+               'gamma': 0.00060856204654098059}.
