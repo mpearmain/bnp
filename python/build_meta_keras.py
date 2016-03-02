@@ -12,12 +12,12 @@ import datetime
 
 ## settings
 projPath = './'
-dataset_version = "kb2095"
+dataset_version = "kb3"
 model_type = "keras"
-seed_value = 10994
+seed_value = 1543
 todate = datetime.datetime.now().strftime("%Y%m%d")
 np.random.seed(seed_value)
-np.random.seed(2256)  # for reproducibility
+np.random.seed(22432)  # for reproducibility
 need_normalise=True
 need_categorical=False
 
@@ -99,9 +99,9 @@ print dims, 'dims'
 auc_scores=[]
 best_score=-1
 
-param_grid = [[1024, 0.1, 0.6, 1024, 0.6, 420, 0.6, 30],
-              [512, 0.1, 0.5, 512, 0.5, 512, 0.5, 30],
-              [225, 0.1, 0.5, 237, 0.5, 221, 0.5, 30]]
+param_grid = [[1024, 0.1, 0.6, 1024, 0.6, 420, 0.6, 40],
+              [1512, 0.12, 0.5, 1512, 0.5, 512, 0.5, 40],
+              [225, 0.1, 0.5, 23, 0.5, 1221, 0.5, 40]]
 
 # storage structure for forecasts
 mvalid = np.zeros((train.shape[0],len(param_grid)))
