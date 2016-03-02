@@ -81,8 +81,8 @@ if __name__ == '__main__':
 
         scaler = StandardScaler()
         scaler.fit(xtrain)  # Don't cheat - fit only on training data
-        xtrain = scaler.transform(xtrain)
-        xtest = scaler.transform(xtest)
+        xtrain = pd.DataFrame(scaler.transform(xtrain))
+        xtest = pd.DataFrame(scaler.transform(xtest))
 
         # folds
         xfolds = pd.read_csv(projPath + '/input/xfolds.csv')
