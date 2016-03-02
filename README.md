@@ -10,11 +10,10 @@ All submissions are stored in `submissions` but ignored from git.
 
 ## Python Dependencies ##
 
-* numpy (1.10.4)
-* scipy (0.17.0)
-* bottleneck
+* numpy (<1.10.0)
+* scipy (<0.17.0)
 * scikit-learn (<0.16.1)
-* statsmodels
+* bayesian-optimization (`pip install git+https://github.com/fmfn/BayesianOptimization.git`)
 
 ## Strategy 
 In this challenge, BNP Paribas Cardiff is providing an anonymized database with two categories of
@@ -33,9 +32,8 @@ optimize each stage.
 1.  Dataset and Feature generation - We aim to create multiple datasets that are diverse in nature
 2.  Stacking of level 1 models - For different datasets we create metafeatures based on a variety of
 models (XGboost, Extratrees, Factorization Machines, etc.)
-3.  Feature selection from level 1 stacked meta features, from the potential 1,000s of new features
-created we must eliminate features for second level stacking and ensembling. (`bortua2.py` or caret
-linear combinations)
+3.  Feature selection from level 1 stacked meta features, from the potential 100s of new features
+created we must eliminate features for second level stacking and ensembling. 
 4. Final blending of level 2 stacked features (based on classic train / validation)
 5. Submission.
 
