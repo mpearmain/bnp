@@ -47,7 +47,7 @@ def logistic_regression(C,
 if __name__ == '__main__':
     ## settings
     projPath = os.getcwd()
-    dataset_version = ["kb1", "kb2", "kb3", "kb4", "kb5099", "kb6099"]
+    dataset_version = ["kb3", "kb4", "kb5099", "kb6099"]
     model_type = "LogRegL1pen"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     random_seed = 1234
@@ -89,11 +89,11 @@ if __name__ == '__main__':
         y1 = ytrain[ytrain.index.isin(idx1)]
 
         BO = BayesianOptimization(logistic_regression,
-                                  {'C': (0.2, 30.),
-                                   'max_iter':(int(10), int(30))
+                                  {'C': (0.2, 25.),
+                                   'max_iter':(int(5), int(10))
                                    })
 
-        BO.maximize(init_points=5, n_iter=15, acq='ei')
+        BO.maximize(init_points=5, n_iter=10, acq='ei')
         print('-' * 53)
 
         print('Final Results')

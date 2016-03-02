@@ -20,7 +20,6 @@ import os
 import datetime
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import log_loss
-from sklearn.calibration import CalibratedClassifierCV
 from sklearn.preprocessing import StandardScaler
 from bayes_opt import BayesianOptimization
 from BinaryStacker import BinaryStackingClassifier
@@ -35,19 +34,18 @@ def sgd_classifier(l1_ratio, n_iter, loss_metric=log_loss, maximize=False):
                         n_iter=int(n_iter),
                         n_jobs=-1,
                         random_state=random_seed)
-    model_calib = CalibratedClassifierCV(base_estimator=clf, cv=5, method='isotonic')
-    model_calib.fit(x0, y0)
+    clf.fit(x0, y0)
     if maximize:
-        loss = loss_metric(y1, model_calib.predict_proba(x1)[:,1])
+        loss = loss_metric(y1, clf.predict_proba(x1)[:,1])
     if not maximize:
-        loss = -loss_metric(y1, model_calib.predict_proba(x1)[:,1])
+        loss = -loss_metric(y1, clf.predict_proba(x1)[:,1])
     return loss
 
 
 if __name__ == '__main__':
     ## settings
     projPath = os.getcwd()
-    dataset_version = ["kb1", "kb2", "kb3", "kb4", "kb5099", "kb6099"]
+    dataset_version = ["kb3", "kb4", "kb5099", "kb6099"]
     model_type = "SGD"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     random_seed = 1234
@@ -96,7 +94,7 @@ if __name__ == '__main__':
 
         BO = BayesianOptimization(sgd_classifier,
                                   {'l1_ratio': (0.01, 0.1),
-                                   'n_iter':(int(5), int(15))
+                                   'n_iter':(int(5), int(25))
                                    })
 
         BO.maximize(init_points=5, n_iter=10)
@@ -110,14 +108,12 @@ if __name__ == '__main__':
 
         ########################## Run Best model per dataset ####################################
 
-        clf = [CalibratedClassifierCV(SGDClassifier(loss='log',
-                                                    penalty='elasticnet',
-                                                    l1_ratio=BO.res['max']['max_params']['l1_ratio'],
-                                                    n_iter=int(BO.res['max']['max_params']['n_iter']),
-                                                    n_jobs=-1,
-                                                    random_state=random_seed),
-                                      cv=5,
-                                      method='isotonic')]
+        clf = [SGDClassifier(loss='log',
+                             penalty='elasticnet',
+                             l1_ratio=BO.res['max']['max_params']['l1_ratio'],
+                             n_iter=int(BO.res['max']['max_params']['n_iter']),
+                             n_jobs=-1,
+                             random_state=random_seed)]
 
         # Read xfolds only need the ID and fold 5.
         print("Reading Cross folds")
