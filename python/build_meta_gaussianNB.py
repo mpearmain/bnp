@@ -19,7 +19,7 @@ import pandas as pd
 import os
 import datetime
 from sklearn.naive_bayes import GaussianNB
-from BinaryStacker import BinaryStackingClassifier
+from python.BinaryStacker import BinaryStackingClassifier
 from sklearn.metrics import log_loss
 from sklearn.calibration import CalibratedClassifierCV
 
