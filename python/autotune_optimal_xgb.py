@@ -11,7 +11,7 @@ import os
 projPath = os.getcwd()
 dataset_version = "secondLvL_meta"
 todate = datetime.datetime.now().strftime("%Y%m%d")    
-no_bags = 10
+no_bags = 5
     
 ## data
 # read the training and test sets
@@ -26,10 +26,7 @@ id_test = xtest.ID
 xtest.drop('ID', axis = 1, inplace = True)
 
 sample = pd.read_csv('./input/sample_submission.csv')
-<<<<<<< HEAD
 
-=======
->>>>>>> 7585d1e18230aed5949fafc24a9dd9038f9970a3
 pred_average = True
 
 for k in range(no_bags):
