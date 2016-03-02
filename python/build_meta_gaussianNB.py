@@ -21,6 +21,7 @@ import datetime
 from sklearn.naive_bayes import GaussianNB
 from BinaryStacker import BinaryStackingClassifier
 from sklearn.metrics import log_loss
+from sklearn.calibration import CalibratedClassifierCV
 
 
 if __name__ == '__main__':
@@ -62,7 +63,7 @@ if __name__ == '__main__':
 
         ########################## Run Best model per dataset ####################################
 
-        clf = [GaussianNB()]
+        clf = [CalibratedClassifierCV(GaussianNB(), cv=5, method='isotonic')]
 
         # Read xfolds only need the ID and fold 5.
         print("Reading Cross folds")

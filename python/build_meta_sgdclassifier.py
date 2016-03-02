@@ -19,10 +19,12 @@ import pandas as pd
 import os
 import datetime
 from sklearn.linear_model import SGDClassifier
-from BinaryStacker import BinaryStackingClassifier
-from bayes_opt import BayesianOptimization
 from sklearn.metrics import log_loss
 from sklearn.calibration import CalibratedClassifierCV
+from sklearn.preprocessing import StandardScaler
+from bayes_opt import BayesianOptimization
+from BinaryStacker import BinaryStackingClassifier
+
 
 
 def sgd_classifier(l1_ratio, n_iter, loss_metric=log_loss, maximize=False):
@@ -76,6 +78,11 @@ if __name__ == '__main__':
         xtest = pd.read_csv(projPath + '/input/xtest_'+ dataset + '.csv')
         id_test = xtest.ID
         xtest.drop('ID', axis = 1, inplace = True)
+
+        scaler = StandardScaler()
+        scaler.fit(xtrain)  # Don't cheat - fit only on training data
+        xtrain = scaler.transform(xtrain)
+        xtest = scaler.transform(xtest)
 
         # folds
         xfolds = pd.read_csv(projPath + '/input/xfolds.csv')
