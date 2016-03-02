@@ -97,8 +97,8 @@ if __name__ == '__main__':
         print('-' * 53)
 
         print('Final Results')
-        print('Extra Trees Loss: %f' % BO.res['max']['max_val'])
-        print('Extra Trees Params: %s' % BO.res['max']['max_params'])
+        print('Loss: %f' % BO.res['max']['max_val'])
+        print('Params: %s' % BO.res['max']['max_params'])
 
         del idx0, idx1, x0, x1, y0, y1
 
