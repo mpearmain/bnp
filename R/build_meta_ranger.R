@@ -113,9 +113,8 @@ if (length(flc$remove))
   mtrain <- mtrain[,-flc$remove]
   mtest <- mtest[,-flc$remove]
 }
+
 print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
-
-
 # store the metas
 write_csv(mtrain, path = paste("./metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 write_csv(mtest, path = paste("./metafeatures/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
