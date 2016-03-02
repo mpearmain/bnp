@@ -14,6 +14,15 @@ XGBOOST: -0.461868
 
 ## KB1
 
+{'max_val': -0.45499237691968059, 
+'max_params': {'colsample_bytree': 0.69999999999999996, 
+                'learning_rate': 0.0090705965482161376,
+                 'min_child_weight': 5.0, 
+                'n_estimators': 1341.0894224102524, 
+                'subsample': 0.69999999999999996, 
+                'max_depth': 13.254691052755533, 
+                'gamma': 0.01}}
+
 
 ## KB2
 
