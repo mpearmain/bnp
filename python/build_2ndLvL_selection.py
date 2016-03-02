@@ -23,8 +23,8 @@ def build_new_features(xtrain, xtest, top_feats):
         quotient = "DIV".join([A, B])
         train[subdiff] = train[A] - train[B]
         test[subdiff] = test[A] - test[B]
-        train[quotient] = train[A] / train[B]
-        test[quotient] = test[A] / test[B]
+        train[quotient] = train[A] / (1e-15 + train[B])
+        test[quotient] = test[A] / (1e-15 + test[B])
 
     for A, B in sumprod2way:
         addsum = "ADD".join([A, B])
@@ -35,8 +35,6 @@ def build_new_features(xtrain, xtest, top_feats):
         test[prods] = test[A] * test[B]
 
     return train, test
-
-
 
 # We need to import all the meta based predictions from ./metafeatures and
 # combine these into a single pandas dataframe.
@@ -67,15 +65,15 @@ xtest.drop('ID', axis = 1, inplace = True)
 # First Build a forest and compute the feature importance
 forest = RandomForestClassifier(n_jobs=-1,
                                 class_weight='auto',
-                                max_depth=15,
-                                n_estimators=500)
+                                max_depth=20,
+                                n_estimators=1000)
 print "Building RF"
 forest.fit(xtrain, ytrain)
 importances = forest.feature_importances_
 # Select most important features
 indices = np.argsort(importances)[::-1]
 top_n_feature_names = list(list(xtrain)[i] for i in indices[:topNfeatures])
-
+print top_n_feature_names
 
 xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
 

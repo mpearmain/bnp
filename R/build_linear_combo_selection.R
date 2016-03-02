@@ -112,9 +112,7 @@ rm(xq1, xq2, xq3, xq4, xMad, xMax, xMed, xMin)
 xvalid$target <- y 
 xvalid$ID <- id_valid
 write.csv(xvalid, paste('./input/xvalid_ensemble_base.csv', sep = ""), row.names = F)
-xvalid$target <- NULL
-xvalid$ID <- NULL
 
 xfull$ID <- id_full
 write.csv(xfull, paste('./input/xfull_ensemble_base.csv', sep = ""), row.names = F)
-xfull$ID <- NULL
+

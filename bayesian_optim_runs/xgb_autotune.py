@@ -33,7 +33,7 @@ def xgboostcv(max_depth,
                         seed=seed,
                         objective="binary:logistic")
 
-    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)])
+    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)], verbose=0)
     ll = -log_loss(y1, clf.predict_proba(x1)[:,1])
     return ll
 
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "kb6099"
+    dataset_version = "secondLvL_meta"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -66,15 +66,15 @@ if __name__ == "__main__":
     y1 = ytrain[ytrain.index.isin(idx1)]
 
     xgboostBO = BayesianOptimization(xgboostcv,
-                                     {'max_depth': (int(9), int(15)),
-                                      'learning_rate': (0.001, 0.02),
-                                      'n_estimators': (int(1000), int(2000)),
+                                     {'max_depth': (int(5), int(25)),
+                                      'learning_rate': (0.01, 0.02),
+                                      'n_estimators': (int(200), int(1000)),
                                       'subsample': (0.7, 0.9),
                                       'colsample_bytree': (0.7, 0.9),
                                       'gamma': (0.000001, 0.01),
-                                      'min_child_weight': (int(5), int(15))
+                                      'min_child_weight': (int(3), int(15))
                                      })
-    xgboostBO.maximize(init_points=5, n_iter=15, acq='ei')
+    xgboostBO.maximize(init_points=5, n_iter=30)
     print('-' * 53)
 
     print('Final Results')
