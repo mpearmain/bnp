@@ -9,7 +9,7 @@ import os
 
 # settings
 projPath = os.getcwd()
-dataset_version = "secondLvL_meta"
+dataset_version = "kb6099"
 todate = datetime.datetime.now().strftime("%Y%m%d")    
 no_bags = 5
     
@@ -30,15 +30,14 @@ sample = pd.read_csv('./input/sample_submission.csv')
 pred_average = True
 
 for k in range(no_bags):
-    print 'Building bag:', k
-    clf = xgb.XGBClassifier(n_estimators=1942,
+    clf = xgb.XGBClassifier(n_estimators=1520,
                             nthread=-1,
-                            max_depth=5,
-                            min_child_weight = 5,
-                            learning_rate= 0.0058,
-                            subsample= 0.9,
-                            colsample_bytree= 0.9,
-                            gamma=0.0,
+                            max_depth=11,
+                            min_child_weight = 12.326654624743421,
+                            learning_rate= 0.013901402098648891,
+                            subsample= 0.80499400546083566,
+                            colsample_bytree= 0.77245797080355449,
+                            gamma=0.00060856204654098059,
                             seed=k*100+22,
                             silent=True)
 
@@ -48,6 +47,7 @@ for k in range(no_bags):
         pred_average = preds.copy()/no_bags
     else:
         pred_average += preds/no_bags
+    print 'Finished bag:', k
 
 sample.PredictedProb = pred_average
 todate = datetime.datetime.now().strftime("%Y%m%d")
