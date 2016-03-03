@@ -12,7 +12,7 @@ import datetime
 
 ## settings
 projPath = './'
-dataset_version = "kb3"
+dataset_version = "kb5099"
 model_type = "keras"
 seed_value = 1543
 todate = datetime.datetime.now().strftime("%Y%m%d")
