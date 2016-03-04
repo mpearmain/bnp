@@ -37,7 +37,10 @@ for k in range(no_bags):
                             learning_rate= 0.013901402098648891,
                             subsample= 0.80499400546083566,
                             colsample_bytree= 0.77245797080355449,
-                            gamma=0.00060856204654098059,
+                            gamma=0.00060856204654098059,                             
+                            seed=k*100+22, 
+                            silent=True)
+                            
     clf.fit(xtrain, ytrain, eval_metric='logloss')
     preds = clf.predict_proba(xtest)[:,1]
     if type(pred_average) == bool:
