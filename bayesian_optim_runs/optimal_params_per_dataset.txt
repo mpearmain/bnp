@@ -75,7 +75,7 @@ Optimization finished with maximum: -0.447974,
 at position: {'colsample_bytree': 0.69999999999999996, 
 'learning_rate': 0.025000000000000001, 
 'min_child_weight': 1.633309904669616, 
-'n_estimators': 2500.0, 
+'n_estimators': 2500.0,
 'subsample': 0.90000000000000002, 
 'max_depth': 10.266707305710934, 
 'gamma': 0.00077979306474894653}.
