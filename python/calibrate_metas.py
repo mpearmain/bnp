@@ -81,6 +81,12 @@ if __name__ == "__main__":
     yfull = ir.transform((np.array(xtest)[:,0]))
     
     prval2 = pd.DataFrame({'XGB1234kb4c':yval,'ID':id_train, 'target': ytrain})
-    prfull2 = pd.DataFrame({'XGB1234kb4':yfull, 'ID': id_test})
+    prfull2 = pd.DataFrame({'XGB1234kb4c':yfull, 'ID': id_test})
     prval2.to_csv('../metafeatures/prval_XGB_20160227c_seed1234.csv', index = False, header = True)
     prfull2.to_csv('../metafeatures/prfull_XGB_20160227c_seed1234.csv', index = False, header = True)
+    
+    # create forecasts
+    pr_ref = pd.DataFrame({'ID':id_test, 'PredictedProb': xtest.XGB1234kb4})
+    pr_ref.to_csv('../submissions/prfull_XGBref.csv', index = False, header = True)
+    pr_calib = pd.DataFrame({'ID':id_test, 'PredictedProb': prfull2.XGB1234kb4c})
+    pr_calib.to_csv('../submissions/prfull_XGBcalib.csv', index = False, header = True)
