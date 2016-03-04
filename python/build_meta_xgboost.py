@@ -69,8 +69,9 @@ if __name__ == '__main__':
         stacker.fit(xtrain, ytrain, eval_metric="logloss")
 
         # Append the results for each dataset back to the master for train and test
+        # We only have one classifer per dataset so hardcoded.
         mvalid.ix[:, i] = stacker.meta_train.ix[:, 0]
-        mfull.ix[:, i] = stacker.predict_proba(xtest)
+        mfull.ix[:, i] = stacker.predict_proba(xtest).iloc[:, 0]
 
     # store the results
     mvalid['ID'] = id_train
