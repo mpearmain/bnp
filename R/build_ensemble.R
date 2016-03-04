@@ -73,13 +73,64 @@ buildEnsemble <- function(parVec, xset, yvec)
   return(wgt)
 }
 
-
+# wrapper around logloss preventing Inf/-Inf for 1/0 values
+log_loss <- function(predicted, actual, cutoff = 1e-15)
+{
+  predicted <- pmax(predicted, cutoff)
+  predicted <- pmin(predicted, 1- cutoff)
+  return(logLoss(actual,predicted))
+}
 
 ## Need to read data now de-coupled (linear combos from modelling.)
 ## Likely to be in python now as faster for loops in hillclimbing etc.
 
+## data ####
+# list the groups 
+xlist_val <- dir("./metafeatures/", pattern =  "prval", full.names = T)
+xlist_full <- dir("./metafeatures/", pattern = "prfull", full.names = T)
+
+# aggregate validation set
+ii <- 1
+mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
+xvalid <- read_csv(xlist_val[[ii]])
+xcols <- colnames(xvalid)[1:(ncol(xvalid)-2)]
+xcols <- paste(xcols , ii, sep = "")
+colnames(xvalid)[1:(ncol(xvalid)-2)] <- paste(mod_class, 1:(ncol(xvalid)-2), sep = "")
+
+for (ii in 2:length(xlist_val))
+{
+  mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
+  xval <- read_csv(xlist_val[[ii]])
+  xcols <- colnames(xval)[1:(ncol(xval)-2)]
+  xcols <- paste(xcols , ii, sep = "")
+  colnames(xval)[1:(ncol(xval)-2)] <- paste(mod_class, 1:(ncol(xval)-2), sep = "")
+  xvalid <- merge(xvalid, xval)
+  msg(ii)
+}
+
+# aggregate test set
+ii <- 1
+mod_class <- str_split(xlist_full[[ii]], "_")[[1]][[2]]
+xfull <- read_csv(xlist_full[[ii]])
+xcols <- colnames(xfull)[1:(ncol(xfull)-1)]
+xcols <- paste(xcols , ii, sep = "")
+colnames(xfull)[1:(ncol(xfull)-1)] <- xcols
+
+for (ii in 2:length(xlist_val))
+{
+  xval <- read_csv(xlist_full[[ii]])
+  xcols <- colnames(xval)[1:(ncol(xval)-1)]
+  xcols <- paste(xcols , ii, sep = "")
+  colnames(xval)[1:(ncol(xval)-1)] <- xcols
+  xfull <- merge(xfull, xval)
+  msg(ii)
+}
+
+rm(xval)
 
 
+
+## building ####
 
 # folds for cv evaluation
 xfolds <- read_csv("./input/xfolds.csv")
