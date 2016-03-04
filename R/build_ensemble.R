@@ -95,7 +95,7 @@ mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
 xvalid <- read_csv(xlist_val[[ii]])
 xcols <- colnames(xvalid)[1:(ncol(xvalid)-2)]
 xcols <- paste(xcols , ii, sep = "")
-colnames(xvalid)[1:(ncol(xvalid)-2)] <- paste(mod_class, 1:(ncol(xvalid)-2), sep = "")
+colnames(xvalid)[1:(ncol(xvalid)-2)] <- paste(mod_class, ii, 1:(ncol(xvalid)-2), sep = "")
 
 for (ii in 2:length(xlist_val))
 {
@@ -103,9 +103,10 @@ for (ii in 2:length(xlist_val))
   xval <- read_csv(xlist_val[[ii]])
   xcols <- colnames(xval)[1:(ncol(xval)-2)]
   xcols <- paste(xcols , ii, sep = "")
-  colnames(xval)[1:(ncol(xval)-2)] <- paste(mod_class, 1:(ncol(xval)-2), sep = "")
+  colnames(xval)[1:(ncol(xval)-2)] <- paste(mod_class, ii, 1:(ncol(xval)-2), sep = "")
   xvalid <- merge(xvalid, xval)
   msg(ii)
+  print(dim(xvalid))
 }
 
 # aggregate test set
@@ -163,7 +164,7 @@ for (ii in 1:nfolds)
     prx <- prx[,ncol(prx)]
     prx1 <- prx1 + prx
   }
-  storage_matrix[ii,1] <- logLoss(y1,prx1)
+  storage_matrix[ii,1] <- log_loss(y1,prx1)
   xvalid2[isValid,1] <- prx1
   
   # mix with xgboost: bag over multiple seeds
