@@ -109,6 +109,9 @@ for (ii in 2:length(xlist_val))
   print(dim(xvalid))
 }
 
+y <- xvalid$target; xvalid$target <- NULL
+id_train <- xvalid$ID; xvalid$ID <- NULL
+
 # aggregate test set
 ii <- 1
 mod_class <- str_split(xlist_full[[ii]], "_")[[1]][[2]]
@@ -164,7 +167,7 @@ for (ii in 1:nfolds)
     prx <- prx[,ncol(prx)]
     prx1 <- prx1 + prx
   }
-  storage_matrix[ii,1] <- log_loss(y1,prx1)
+  storage_matrix[ii,1] <- log_loss(y1,prx1/11)
   xvalid2[isValid,1] <- prx1
   
   # mix with xgboost: bag over multiple seeds
