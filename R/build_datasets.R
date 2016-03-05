@@ -6,6 +6,7 @@ library(readr)
 library(lubridate)
 require(lme4)
 require(chron)
+require(Metrics)
 
 set.seed(260681)
 
@@ -14,6 +15,14 @@ set.seed(260681)
 msg <- function(mmm,...)
 {
   cat(sprintf(paste0("[%s] ",mmm),Sys.time(),...)); cat("\n")
+}
+
+# wrapper around logloss preventing Inf/-Inf for 1/0 values
+log_loss <- function(predicted, actual, cutoff = 1e-15)
+{
+  predicted <- pmax(predicted, cutoff)
+  predicted <- pmin(predicted, 1- cutoff)
+  return(logLoss(actual,predicted))
 }
 
 replaceNA = function(DT) {
@@ -573,6 +582,54 @@ buildKB6 <- function(cut_level = 0.99)
   return(cat("KB6 dataset built"))
 }
 
+# kmeans
+buildKB7 <- function(nof_clusters = 50)
+{
+  xtrain <- read_csv('input/xtrain_kb4.csv')
+  xtest <- read_csv('input/xtest_kb4.csv')
+  
+  y <- xtrain$target; xtrain$target <- NULL
+  id_train <- xtrain$ID; id_test <- xtest$ID
+  xtrain$ID <- xtest$ID <- NULL
+  
+  # SFSG # 
+  
+  # standardize and build kmeans
+  prep0 <- preProcess(x = xtrain, method = c("range"))
+  xtrain <- predict(prep0, xtrain)
+  xtest <- predict(prep0, xtest)
+  
+  # map to distances from kmeans clusters
+  km0 <- kmeans(xtrain, centers = nof_clusters)
+  dist1 <- array(0, c(nrow(xtrain), nof_clusters))
+  for (ii in 1:nof_centers)
+  {
+    dist1[,ii] <- apply(xtrain,1,function(s) sd(s - km0$centers[ii,]))
+    msg(ii)
+  }
+  dist2 <- array(0, c(nrow(xtest), nof_clusters))
+  for (ii in 1:nof_centers)
+  {
+    dist2[,ii] <- apply(xtest,1,function(s) sd(s - km0$centers[ii,]))
+    msg(ii)
+  }
+  
+  # storage
+  dist1 <- data.frame(dist1)
+  dist2 <- data.frame(dist2)
+  dist1$target <- y
+  dist1$ID <- id_train
+  dist2$ID <- id_test
+  
+  xtrain$target <- y
+  
+  write.csv(dist1, paste('input/xtrain_kb7cl',nof_clusters,'.csv', sep = ""), row.names = F)
+  write.csv(dist2, paste('input/xtest_kb7cl',nof_clusters,'.csv', sep = ""), row.names = F)
+  
+  return(cat("KB7 dataset built"))
+}
+
+
 ## actual construction ####
 buildMP1()
 buildKB1()
@@ -584,4 +641,10 @@ buildKB5(cut_level = 0.95)
 # buildKB6(cut_level = 0.99)
 # KB6 with cut_level = 0.95 since its HUGE - over 7000 columns
 buildKB6(cut_level = 0.95)
+buildKB7(nof_clusters = 50)
+buildKB7(nof_clusters = 100)
+buildKB7(nof_clusters = 250)
+buildKB7(nof_clusters = 500)
+
+
 
