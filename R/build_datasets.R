@@ -582,17 +582,15 @@ buildKB6 <- function(cut_level = 0.99)
   return(cat("KB6 dataset built"))
 }
 
-# kmeans
-buildKB7 <- function(nof_clusters = 50)
+# kmeans on pure numeric datasets
+buildKB7 <- function(ref_data = 'kb4', nof_clusters = 50)
 {
-  xtrain <- read_csv('input/xtrain_kb4.csv')
-  xtest <- read_csv('input/xtest_kb4.csv')
+  xtrain <- read_csv(paste('input/xtrain_',ref_data,'.csv', sep = ""))
+  xtest <- read_csv(paste('input/xtest_',ref_data,'.csv', sep = ""))
   
   y <- xtrain$target; xtrain$target <- NULL
   id_train <- xtrain$ID; id_test <- xtest$ID
   xtrain$ID <- xtest$ID <- NULL
-  
-  # SFSG # 
   
   # standardize and build kmeans
   prep0 <- preProcess(x = xtrain, method = c("range"))
@@ -602,13 +600,13 @@ buildKB7 <- function(nof_clusters = 50)
   # map to distances from kmeans clusters
   km0 <- kmeans(xtrain, centers = nof_clusters)
   dist1 <- array(0, c(nrow(xtrain), nof_clusters))
-  for (ii in 1:nof_centers)
+  for (ii in 1:nof_clusters)
   {
     dist1[,ii] <- apply(xtrain,1,function(s) sd(s - km0$centers[ii,]))
     msg(ii)
   }
   dist2 <- array(0, c(nrow(xtest), nof_clusters))
-  for (ii in 1:nof_centers)
+  for (ii in 1:nof_clusters)
   {
     dist2[,ii] <- apply(xtest,1,function(s) sd(s - km0$centers[ii,]))
     msg(ii)
@@ -623,8 +621,8 @@ buildKB7 <- function(nof_clusters = 50)
   
   xtrain$target <- y
   
-  write.csv(dist1, paste('input/xtrain_kb7cl',nof_clusters,'.csv', sep = ""), row.names = F)
-  write.csv(dist2, paste('input/xtest_kb7cl',nof_clusters,'.csv', sep = ""), row.names = F)
+  write.csv(dist1, paste('input/xtrain_kb7c',nof_clusters,'d',ref_data,'.csv', sep = ""), row.names = F)
+  write.csv(dist2, paste('input/xtest_kb7c',nof_clusters,'d',ref_data,'.csv', sep = ""), row.names = F)
   
   return(cat("KB7 dataset built"))
 }
@@ -641,10 +639,10 @@ buildKB5(cut_level = 0.95)
 # buildKB6(cut_level = 0.99)
 # KB6 with cut_level = 0.95 since its HUGE - over 7000 columns
 buildKB6(cut_level = 0.95)
-buildKB7(nof_clusters = 50)
-buildKB7(nof_clusters = 100)
-buildKB7(nof_clusters = 250)
-buildKB7(nof_clusters = 500)
+buildKB7(ref_data = 'kb4', nof_clusters = 50)
+buildKB7(ref_data = 'kb4', nof_clusters = 250)
+buildKB7(ref_data = 'kb6099', nof_clusters = 50)
+buildKB7(ref_data = 'kb6099', nof_clusters = 250)
 
 
 
