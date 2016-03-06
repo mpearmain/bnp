@@ -74,15 +74,12 @@ buildEnsemble <- function(parVec, xset, yvec)
 }
 
 # wrapper around logloss preventing Inf/-Inf for 1/0 values
-log_loss <- function(predicted, actual, cutoff = 1e-15)
+log_loss <- function(actual, predicted, cutoff = 1e-15)
 {
   predicted <- pmax(predicted, cutoff)
   predicted <- pmin(predicted, 1- cutoff)
   return(logLoss(actual,predicted))
 }
-
-## Need to read data now de-coupled (linear combos from modelling.)
-## Likely to be in python now as faster for loops in hillclimbing etc.
 
 ## data ####
 # list the groups 
@@ -93,46 +90,43 @@ xlist_full <- dir("./metafeatures/", pattern = "prfull", full.names = T)
 ii <- 1
 mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
 xvalid <- read_csv(xlist_val[[ii]])
-xcols <- colnames(xvalid)[1:(ncol(xvalid)-2)]
-xcols <- paste(xcols , ii, sep = "")
-colnames(xvalid)[1:(ncol(xvalid)-2)] <- paste(mod_class, ii, 1:(ncol(xvalid)-2), sep = "")
+mod_cols <- grep(mod_class, colnames(xvalid))
+colnames(xvalid)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
 
 for (ii in 2:length(xlist_val))
 {
   mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
   xval <- read_csv(xlist_val[[ii]])
-  xcols <- colnames(xval)[1:(ncol(xval)-2)]
-  xcols <- paste(xcols , ii, sep = "")
-  colnames(xval)[1:(ncol(xval)-2)] <- paste(mod_class, ii, 1:(ncol(xval)-2), sep = "")
+  mod_cols <- grep(mod_class, colnames(xval))
+  colnames(xval)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
   xvalid <- merge(xvalid, xval)
   msg(ii)
   print(dim(xvalid))
 }
 
 y <- xvalid$target; xvalid$target <- NULL
-id_train <- xvalid$ID; xvalid$ID <- NULL
+id_valid <- xvalid$ID; xvalid$ID <- NULL
 
 # aggregate test set
 ii <- 1
 mod_class <- str_split(xlist_full[[ii]], "_")[[1]][[2]]
 xfull <- read_csv(xlist_full[[ii]])
-xcols <- colnames(xfull)[1:(ncol(xfull)-1)]
-xcols <- paste(xcols , ii, sep = "")
-colnames(xfull)[1:(ncol(xfull)-1)] <- xcols
+mod_cols <- grep(mod_class, colnames(xfull))
+colnames(xfull)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
 
-for (ii in 2:length(xlist_val))
+for (ii in 2:length(xlist_full))
 {
+  mod_class <- str_split(xlist_full[[ii]], "_")[[1]][[2]]
   xval <- read_csv(xlist_full[[ii]])
-  xcols <- colnames(xval)[1:(ncol(xval)-1)]
-  xcols <- paste(xcols , ii, sep = "")
-  colnames(xval)[1:(ncol(xval)-1)] <- xcols
+  mod_cols <- grep(mod_class, colnames(xval))
+  colnames(xval)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
   xfull <- merge(xfull, xval)
   msg(ii)
+  print(dim(xfull))
 }
 
 rm(xval)
-
-
+id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
 
