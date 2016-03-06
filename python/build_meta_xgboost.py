@@ -15,7 +15,7 @@ if __name__ == '__main__':
     dataset_version = ["mp1", "kb2", "kb3", "kb4", "kb5099", "kb6099"]
     model_type = "XGB"
     # Generate the same random sequences.
-    random_seed = 1234
+    random_seed = 888624
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     # construct colnames for the data  - Only alpha numerics as xgboost in
@@ -24,12 +24,12 @@ if __name__ == '__main__':
                 for n in range(len(dataset_version))]
 
     # setup model instances
-    clf = [XGBClassifier(max_depth=9, learning_rate=0.0062, n_estimators=1819, silent=True, nthread=-1, subsample=0.7, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=12, learning_rate=0.00708, n_estimators=1781, silent=True, nthread=-1, subsample=0.7104, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5.5917305068934944, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=11, learning_rate=0.00925, n_estimators=1906, silent=True, nthread=-1, subsample=0.89, colsample_bytree=0.8909, gamma=0.004537, min_child_weight = 5.6470775432075406, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=14, learning_rate=0.007336, n_estimators=2408, silent=True, nthread=-1, subsample=0.7267, colsample_bytree=0.7642, gamma=0.00719, min_child_weight = 14.634866816577702, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=10, learning_rate=0.025, n_estimators=2500, silent=True, nthread=-1, subsample=0.9, colsample_bytree=0.7, gamma=0.00077979306474894653, min_child_weight = 1.633309904669616, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=10, learning_rate=0.013901402098648891, n_estimators=1519, silent=True, nthread=-1, subsample=0.804, colsample_bytree=0.772, gamma=0.00060856204654098059, min_child_weight = 12.326654624743421, seed=random_seed, objective="binary:logistic")]
+    clf = [XGBClassifier(max_depth=9, learning_rate=0.0162, n_estimators=919, silent=True, nthread=-1, subsample=0.7, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5, seed=random_seed, objective="binary:logistic"),
+           XGBClassifier(max_depth=12, learning_rate=0.01708, n_estimators=881, silent=True, nthread=-1, subsample=0.7104, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5.5917305068934944, seed=random_seed, objective="binary:logistic"),
+           XGBClassifier(max_depth=11, learning_rate=0.01925, n_estimators=806, silent=True, nthread=-1, subsample=0.89, colsample_bytree=0.8909, gamma=0.004537, min_child_weight = 5.6470775432075406, seed=random_seed, objective="binary:logistic"),
+           XGBClassifier(max_depth=14, learning_rate=0.017336, n_estimators=708, silent=True, nthread=-1, subsample=0.7267, colsample_bytree=0.7642, gamma=0.00719, min_child_weight = 14.634866816577702, seed=random_seed, objective="binary:logistic"),
+           XGBClassifier(max_depth=10, learning_rate=0.025, n_estimators=500, silent=True, nthread=-1, subsample=0.9, colsample_bytree=0.7, gamma=0.00077979306474894653, min_child_weight = 1.633309904669616, seed=random_seed, objective="binary:logistic"),
+           XGBClassifier(max_depth=10, learning_rate=0.023, n_estimators=759, silent=True, nthread=-1, subsample=0.804, colsample_bytree=0.772, gamma=0.00060856204654098059, min_child_weight = 12.326654624743421, seed=random_seed, objective="binary:logistic")]
 
     # Read xfolds only need the ID and fold 5.
     print("Reading Cross folds")
@@ -72,6 +72,7 @@ if __name__ == '__main__':
         # We only have one classifer per dataset so hardcoded.
         mvalid.ix[:, i] = stacker.meta_train.ix[:, 0]
         mfull.ix[:, i] = stacker.predict_proba(xtest).iloc[:, 0]
+        print(mfull[0:10])
 
     # store the results
     mvalid['ID'] = id_train
