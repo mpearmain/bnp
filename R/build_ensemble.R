@@ -104,6 +104,7 @@ for (ii in 2:length(xlist_val))
   print(dim(xvalid))
 }
 
+write_csv(xvalid, paste("./input/xvalid_lvl2_", todate, ".csv", sep = "") )
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
@@ -126,6 +127,9 @@ for (ii in 2:length(xlist_full))
 }
 
 rm(xval)
+
+write_csv(xfull, paste("./input/xfull_lvl2_", todate, ".csv", sep = "") )
+
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
@@ -197,7 +201,7 @@ for (ii in 1:nfolds)
   for (jj in 1:nbag)
   {
     set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
-    net0 <- nnet(factor(y0) ~ ., data = x0, size = 40, MaxNWts = 20000, decay = 0.02)
+    net0 <- nnet(factor(y0) ~ ., data = x0, size = 25, MaxNWts = 20000, decay = 0.02)
     prx3 <- prx3 + predict(net0, x1)
   }
   prx3 <- prx3 /nbag
