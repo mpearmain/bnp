@@ -95,4 +95,6 @@ at position: {'colsample_bytree': 0.77245797080355449,
                'max_depth': 10.667248872700966,
                'gamma': 0.00060856204654098059}.
 
-## 
+## kb7c50dkb4
+
+{'max_val': -0.48929112651307755, 'max_params': {'colsample_bytree': 0.85384516514544651, 'learning_rate': 0.0055826123629237603, 'min_child_weight': 7.9059713115286048, 'n_estimators': 1401.1521102288227, 'subsample': 0.69999999999999996, 'max_depth': 12.224399808926874, 'gamma': 0.008888282208429259}}
