@@ -47,7 +47,7 @@ def logistic_regression(C,
 if __name__ == '__main__':
     ## settings
     projPath = os.getcwd()
-    dataset_version = ["kb3", "kb4", "kb5099", "kb6099"]
+    dataset_version = ["kb7cl250", "kb6099"]
     model_type = "LogRegL1pen"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     random_seed = 1234
