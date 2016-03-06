@@ -191,5 +191,5 @@ mfull['ID'] = id_test
 
 
 # save the files
-mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+mvalid.to_csv(projPath + 'metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+mfull.to_csv(projPath + 'metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
