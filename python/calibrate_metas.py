@@ -33,17 +33,18 @@ if __name__ == "__main__":
     
     # read the metas to calibrate
     print("Reading train set")
-    xtrain = pd.read_csv('../metafeatures/prval_XGB_20160227_seed1234.csv')
+    xtrain = pd.read_csv('../metafeatures/prval_XGB_20160304_seed1234.csv')
     id_train = xtrain.ID
     ytrain = xtrain.target
     yval = xtrain.target * 0 -1
 
     print("Reading test set")
-    xtest = pd.read_csv('../metafeatures/prfull_XGB_20160227_seed1234.csv')
+    xtest = pd.read_csv('../metafeatures/prfull_XGB_20160304_seed1234.csv')
     id_test = xtest.ID
     yfull = xtest.ID * 0 -1
 
     
+    wfold = 5
     storage_mat = np.zeros((nfolds, 3))
     
     # populate the new prval
@@ -56,37 +57,35 @@ if __name__ == "__main__":
         y0 = ytrain[ytrain.index.isin(idx0)]
         y1 = ytrain[ytrain.index.isin(idx1)]
         
-        #lr = LR(C = 1)														
-        #lr.fit( np.array(x0)[:,0].reshape( -1, 1 ), y0 )
-        y_raw = np.array(x1)[:,0]
-        #y_platt = lr.predict_proba(np.array(x1)[:,0].reshape(-1,1))[:,1]
+        lr = LR(C = 1)														
+        lr.fit( np.array(x0)[:,0].reshape( -1, 1 ), y0 )
+        y_raw = np.array(x1)[:,wfold]
+        y_platt = lr.predict_proba(np.array(x1)[:,0].reshape(-1,1))[:,1]
         ir = IR( out_of_bounds = 'clip' )	
-        ir.fit( np.array(x0)[:,0], y0 )
+        ir.fit( np.array(x0)[:,wfold], y0 )
         y_iso = ir.transform((np.array(x1)[:,0]))
         yval[idx1] = y_iso
         
         print(log_loss(y1, y_raw))
-        print(log_loss(y1, y_iso))
-        print(log_loss(y1, 0.5 * (y_iso + y_raw)))
-        print(log_loss(y1,y_iso) - log_loss(y1,y_raw))        
-                
-                
+        print(log_loss(y1, 0.98 * y_raw + 0.02 * y_iso))
+                           
         storage_mat[j, 0] = log_loss(y1, y_raw)
-        storage_mat[j, 1] = log_loss(y1, y_iso)
-        storage_mat[j, 2] = log_loss(y1,0.5 * (y_raw +  y_iso))
+        storage_mat[j, 1] = log_loss(y1, 0.98 * y_raw + 0.02 * y_iso)
         
     # populate the new prfull
     ir = IR( out_of_bounds = 'clip' )	
-    ir.fit( np.array(xtrain)[:,0], ytrain )
-    yfull = ir.transform((np.array(xtest)[:,0]))
+    ir.fit( np.array(xtrain)[:,wfold], ytrain )
+    yfull = ir.transform((np.array(xtest)[:,wfold]))
     
-    prval2 = pd.DataFrame({'XGB1234kb4c':yval,'ID':id_train, 'target': ytrain})
-    prfull2 = pd.DataFrame({'XGB1234kb4c':yfull, 'ID': id_test})
-    prval2.to_csv('../metafeatures/prval_XGB_20160227c_seed1234.csv', index = False, header = True)
-    prfull2.to_csv('../metafeatures/prfull_XGB_20160227c_seed1234.csv', index = False, header = True)
-    
-    # create forecasts
-    pr_ref = pd.DataFrame({'ID':id_test, 'PredictedProb': xtest.XGB1234kb4})
-    pr_ref.to_csv('../submissions/prfull_XGBref.csv', index = False, header = True)
-    pr_calib = pd.DataFrame({'ID':id_test, 'PredictedProb': prfull2.XGB1234kb4c})
-    pr_calib.to_csv('../submissions/prfull_XGBcalib.csv', index = False, header = True)
+#    prval2 = pd.DataFrame({'XGB1234kb4c':yval,'ID':id_train, 'target': ytrain})
+#    prfull2 = pd.DataFrame({'XGB1234kb4c':yfull, 'ID': id_test})
+#    prval2.to_csv('../metafeatures/prval_XGB_20160227c_seed1234.csv', 
+#        index = False, header = True)
+#    prfull2.to_csv('../metafeatures/prfull_XGB_20160227c_seed1234.csv', 
+#                   index = False, header = True)
+#    
+#    # create forecasts
+#    pr_ref = pd.DataFrame({'ID':id_test, 'PredictedProb': xtest.XGB1234kb4})
+#    pr_ref.to_csv('../submissions/prfull_XGBref.csv', index = False, header = True)
+#    pr_calib = pd.DataFrame({'ID':id_test, 'PredictedProb': prfull2.XGB1234kb4c})
+#    pr_calib.to_csv('../submissions/prfull_XGBcalib.csv', index = False, header = True)
