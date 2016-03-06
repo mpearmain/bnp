@@ -65,8 +65,8 @@ xtest.drop('ID', axis = 1, inplace = True)
 # First Build a forest and compute the feature importance
 forest = RandomForestClassifier(n_jobs=-1,
                                 class_weight='auto',
-                                max_depth=10,
-                                n_estimators=500)
+                                max_depth=20,
+                                n_estimators=1000)
 print "Building RF"
 forest.fit(xtrain, ytrain)
 importances = forest.feature_importances_
