@@ -260,6 +260,15 @@ xfull2[,5] <- prx5
 rm(y0,y1, x0d, x1d, rf0, prx1,prx2,prx3,prx4,prx5)
 rm(par0, net0, mod0,mod_class, clf,x0, x1)
 
+# 
+xvalid2$target <- y 
+xvalid2$ID <- id_valid
+write.csv(xvalid2, paste('./input/xtrain_lvl3',todate,'.csv', sep = ""), row.names = F)
+xvalid2$target <- NULL; xvalid2$ID <- NULL
+
+xfull2$ID <- id_full
+write.csv(xfull2, paste('./input/xtest_lvl3',todate,'.csv', sep = ""), row.names = F)
+xfull2$ID <- NULL
 
 ## final ensemble forecasts ####
 # evaluate performance across folds
