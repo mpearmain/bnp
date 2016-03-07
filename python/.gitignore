@@ -3,4 +3,5 @@ helpers.pyc
 bayesian_optimization.py
 __init__.pyc
 autotune_optimal_xgb.pyc
+autotune_optimal_xgb.py
 BinaryStacker.pyc
