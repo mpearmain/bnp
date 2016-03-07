@@ -40,8 +40,8 @@ for (ii in 2:length(xlist_val))
 {
   mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
   xval <- read_csv(xlist_val[[ii]])
-  mod_cols <- grep(mod_class, colnames(xvalid)) 
-  colnames(xvalid)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
+  mod_cols <- grep(mod_class, colnames(xval)) 
+  colnames(xval)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
   xvalid <- merge(xvalid, xval)
   print(dim(xvalid))
   msg(ii)
