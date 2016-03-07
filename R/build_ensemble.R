@@ -158,7 +158,7 @@ for (ii in 1:nfolds)
   for (jj in 1:nbag)
   {
     set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
-    net0 <- nnet(factor(y0) ~ ., data = x0, size = 25, MaxNWts = 20000, decay = 0.02)
+    net0 <- nnet(factor(y0) ~ ., data = x0, size = 40, MaxNWts = 20000, decay = 0.02)
     prx3 <- prx3 + predict(net0, x1)
   }
   prx3 <- prx3 /nbag
