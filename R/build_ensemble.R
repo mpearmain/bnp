@@ -82,11 +82,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("./input/xvalid_lvl220160306.csv")
+xvalid <- read_csv("./input/xtrain_lvl220160307.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("./input/xfull_lvl220160306.csv")
+xfull <- read_csv("./input/xtest_lvl220160307.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
@@ -110,10 +110,10 @@ for (ii in 1:nfolds)
   # mix with glmnet: average over multiple alpha parameters 
   isTrain <- which(xfolds$fold_index != ii)
   isValid <- which(xfolds$fold_index == ii)
-  x0 <- xvalid[isTrain,];   
-  x1 <- xvalid[isValid,]
-  y0 <- y[isTrain];  
-  y1 <- y[isValid]
+  x0 <- xvalid[isTrain,];     x1 <- xvalid[isValid,]
+  y0 <- y[isTrain];    y1 <- y[isValid]
+ 
+  # mix with glmnet
   prx1 <- y1 * 0
   for (jj in 1:11)
   {
@@ -123,7 +123,7 @@ for (ii in 1:nfolds)
     prx1 <- prx1 + prx
   }
   storage_matrix[ii,1] <- log_loss(y1,prx1/11)
-  xvalid2[isValid,1] <- prx1
+  xvalid2[isValid,1] <- prx1/11
   
   # mix with xgboost: bag over multiple seeds
   x0d <- xgb.DMatrix(as.matrix(x0), label = y0)
@@ -182,7 +182,7 @@ for (ii in 1:nfolds)
                 seed = seed_value,
                 num.threads = 4)
   prx5 <- predict(rf0, x1)$predictions[,2]
-  storage_matrix[ii,5] <- logLoss(y1,prx5)
+  storage_matrix[ii,5] <- log_loss(y1,prx5)
   xvalid2[isValid,5] <- prx5
   
   msg(paste("fold ",ii,": finished", sep = ""))
