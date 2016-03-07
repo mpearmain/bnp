@@ -39,7 +39,7 @@ buildEnsemble <- function(parVec, xset, yvec)
     idx <- dataPart[[bb]];    xx <- xset[,idx]
     
     # track individual scores
-    trackScore <- apply(xx, 2, function(x) logLoss(yvec,x))
+    trackScore <- apply(xx, 2, function(x) -log_loss(yvec,x))
     
     # select the individual best performer - store the performance
     # and create the first column -> this way we have a non-empty ensemble
@@ -54,7 +54,7 @@ buildEnsemble <- function(parVec, xset, yvec)
     {
       # add a second component
       trackScoreHill <- apply(xx, 2,
-                              function(x) logLoss(yvec,rowMeans(cbind(x , hill.df))))
+                              function(x) -log_loss(yvec,rowMeans(cbind(x , hill.df))))
       
       best <- which.max(trackScoreHill)
       best.track <- c(best.track, max(trackScoreHill))
@@ -82,54 +82,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-# list the groups 
-xlist_val <- dir("./metafeatures/", pattern =  "prval", full.names = T)
-xlist_full <- dir("./metafeatures/", pattern = "prfull", full.names = T)
-
-# aggregate validation set
-ii <- 1
-mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
-xvalid <- read_csv(xlist_val[[ii]])
-mod_cols <- grep(mod_class, colnames(xvalid))
-colnames(xvalid)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
-
-for (ii in 2:length(xlist_val))
-{
-  mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
-  xval <- read_csv(xlist_val[[ii]])
-  mod_cols <- grep(mod_class, colnames(xval))
-  colnames(xval)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
-  xvalid <- merge(xvalid, xval)
-  msg(ii)
-  print(dim(xvalid))
-}
-
-write_csv(xvalid, paste("./input/xvalid_lvl2_", todate, ".csv", sep = "") )
+xvalid <- read_csv("./input/xvalid_lvl220160306.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-# aggregate test set
-ii <- 1
-mod_class <- str_split(xlist_full[[ii]], "_")[[1]][[2]]
-xfull <- read_csv(xlist_full[[ii]])
-mod_cols <- grep(mod_class, colnames(xfull))
-colnames(xfull)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
-
-for (ii in 2:length(xlist_full))
-{
-  mod_class <- str_split(xlist_full[[ii]], "_")[[1]][[2]]
-  xval <- read_csv(xlist_full[[ii]])
-  mod_cols <- grep(mod_class, colnames(xval))
-  colnames(xval)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
-  xfull <- merge(xfull, xval)
-  msg(ii)
-  print(dim(xfull))
-}
-
-rm(xval)
-
-write_csv(xfull, paste("./input/xfull_lvl2_", todate, ".csv", sep = "") )
-
+xfull <- read_csv("./input/xfull_lvl220160306.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
@@ -211,7 +168,7 @@ for (ii in 1:nfolds)
   # mix with hillclimbing
   par0 <- buildEnsemble(c(1,15,5,0.6), x0,y0)
   prx4 <- as.matrix(x1) %*% as.matrix(par0)
-  storage_matrix[ii,4] <- logLoss(y1,prx4)
+  storage_matrix[ii,4] <- log_loss(y1,prx4)
   xvalid2[isValid,4] <- prx4
   
   # mix with random forest
@@ -223,7 +180,7 @@ for (ii in 1:nfolds)
                 probability = T,
                 min.node.size = 10, 
                 seed = seed_value,
-                num.threads = 8)
+                num.threads = 4)
   prx5 <- predict(rf0, x1)$predictions[,2]
   storage_matrix[ii,5] <- logLoss(y1,prx5)
   xvalid2[isValid,5] <- prx5
