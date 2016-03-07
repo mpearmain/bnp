@@ -97,8 +97,43 @@ at position: {'colsample_bytree': 0.77245797080355449,
 
 ## kb7c50dkb4
 
-{'max_val': -0.48929112651307755, 'max_params': {'colsample_bytree': 0.85384516514544651, 'learning_rate': 0.0055826123629237603, 'min_child_weight': 7.9059713115286048, 'n_estimators': 1401.1521102288227, 'subsample': 0.69999999999999996, 'max_depth': 12.224399808926874, 'gamma': 0.008888282208429259}}
+{'max_val': -0.48929112651307755, 
+'max_params': {'colsample_bytree': 0.85384516514544651, 
+'learning_rate': 0.0055826123629237603, 
+'min_child_weight': 7.9059713115286048,
+'n_estimators': 1401.1521102288227, 
+'subsample': 0.69999999999999996, 
+'max_depth': 12.224399808926874, 
+'gamma': 0.008888282208429259}}
 
+## kb7c250dkb4
+
+{'max_val': -0.48679612131323663, 
+'max_params': {'colsample_bytree': 0.69999999999999996, 
+'learning_rate': 0.0047723433221259085, 
+'min_child_weight': 13.368229879967524, 
+'n_estimators': 1548.0454283404372, 
+'subsample': 0.69999999999999996, 
+'max_depth': 13.228363990139563, 
+'gamma': 9.9999999999999995e-07}}
+
+
+## lvl220160307
+
+XGBOOST: -0.433068
+XGBOOST: {'colsample_bytree': 0.89525122839274607, 
+          'learning_rate': 0.0072427710457193201, 
+           'min_child_weight': 8.7826168682356993, 
+           'n_estimators': 1926.9086541655479, 
+            'subsample': 0.74524450200361458, 
+            'max_depth': 9.7959417619101661, 
+            'gamma': 0.0042467165496637808}
+
+Stopping. Best iteration:
+[673]	validation_0-logloss:0.433060
+
+
+## changes to model aprams
 First XGB model params:
     # setup model instances
     clf = [XGBClassifier(max_depth=9, learning_rate=0.0062, n_estimators=1819, silent=True, nthread=-1, subsample=0.7, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5, seed=random_seed, objective="binary:logistic"),
@@ -107,7 +142,7 @@ First XGB model params:
            XGBClassifier(max_depth=14, learning_rate=0.007336, n_estimators=2408, silent=True, nthread=-1, subsample=0.7267, colsample_bytree=0.7642, gamma=0.00719, min_child_weight = 14.634866816577702, seed=random_seed, objective="binary:logistic"),
            XGBClassifier(max_depth=10, learning_rate=0.025, n_estimators=2500, silent=True, nthread=-1, subsample=0.9, colsample_bytree=0.7, gamma=0.00077979306474894653, min_child_weight = 1.633309904669616, seed=random_seed, objective="binary:logistic"),
            XGBClassifier(max_depth=10, learning_rate=0.013901402098648891, n_estimators=1519, silent=True, nthread=-1, subsample=0.804, colsample_bytree=0.772, gamma=0.00060856204654098059, min_child_weight = 12.326654624743421, seed=random_seed, objective="binary:logistic")]
-Second XGB model Params:
+Second XGB model Params (changed 2016.03.05)
     # setup model instances
     clf = [XGBClassifier(max_depth=9, learning_rate=0.0162, n_estimators=919, silent=True, nthread=-1, subsample=0.7, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5, seed=random_seed, objective="binary:logistic"),
            XGBClassifier(max_depth=12, learning_rate=0.01708, n_estimators=881, silent=True, nthread=-1, subsample=0.7104, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5.5917305068934944, seed=random_seed, objective="binary:logistic"),
