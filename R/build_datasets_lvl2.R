@@ -33,39 +33,41 @@ xlist_full <- dir("./metafeatures/", pattern = "prfull", full.names = T)
 ii <- 1
 mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
 xvalid <- read_csv(xlist_val[[ii]])
-mod_cols <- grep(mod_class, colnames(xvalid))
-colnames(xvalid)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
+xcols <- colnames(xvalid)[1:(ncol(xvalid)-2)]
+xcols <- paste(xcols , ii, sep = "")
+colnames(xvalid)[1:(ncol(xvalid)-2)] <- xcols
 
 for (ii in 2:length(xlist_val))
 {
   mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
   xval <- read_csv(xlist_val[[ii]])
-  mod_cols <- grep(mod_class, colnames(xval))
-  colnames(xval)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
+  xcols <- colnames(xval)[1:(ncol(xval)-2)]
+  xcols <- paste(xcols , ii, sep = "")
+  colnames(xval)[1:(ncol(xval)-2)] <- xcols
   xvalid <- merge(xvalid, xval)
   msg(ii)
-  print(dim(xvalid))
 }
 
 # aggregate test set
 ii <- 1
 mod_class <- str_split(xlist_full[[ii]], "_")[[1]][[2]]
 xfull <- read_csv(xlist_full[[ii]])
-mod_cols <- grep(mod_class, colnames(xfull))
-colnames(xfull)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
+xcols <- colnames(xfull)[1:(ncol(xfull)-1)]
+xcols <- paste(xcols , ii, sep = "")
+colnames(xfull)[1:(ncol(xfull)-1)] <- xcols
 
-for (ii in 2:length(xlist_full))
+for (ii in 2:length(xlist_val))
 {
-  mod_class <- str_split(xlist_full[[ii]], "_")[[1]][[2]]
   xval <- read_csv(xlist_full[[ii]])
-  mod_cols <- grep(mod_class, colnames(xval))
-  colnames(xval)[mod_cols] <- paste(mod_class, ii, 1:length(mod_cols), sep = "")
+  xcols <- colnames(xval)[1:(ncol(xval)-1)]
+  xcols <- paste(xcols , ii, sep = "")
+  colnames(xval)[1:(ncol(xval)-1)] <- xcols
   xfull <- merge(xfull, xval)
   msg(ii)
-  print(dim(xfull))
 }
 
 rm(xval)
+
 
 ## process the sets ####
 
