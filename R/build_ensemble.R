@@ -11,6 +11,7 @@ require(Metrics)
 seed_value <- 450
 todate <- str_replace_all(Sys.Date(), "-","")
 nbag <- 5
+nthreads <- 8
 
 ## functions ####
 
@@ -82,11 +83,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("./input/xtrain_lvl220160307.csv")
+xvalid <- read_csv("./input/xtrain_lvl220160308.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("./input/xtest_lvl220160307.csv")
+xfull <- read_csv("./input/xtest_lvl220160308.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
@@ -180,7 +181,7 @@ for (ii in 1:nfolds)
                 probability = T,
                 min.node.size = 10, 
                 seed = seed_value,
-                num.threads = 4)
+                num.threads = nthreads)
   prx5 <- predict(rf0, x1)$predictions[,2]
   storage_matrix[ii,5] <- log_loss(y1,prx5)
   xvalid2[isValid,5] <- prx5
@@ -253,7 +254,7 @@ rf0 <- ranger(factor(y) ~ .,
               probability = T,
               min.node.size = 10, 
               seed = seed_value,
-              num.threads = 8)
+              num.threads = nthreads)
 prx5 <- predict(rf0, xfull)$predictions[,2]
 xfull2[,5] <- prx5
 
