@@ -34,23 +34,21 @@ def factorization_machines(num_iter,
                    init_stdev = init_stdev,
                    k2 = k2,
                    learning_method = 'mcmc',
-                   rlog = True,
-                   verbose = True,
+                   verbose = False,
                    silent = False)
 
     model = clf.run(x_train=x0, y_train=y0, x_test=x1, y_test=y1)
-    print(model.rlog)
     if maximize:
-        loss = loss_metric(y1, model.predictions)
+        loss = loss_metric(y1, model.predictions, eps=1e-15)
     if not maximize:
-        loss = -loss_metric(y1, model.predictions)
+        loss = -loss_metric(y1, model.predictions, eps=1e-15)
     return loss
 
 
 if __name__ == '__main__':
     ## settings
     projPath = os.getcwd()
-    dataset_version = ["kb1", "kb3", "kb4", "kb5099", "kb6099"]
+    dataset_version = ["mp1", "kb1", "kb3", "kb4", "kb5099", "kb6099"]
     model_type = "libFM"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     random_seed = 1234
@@ -92,12 +90,12 @@ if __name__ == '__main__':
         y1 = ytrain[ytrain.index.isin(idx1)]
 
         BO = BayesianOptimization(factorization_machines,
-                                  {'num_iter': (int(10), int(25)),
-                                   'init_stdev': (0.2, 0.05),
+                                  {'num_iter': (int(1000), int(2000)),
+                                   'init_stdev': (0.25, 0.05),
                                    'k2': (int(4), int(12)),
                                   })
 
-        BO.maximize(init_points=5, n_iter=10, acq='ei')
+        BO.maximize(init_points=5, n_iter=25, acq='ei')
         print('-' * 53)
 
         print('Final Results')
@@ -108,10 +106,9 @@ if __name__ == '__main__':
 
         ########################## Run Best model per dataset ####################################
 
-        clf = [LogisticRegression(C=BO.res['max']['max_params']['C'],
-                                  max_iter=BO.res['max']['max_params']['max_iter'],
-                                  penalty='l1',
-                                  random_state=random_seed)]
+        clf = [factorization_machines(num_iter=BO.res['max']['max_params']['num_iter'],
+                                      init_stdev=BO.res['max']['max_params']['init_stdev'],
+                                      k2=BO.res['max']['max_params']['k2'])]
 
         # Read xfolds only need the ID and fold 5.
         print("Reading Cross folds")
@@ -125,7 +122,7 @@ if __name__ == '__main__':
 
         # Append the results for each dataset back to the master for train and test
         mvalid.ix[:, i] = stacker.meta_train.ix[:, 0]
-        mfull.ix[:, i] = stacker.predict_proba(xtest)
+        mfull.ix[:, i] = stacker.predict_proba(xtest).ix[:, 0]
 
     # store the results
     mvalid['ID'] = id_train
