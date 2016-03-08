@@ -10,7 +10,8 @@ require(Metrics)
 
 seed_value <- 450
 todate <- str_replace_all(Sys.Date(), "-","")
-nbag <- 5
+nbag <- 2
+nthreads <- 8
 
 ## functions ####
 
@@ -82,11 +83,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("./input/xtrain_lvl220160307.csv")
+xvalid <- read_csv("./input/xtrain_lvl220160308.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("./input/xtest_lvl220160307.csv")
+xfull <- read_csv("./input/xtest_lvl220160308.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
@@ -98,11 +99,11 @@ xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
 
 # storage for results
-storage_matrix <- array(0, c(nfolds, 5))
+storage_matrix <- array(0, c(nfolds, 4))
 
 # storage for level 2 forecasts 
-xvalid2 <- array(0, c(nrow(xvalid),5))
-xfull2 <- array(0, c(nrow(xfull),5))
+xvalid2 <- array(0, c(nrow(xvalid),4))
+xfull2 <- array(0, c(nrow(xfull),4))
 
 
 for (ii in 1:nfolds)
@@ -151,7 +152,7 @@ for (ii in 1:nfolds)
     prx2 <- prx2 + prx
   }
   prx2 <- prx2 / nbag
-  storage_matrix[ii,2] <- logLoss(y1,prx2)
+  storage_matrix[ii,2] <- log_loss(y1,prx2)
   xvalid2[isValid,2] <- prx2
   
   # mix with nnet:  
@@ -159,12 +160,12 @@ for (ii in 1:nfolds)
   for (jj in 1:nbag)
   {
     set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
-    net0 <- nnet(factor(y0) ~ ., data = x0, size = 35, MaxNWts = 20000, decay = 0.035)
+    net0 <- nnet(factor(y0) ~ ., data = x0, size = 35, MaxNWts = 20000, decay = 0.03)
     log_loss(y1,predict(net0, x1))
     prx3 <- prx3 + predict(net0, x1)
   }
   prx3 <- prx3 /nbag
-  storage_matrix[ii,3] <- logLoss(y1,prx3)
+  storage_matrix[ii,3] <- log_loss(y1,prx3)
   xvalid2[isValid,3] <- prx3
 
   # mix with hillclimbing
@@ -173,19 +174,19 @@ for (ii in 1:nfolds)
   storage_matrix[ii,4] <- log_loss(y1,prx4)
   xvalid2[isValid,4] <- prx4
   
-  # mix with random forest
-  rf0 <- ranger(factor(y0) ~ ., 
-                data = x0, 
-                mtry = 25, 
-                num.trees = 350,
-                write.forest = T, 
-                probability = T,
-                min.node.size = 10, 
-                seed = seed_value,
-                num.threads = 4)
-  prx5 <- predict(rf0, x1)$predictions[,2]
-  storage_matrix[ii,5] <- log_loss(y1,prx5)
-  xvalid2[isValid,5] <- prx5
+#   # mix with random forest
+#   rf0 <- ranger(factor(y0) ~ ., 
+#                 data = x0, 
+#                 mtry = 12, 
+#                 num.trees = 600,
+#                 write.forest = T, 
+#                 probability = T,
+#                 min.node.size = 10, 
+#                 seed = seed_value,
+#                 num.threads = 4)
+#   prx5 <- predict(rf0, x1)$predictions[,2]
+#   storage_matrix[ii,5] <- log_loss(y1,prx5)
+#   xvalid2[isValid,5] <- prx5
   
   msg(paste("fold ",ii,": finished", sep = ""))
 }
@@ -235,7 +236,7 @@ prx3 <- rep(0, nrow(xfull))
 for (jj in 1:nbag)
 {
   set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
-  net0 <- nnet(factor(y) ~ ., data = xvalid, size = 40, MaxNWts = 20000, decay = 0.02)
+  net0 <- nnet(factor(y) ~ ., data = xvalid,  size = 35, MaxNWts = 20000, decay = 0.03)
   prx3 <- prx3 + predict(net0, xfull)
 }
 prx3 <- prx3 /nbag
@@ -247,24 +248,28 @@ prx4 <- as.matrix(xfull) %*% as.matrix(par0)
 xfull2[,4] <- prx4
 
 # mix with ranger
-rf0 <- ranger(factor(y) ~ ., 
-              data = xvalid, 
-              mtry = 25, 
-              num.trees = 350,
-              write.forest = T, 
-              probability = T,
-              min.node.size = 10, 
-              seed = seed_value,
-              num.threads = 8)
-prx5 <- predict(rf0, xfull)$predictions[,2]
-xfull2[,5] <- prx5
+# rf0 <- ranger(factor(y) ~ ., 
+#               data = xvalid, 
+#               mtry = 25, 
+#               num.trees = 350,
+#               write.forest = T, 
+#               probability = T,
+#               min.node.size = 10, 
+#               seed = seed_value,
+#               num.threads = nthreads)
+# prx5 <- predict(rf0, xfull)$predictions[,2]
+# xfull2[,5] <- prx5
 
 rm(y0,y1, x0d, x1d, rf0, prx1,prx2,prx3,prx4,prx5)
 rm(par0, net0, mod0,mod_class, clf,x0, x1)
 
-# store intermediate files
+# 
+colsn <- c('glmnet', 'xgb', 'nnet', 'hillclimb', 'ranger')
 xvalid2 <- data.frame(xvalid2)
 xfull2 <- data.frame(xfull2)
+names(xvalid2) <- colsn
+names(xfull2) <- colsn
+
 xvalid2$target <- y 
 xvalid2$ID <- id_valid
 write.csv(xvalid2, paste('./input/xtrain_lvl3',todate,'.csv', sep = ""), row.names = F)
@@ -291,7 +296,7 @@ for (ii in 1:nfolds)
   
   par0 <- buildEnsemble(c(1,15, 5,0.6), x0,y0)
   pr1 <- as.matrix(x1) %*% as.matrix(par0)
-  storage2[ii,1] <- logLoss(y1, pr1)
+  storage2[ii,1] <- log_loss(y1, pr1)
   param_mat[ii,] <- par0
   
 }
