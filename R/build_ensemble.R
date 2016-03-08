@@ -10,7 +10,7 @@ require(Metrics)
 
 seed_value <- 450
 todate <- str_replace_all(Sys.Date(), "-","")
-nbag <- 1
+nbag <- 2
 nthreads <- 8
 
 ## functions ####
@@ -302,7 +302,8 @@ for (ii in 1:nfolds)
 # find the best combination of mixers
 xvalid2 <- apply(xvalid2,2,rank)/nrow(xvalid2)
 xfull2 <- apply(xfull2,2,rank)/nrow(xfull2)
-
+xvalid2 <- data.frame(xvalid2)
+xfull2 <- data.frame(xfull2)
 
 # construct forecast
 par0 <- buildEnsemble(c(1,15, 5,0.6), xvalid2,y)
