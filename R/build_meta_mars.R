@@ -5,7 +5,7 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "kb4"
+dataset_version <- "kb7c50dkb6099"
 seed_value <- 1901
 model_type <- "mars"
 todate <- str_replace_all(Sys.Date(), "-","")
@@ -16,6 +16,15 @@ msg <- function(mmm,...)
 {
   cat(sprintf(paste0("[%s] ",mmm),Sys.time(),...)); cat("\n")
 }
+
+# wrapper around logloss preventing Inf/-Inf for 1/0 values
+log_loss <- function(actual, predicted, cutoff = 1e-15)
+{
+  predicted <- pmax(predicted, cutoff)
+  predicted <- pmin(predicted, 1- cutoff)
+  return(logLoss(actual,predicted))
+}
+
 
 ## data ####
 # read actual data
@@ -58,7 +67,7 @@ for (ii in 1:nrow(param_grid))
     mars.model <- earth(x = x0, y = y0, degree = param_grid$deg[ii], glm=list(family=binomial))
     
     pred_valid <- predict(mars.model, x1, type = "response")
-    print(logLoss(y1, pred_valid))
+    print(log_loss((y1 == 1) + 0, pred_valid))
     mtrain[isValid,ii] <- pred_valid
   }
   
