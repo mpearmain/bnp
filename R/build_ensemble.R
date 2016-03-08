@@ -117,13 +117,14 @@ for (ii in 1:nfolds)
   prx1 <- y1 * 0
   for (jj in 1:11)
   {
-    mod0 <- glmnet(x = as.matrix(x0), y = y0, alpha = (jj-1) * 0.1)
-    prx <- predict(mod0,as.matrix(x1))  
+    mod0 <- glmnet(x = as.matrix(x0), y = y0, alpha = (jj-1) * 0.1, family = "binomial")
+    prx <- predict(mod0,as.matrix(x1), type = "response")  
     prx <- prx[,ncol(prx)]
     prx1 <- prx1 + prx
   }
   storage_matrix[ii,1] <- log_loss(y1,prx1/11)
   xvalid2[isValid,1] <- prx1/11
+  rm(mod0, prx1, prx)
   
   # mix with xgboost: bag over multiple seeds
   x0d <- xgb.DMatrix(as.matrix(x0), label = y0)
@@ -158,7 +159,8 @@ for (ii in 1:nfolds)
   for (jj in 1:nbag)
   {
     set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
-    net0 <- nnet(factor(y0) ~ ., data = x0, size = 40, MaxNWts = 20000, decay = 0.02)
+    net0 <- nnet(factor(y0) ~ ., data = x0, size = 35, MaxNWts = 20000, decay = 0.035)
+    log_loss(y1,predict(net0, x1))
     prx3 <- prx3 + predict(net0, x1)
   }
   prx3 <- prx3 /nbag
@@ -260,7 +262,9 @@ xfull2[,5] <- prx5
 rm(y0,y1, x0d, x1d, rf0, prx1,prx2,prx3,prx4,prx5)
 rm(par0, net0, mod0,mod_class, clf,x0, x1)
 
-# 
+# store intermediate files
+xvalid2 <- data.frame(xvalid2)
+xfull2 <- data.frame(xfull2)
 xvalid2$target <- y 
 xvalid2$ID <- id_valid
 write.csv(xvalid2, paste('./input/xtrain_lvl3',todate,'.csv', sep = ""), row.names = F)
