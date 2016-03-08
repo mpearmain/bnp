@@ -10,7 +10,7 @@ require(Metrics)
 
 seed_value <- 450
 todate <- str_replace_all(Sys.Date(), "-","")
-nbag <- 5
+nbag <- 1
 nthreads <- 8
 
 ## functions ####
@@ -262,6 +262,12 @@ rm(y0,y1, x0d, x1d, rf0, prx1,prx2,prx3,prx4,prx5)
 rm(par0, net0, mod0,mod_class, clf,x0, x1)
 
 # 
+colsn <- c('glmnet', 'xgb', 'nnet', 'hillclimb', 'ranger')
+xvalid2 <- data.frame(xvalid2)
+xfull2 <- data.frame(xfull2)
+names(xvalid2) <- colsn
+names(xfull2) <- colsn
+
 xvalid2$target <- y 
 xvalid2$ID <- id_valid
 write.csv(xvalid2, paste('./input/xtrain_lvl3',todate,'.csv', sep = ""), row.names = F)
