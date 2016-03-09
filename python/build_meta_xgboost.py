@@ -99,7 +99,6 @@ if __name__ == '__main__':
             y0 = ytrain[ytrain.index.isin(idx0)]
             y1 = ytrain[ytrain.index.isin(idx1)]
 
-            # fit the model on observations associated with subject whichSubject in this fold
             clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)])
             mvalid[idx1,i] = clf.predict_proba(x1)[:,1]
 
