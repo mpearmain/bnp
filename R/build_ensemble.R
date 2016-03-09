@@ -10,7 +10,7 @@ require(Metrics)
 
 seed_value <- 450
 todate <- str_replace_all(Sys.Date(), "-","")
-nbag <- 2
+nbag <- 5
 nthreads <- 8
 
 ## functions ####
@@ -149,6 +149,7 @@ for (ii in 1:nfolds)
                      objective = "binary:logistic",
                      eval_metric = "logloss")
     prx <- predict(clf, x1d)
+    print(log_loss(y1,prx))
     prx2 <- prx2 + prx
   }
   prx2 <- prx2 / nbag
