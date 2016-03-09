@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "lvl220160307"
+    dataset_version = "lvl220160309"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     xgboostBO = BayesianOptimization(xgboostcv,
                                      {'max_depth': (int(9), int(15)),
                                       'learning_rate': (0.001, 0.02),
-                                      'n_estimators': (int(1000), int(2000)),
+                                      'n_estimators': (int(750), int(2000)),
                                       'subsample': (0.7, 0.9),
                                       'colsample_bytree': (0.7, 0.9),
                                       'gamma': (0.000001, 0.01),
