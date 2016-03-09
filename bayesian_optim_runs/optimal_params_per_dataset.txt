@@ -118,21 +118,6 @@ at position: {'colsample_bytree': 0.77245797080355449,
 'gamma': 9.9999999999999995e-07}}
 
 
-## lvl220160307
-
-XGBOOST: -0.433068
-XGBOOST: {'colsample_bytree': 0.89525122839274607, 
-          'learning_rate': 0.0072427710457193201, 
-           'min_child_weight': 8.7826168682356993, 
-           'n_estimators': 1926.9086541655479, 
-            'subsample': 0.74524450200361458, 
-            'max_depth': 9.7959417619101661, 
-            'gamma': 0.0042467165496637808}
-
-Stopping. Best iteration:
-[673]	validation_0-logloss:0.433060
-
-
 ## changes to model aprams
 First XGB model params:
     # setup model instances
