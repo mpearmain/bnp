@@ -8,9 +8,9 @@ require(nnet)
 require(ranger)
 require(Metrics)
 
-seed_value <- 450
+seed_value <- 3901
 todate <- str_replace_all(Sys.Date(), "-","")
-nbag <- 5
+nbag <- 2
 nthreads <- 8
 
 ## functions ####
@@ -161,7 +161,8 @@ for (ii in 1:nfolds)
   for (jj in 1:nbag)
   {
     set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
-    net0 <- nnet(factor(y0) ~ ., data = x0, size = 35, MaxNWts = 20000, decay = 0.03)
+    net0 <- nnet(factor(y0) ~ ., data = x0, size = round(0.5 * ncol(x0)), 
+                 MaxNWts = 20000, decay = 0.03)
     log_loss(y1,predict(net0, x1))
     prx3 <- prx3 + predict(net0, x1)
   }
@@ -174,20 +175,6 @@ for (ii in 1:nfolds)
   prx4 <- as.matrix(x1) %*% as.matrix(par0)
   storage_matrix[ii,4] <- log_loss(y1,prx4)
   xvalid2[isValid,4] <- prx4
-  
-#   # mix with random forest
-#   rf0 <- ranger(factor(y0) ~ ., 
-#                 data = x0, 
-#                 mtry = 12, 
-#                 num.trees = 600,
-#                 write.forest = T, 
-#                 probability = T,
-#                 min.node.size = 10, 
-#                 seed = seed_value,
-#                 num.threads = 4)
-#   prx5 <- predict(rf0, x1)$predictions[,2]
-#   storage_matrix[ii,5] <- log_loss(y1,prx5)
-#   xvalid2[isValid,5] <- prx5
   
   msg(paste("fold ",ii,": finished", sep = ""))
 }
@@ -235,7 +222,8 @@ prx3 <- rep(0, nrow(xfull))
 for (jj in 1:nbag)
 {
   set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
-  net0 <- nnet(factor(y) ~ ., data = xvalid,  size = 35, MaxNWts = 20000, decay = 0.03)
+  net0 <- nnet(factor(y) ~ ., data = xvalid,  size = round(0.5 * ncol(xvalid)), 
+               MaxNWts = 20000, decay = 0.03)
   prx3 <- prx3 + predict(net0, xfull)
 }
 prx3 <- prx3 /nbag
@@ -246,18 +234,6 @@ par0 <- buildEnsemble(c(1,15,5,0.6), xvalid,y)
 prx4 <- as.matrix(xfull) %*% as.matrix(par0)
 xfull2[,4] <- prx4
 
-# mix with ranger
-# rf0 <- ranger(factor(y) ~ ., 
-#               data = xvalid, 
-#               mtry = 25, 
-#               num.trees = 350,
-#               write.forest = T, 
-#               probability = T,
-#               min.node.size = 10, 
-#               seed = seed_value,
-#               num.threads = nthreads)
-# prx5 <- predict(rf0, xfull)$predictions[,2]
-# xfull2[,5] <- prx5
 
 rm(y0,y1, x0d, x1d, rf0, prx1,prx2,prx3,prx4,prx5)
 rm(par0, net0, mod0,mod_class, clf,x0, x1)
