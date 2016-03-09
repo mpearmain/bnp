@@ -117,6 +117,19 @@ at position: {'colsample_bytree': 0.77245797080355449,
 'max_depth': 13.228363990139563, 
 'gamma': 9.9999999999999995e-07}}
 
+## lvl220160309
+
+Final Results
+XGBOOST: -0.446845
+XGBOOST: {'colsample_bytree': 0.84760960108712091, 
+           'learning_rate': 0.010925628629069456, 
+            'min_child_weight': 13.629088385230338, 
+            'n_estimators': 754.31072867905857, 
+            'subsample': 0.70008652526555992, 
+            'max_depth': 9.0, 
+            'gamma': 9.9999999999999995e-07}
+Stopping. Best iteration:
+[405]	validation_0-logloss:0.446835
 
 ## changes to model aprams
 First XGB model params:
