@@ -24,14 +24,14 @@ if __name__ == '__main__':
     ## data
     # read the training and test sets
     xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
-    id_train = xtrain.QuoteNumber
-    ytrain = xtrain.QuoteConversion_Flag
-    xtrain.drop('QuoteNumber', axis = 1, inplace = True)
-    xtrain.drop('QuoteConversion_Flag', axis = 1, inplace = True)
+    id_train = xtrain.ID
+    ytrain = xtrain.target
+    xtrain.drop('ID', axis = 1, inplace = True)
+    xtrain.drop('target', axis = 1, inplace = True)
 
     xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
-    id_test = xtest.QuoteNumber
-    xtest.drop('QuoteNumber', axis = 1, inplace = True)
+    id_test = xtest.ID
+    xtest.drop('ID', axis = 1, inplace = True)
 
     # folds
     xfolds = pd.read_csv('../input/xfolds.csv')
