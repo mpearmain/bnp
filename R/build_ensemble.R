@@ -196,14 +196,12 @@ for (ii in 1:nfolds)
 prx1 <- rep( 0, nrow(xfull))
 for (jj in 1:11)
 {
-  mod0 <- glmnet(x = as.matrix(xvalid), y = y, alpha = (jj-1) * 0.1)
-  prx <- predict(mod0,as.matrix(xfull))  
+  mod0 <- glmnet(x = as.matrix(xvalid), y = y, alpha = (jj-1) * 0.1, family = "binomial")
+  prx <- predict(mod0,as.matrix(xfull), type = "response")   
   prx <- prx[,ncol(prx)]
-  # storage_matrix[ii,jj] <- logLoss(y1,prx1)
   prx1 <- prx1 + prx
 }
-prx1 <- rank(prx1)/length(prx1)
-xfull2[,1] <- prx1
+xfull2[,1] <- prx1/11
 
 # xgboost
 x0d <- xgb.DMatrix(as.matrix(xvalid), label = y)
@@ -264,7 +262,7 @@ rm(y0,y1, x0d, x1d, rf0, prx1,prx2,prx3,prx4,prx5)
 rm(par0, net0, mod0,mod_class, clf,x0, x1)
 
 # 
-colsn <- c('glmnet', 'xgb', 'nnet', 'hillclimb', 'ranger')
+colsn <- c('glmnet', 'xgb', 'nnet', 'hillclimb')
 xvalid2 <- data.frame(xvalid2)
 xfull2 <- data.frame(xfull2)
 names(xvalid2) <- colsn
@@ -282,13 +280,13 @@ xfull2$ID <- NULL
 ## final ensemble forecasts ####
 # evaluate performance across folds
 storage2 <- array(0, c(nfolds,3))
-param_mat <- array(0, c(nfolds, 5))
+param_mat <- array(0, c(nfolds, 4))
 for (ii in 1:nfolds)
 {
   isTrain <- which(xfolds$fold_index != ii)
   isValid <- which(xfolds$fold_index == ii)
-  x0 <- apply(xvalid2[isTrain,],2,rank)/length(isTrain)
-  x1 <- apply(xvalid2[isValid,],2,rank)/length(isValid)
+  x0 <- xvalid2[isTrain,]
+  x1 <- xvalid2[isValid,]
   x0 <- data.frame(x0)
   x1 <- data.frame(x1)
   y0 <- y[isTrain]
@@ -301,12 +299,7 @@ for (ii in 1:nfolds)
   
 }
 
-# find the best combination of mixers
-xvalid2 <- apply(xvalid2,2,rank)/nrow(xvalid2)
-xfull2 <- apply(xfull2,2,rank)/nrow(xfull2)
-xvalid2 <- data.frame(xvalid2)
-xfull2 <- data.frame(xfull2)
-
+ 
 # construct forecast
 par0 <- buildEnsemble(c(1,15, 5,0.6), xvalid2,y)
 prx <- as.matrix(xfull2) %*% as.matrix(par0)
