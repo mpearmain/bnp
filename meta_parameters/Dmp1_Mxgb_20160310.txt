@@ -1,0 +1,5 @@
+dataset version: mp1
+model type:xgb
+seed value: 73924
+parameter grid 
+[(0.8291290826852845, 0.00959583705688026, 5.0, 751, 0.7, 15, 1e-06)]
