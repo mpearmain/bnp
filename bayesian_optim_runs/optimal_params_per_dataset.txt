@@ -12,6 +12,17 @@ Created on Fri Feb  5 18:22:49 2016
 Final Results
 XGBOOST: -0.461868
 
+## MP1 with early stopping 
+
+{'max_val': -0.46135749611173138, 
+'max_params': {'colsample_bytree': 0.82912908268528451, 
+                'learning_rate': 0.0095958370568802603, 
+                'min_child_weight': 5.0, 
+                'n_estimators': 751, 
+                'subsample': 0.69999999999999996, 
+                'max_depth': 15.0, 
+                'gamma': 9.9999999999999995e-07}}
+
 ## KB1
 
 {'max_val': -0.45499237691968059, 
@@ -22,6 +33,8 @@ XGBOOST: -0.461868
                 'subsample': 0.69999999999999996, 
                 'max_depth': 13.254691052755533, 
                 'gamma': 0.01}}
+
+## KB1 with early stopping
 
 
 ## KB2
@@ -36,6 +49,9 @@ XGBOOST: -0.461868
                 'gamma': 0.01}}
 Final Results
 XGBOOST: -0.453769
+
+## KB2 with early stopping
+
 
 
 ## KB3
