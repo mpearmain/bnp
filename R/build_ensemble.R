@@ -10,7 +10,7 @@ require(Metrics)
 
 seed_value <- 3901
 todate <- str_replace_all(Sys.Date(), "-","")
-nbag <- 2
+nbag <- 3
 nthreads <- 8
 
 ## functions ####
