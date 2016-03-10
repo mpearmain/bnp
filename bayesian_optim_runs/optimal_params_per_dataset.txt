@@ -36,6 +36,16 @@ XGBOOST: -0.461868
 
 ## KB1 with early stopping
 
+Final Results
+XGBOOST: -0.455420
+XGBOOST: {'colsample_bytree': 0.8259804948227828, 
+          'learning_rate': 0.015434263883936962, 
+          'min_child_weight': 7.0858112389690078, 
+          'n_estimators': 664, 
+          'subsample': 0.72269345916932126, 
+          'max_depth': 13.260678123477756, 
+          'gamma': 0.01}
+
 
 ## KB2
 
