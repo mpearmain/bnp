@@ -5,3 +5,4 @@ __init__.pyc
 autotune_optimal_xgb.pyc
 autotune_optimal_xgb.py
 BinaryStacker.pyc
+tmp.py
