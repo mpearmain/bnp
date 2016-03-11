@@ -244,7 +244,7 @@ xfull2$ID <- NULL
 
 ## final ensemble forecasts ####
 # evaluate performance across folds
-storage2 <- array(0, c(nfolds,4))
+storage2 <- array(0, c(nfolds,3))
 for (ii in 1:nfolds)
 {
   isTrain <- which(xfolds$fold_index != ii)
@@ -255,23 +255,24 @@ for (ii in 1:nfolds)
  
   storage2[ii,1] <- min(apply(x1,2,function(s) log_loss(y1,s)))
 
-  # raw avg of xgb and nnet
   storage2[ii,2] <- log_loss(y1, exp(rowMeans(log(x1[,1:2]))))
+  storage2[ii,3] <- log_loss(y1, rowMeans(x1[,1:2]))
   
-  net0 <- nnet(factor(y0) ~ ., data = x0,  size = 2, 
-               MaxNWts = 20000, decay = 0.03)
-  prx3 <- predict(net0, x1)
-  storage2[ii,3] <- log_loss(y1,prx3)
+#   net0 <- nnet(factor(y0) ~ ., data = x0,  size = 2, 
+#                MaxNWts = 20000, decay = 0.03)
+#   prx3 <- predict(net0, x1)
+#   storage2[ii,3] <- log_loss(y1,prx3)
+#   
 }
 
 
 # final forecast 
-prx <- rowMeans(xfull2[,1:2])
+prx <- exp(rowMeans(log(xfull2[,1:2])))
 xfor <- data.frame(ID = id_full, PredictedProb = prx)
 
-print(paste("mean: ", mean(storage2[,1])))
-print(paste("sd: ", sd(storage2[,1])))
+print(paste("mean: ", mean(storage2[,2])))
+print(paste("sd: ", sd(storage2[,2])))
 
 # store
 todate <- str_replace_all(Sys.Date(), "-","")
-write_csv(xfor, path = paste("./submissions/ens_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
+write_csv(xfor, path = paste("./submissions/enscorr_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
