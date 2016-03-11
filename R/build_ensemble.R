@@ -100,6 +100,8 @@ nfolds <- length(unique(xfolds$fold_index))
 
 # storage for results
 storage_matrix <- array(0, c(nfolds, 4))
+# control: what was the best individual model and which one was it 
+xcontrol <- array(0,c(nfolds,2))
 
 # storage for level 2 forecasts 
 xvalid2 <- array(0, c(nrow(xvalid),4))
@@ -114,18 +116,10 @@ for (ii in 1:nfolds)
   x0 <- xvalid[isTrain,];     x1 <- xvalid[isValid,]
   y0 <- y[isTrain];    y1 <- y[isValid]
  
-  # mix with glmnet
-  prx1 <- y1 * 0
-  for (jj in 1:11)
-  {
-    mod0 <- glmnet(x = as.matrix(x0), y = y0, alpha = (jj-1) * 0.1, family = "binomial")
-    prx <- predict(mod0,as.matrix(x1), type = "response")  
-    prx <- prx[,ncol(prx)]
-    prx1 <- prx1 + prx
-  }
-  storage_matrix[ii,1] <- log_loss(y1,prx1/11)
-  xvalid2[isValid,1] <- prx1/11
-  rm(mod0, prx1, prx)
+  # control
+  indiv_perf <- apply(x1,2,function(s) log_loss(y1,s))
+  xcontrol[ii,1] <- min(indiv_perf)
+  xcontrol[ii,2] <- which.min(indiv_perf)
   
   # mix with xgboost: bag over multiple seeds
   x0d <- xgb.DMatrix(as.matrix(x0), label = y0)
@@ -172,25 +166,16 @@ for (ii in 1:nfolds)
   xvalid2[isValid,3] <- prx3
 
   # mix with hillclimbing
-  par0 <- buildEnsemble(c(1,15,5,0.6), x0,y0)
+  par0 <- buildEnsemble(c(1,10,5,0.6), x0,y0)
   prx4 <- as.matrix(x1) %*% as.matrix(par0)
   storage_matrix[ii,4] <- log_loss(y1,prx4)
   xvalid2[isValid,4] <- prx4
+  
   
   msg(paste("fold ",ii,": finished", sep = ""))
 }
 
 ## build prediction on full set
-# glmnet
-prx1 <- rep( 0, nrow(xfull))
-for (jj in 1:11)
-{
-  mod0 <- glmnet(x = as.matrix(xvalid), y = y, alpha = (jj-1) * 0.1, family = "binomial")
-  prx <- predict(mod0,as.matrix(xfull), type = "response")   
-  prx <- prx[,ncol(prx)]
-  prx1 <- prx1 + prx
-}
-xfull2[,1] <- prx1/11
 
 # xgboost
 x0d <- xgb.DMatrix(as.matrix(xvalid), label = y)
