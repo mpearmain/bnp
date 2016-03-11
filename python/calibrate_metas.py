@@ -33,13 +33,13 @@ if __name__ == "__main__":
     
     # read the metas to calibrate
     print("Reading train set")
-    xtrain = pd.read_csv('../metafeatures/prval_XGB_20160304_seed1234.csv')
+    xtrain = pd.read_csv('../metafeatures/prval_xgb_20160309_datakb6099_seed352617.csv')
     id_train = xtrain.ID
     ytrain = xtrain.target
     yval = xtrain.target * 0 -1
 
     print("Reading test set")
-    xtest = pd.read_csv('../metafeatures/prfull_XGB_20160304_seed1234.csv')
+    xtest = pd.read_csv('../metafeatures/prfull_xgb_20160309_datakb6099_seed352617.csv')
     id_test = xtest.ID
     yfull = xtest.ID * 0 -1
 
@@ -66,11 +66,19 @@ if __name__ == "__main__":
         y_iso = ir.transform((np.array(x1)[:,0]))
         yval[idx1] = y_iso
         
+        
+             
         print(log_loss(y1, y_raw))
-        print(log_loss(y1, 0.98 * y_raw + 0.02 * y_iso))
+        alpha = 0.1  
+        print(log_loss(y1, (1-alpha) * y_raw + alpha* y_iso))
+        alpha = 0.2  
+        print(log_loss(y1, (1-alpha) * y_raw + alpha* y_platt))
                            
         storage_mat[j, 0] = log_loss(y1, y_raw)
-        storage_mat[j, 1] = log_loss(y1, 0.98 * y_raw + 0.02 * y_iso)
+        alpha = 0.1
+        storage_mat[j, 1] = log_loss(y1, (1-alpha) * y_raw + alpha* y_iso)
+        alpha = 0.2
+        storage_mat[j, 2] = log_loss(y1, (1-alpha) * y_raw + alpha* y_iso)
         
     # populate the new prfull
     ir = IR( out_of_bounds = 'clip' )	
