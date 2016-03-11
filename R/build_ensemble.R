@@ -99,18 +99,18 @@ xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
 
 # storage for results
-storage_matrix <- array(0, c(nfolds, 4))
+storage_matrix <- array(0, c(nfolds, 3))
 # control: what was the best individual model and which one was it 
 xcontrol <- array(0,c(nfolds,2))
 
 # storage for level 2 forecasts 
-xvalid2 <- array(0, c(nrow(xvalid),4))
-xfull2 <- array(0, c(nrow(xfull),4))
+xvalid2 <- array(0, c(nrow(xvalid),3))
+xfull2 <- array(0, c(nrow(xfull),3))
 
 
 for (ii in 1:nfolds)
 {
-  # mix with glmnet: average over multiple alpha parameters 
+  # separate training and test 
   isTrain <- which(xfolds$fold_index != ii)
   isValid <- which(xfolds$fold_index == ii)
   x0 <- xvalid[isTrain,];     x1 <- xvalid[isValid,]
@@ -148,8 +148,8 @@ for (ii in 1:nfolds)
     prx2 <- prx2 + prx
   }
   prx2 <- prx2 / nbag
-  storage_matrix[ii,2] <- log_loss(y1,prx2)
-  xvalid2[isValid,2] <- prx2
+  storage_matrix[ii,1] <- log_loss(y1,prx2)
+  xvalid2[isValid,1] <- prx2
   
   # mix with nnet:  
   prx3 <- y1 * 0
@@ -162,14 +162,14 @@ for (ii in 1:nfolds)
     prx3 <- prx3 + predict(net0, x1)
   }
   prx3 <- prx3 /nbag
-  storage_matrix[ii,3] <- log_loss(y1,prx3)
-  xvalid2[isValid,3] <- prx3
+  storage_matrix[ii,2] <- log_loss(y1,prx3)
+  xvalid2[isValid,2] <- prx3
 
   # mix with hillclimbing
   par0 <- buildEnsemble(c(1,10,5,0.6), x0,y0)
   prx4 <- as.matrix(x1) %*% as.matrix(par0)
-  storage_matrix[ii,4] <- log_loss(y1,prx4)
-  xvalid2[isValid,4] <- prx4
+  storage_matrix[ii,3] <- log_loss(y1,prx4)
+  xvalid2[isValid,3] <- prx4
   
   
   msg(paste("fold ",ii,": finished", sep = ""))
