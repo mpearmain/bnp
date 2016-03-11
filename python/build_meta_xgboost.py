@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "kb1"
+    dataset_version = "kb2"
     model_type = "xgb"
     seed_value = 889
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -57,6 +57,7 @@ if __name__ == '__main__':
          (0.7,0.02,5.0,650,0.7, 7, 0.01),
          (0.8,0.0090705965482161376,5.0,1341,0.8,13, 0.001)                      
     ]
+
 
     # dump the meta description for this set into a file
     # (dataset version, model type, seed, parameter grid) 
