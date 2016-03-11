@@ -61,7 +61,7 @@ buildEnsemble <- function(parVec, xset, yvec)
       best.track <- c(best.track, max(trackScoreHill))
       hillNames <- c(hillNames,names(best))
       hill.df <- data.frame(hill.df, xx[,best])
-      msg(ee)
+      #msg(ee)
     }
     
     ww <- summary(factor(hillNames))
@@ -166,7 +166,7 @@ for (ii in 1:nfolds)
   xvalid2[isValid,2] <- prx3
 
   # mix with hillclimbing
-  par0 <- buildEnsemble(c(1,10,5,0.6), x0,y0)
+  par0 <- buildEnsemble(c(1,10,5,0.7), x0,y0)
   prx4 <- as.matrix(x1) %*% as.matrix(par0)
   storage_matrix[ii,3] <- log_loss(y1,prx4)
   xvalid2[isValid,3] <- prx4
@@ -201,7 +201,7 @@ for (jj in 1:nbag)
   prx2 <- prx2 + prx
 }
 prx2 <- prx2 / nbag
-xfull2[,2] <- prx2
+xfull2[,1] <- prx2
 
 # mix with nnet 
 prx3 <- rep(0, nrow(xfull))
@@ -213,19 +213,19 @@ for (jj in 1:nbag)
   prx3 <- prx3 + predict(net0, xfull)
 }
 prx3 <- prx3 /nbag
-xfull2[,3] <- prx3
+xfull2[,2] <- prx3
 
 # mix with hillclimbing
-par0 <- buildEnsemble(c(1,15,5,0.6), xvalid,y)
+par0 <- buildEnsemble(c(1,10,5,0.7), xvalid,y)
 prx4 <- as.matrix(xfull) %*% as.matrix(par0)
-xfull2[,4] <- prx4
+xfull2[,3] <- prx4
 
 
 rm(y0,y1, x0d, x1d, rf0, prx1,prx2,prx3,prx4,prx5)
-rm(par0, net0, mod0,mod_class, clf,x0, x1)
+rm(par0, net0, mod0, clf,x0, x1)
 
 # 
-colsn <- c('glmnet', 'xgb', 'nnet', 'hillclimb')
+colsn <- c('xgb', 'nnet', 'hillclimb')
 xvalid2 <- data.frame(xvalid2)
 xfull2 <- data.frame(xfull2)
 names(xvalid2) <- colsn
@@ -240,32 +240,33 @@ xfull2$ID <- id_full
 write.csv(xfull2, paste('./input/xtest_lvl3',todate,'.csv', sep = ""), row.names = F)
 xfull2$ID <- NULL
 
+# SFSG # 
+
 ## final ensemble forecasts ####
 # evaluate performance across folds
-storage2 <- array(0, c(nfolds,3))
-param_mat <- array(0, c(nfolds, 4))
+storage2 <- array(0, c(nfolds,4))
 for (ii in 1:nfolds)
 {
   isTrain <- which(xfolds$fold_index != ii)
   isValid <- which(xfolds$fold_index == ii)
-  x0 <- xvalid2[isTrain,]
-  x1 <- xvalid2[isValid,]
-  x0 <- data.frame(x0)
-  x1 <- data.frame(x1)
-  y0 <- y[isTrain]
-  y1 <- y[isValid]
+  x0 <- xvalid2[isTrain,]; x1 <- xvalid2[isValid,]
+  x0 <- data.frame(x0); x1 <- data.frame(x1)
+  y0 <- y[isTrain]; y1 <- y[isValid]
+ 
+  storage2[ii,1] <- min(apply(x1,2,function(s) log_loss(y1,s)))
+
+  # raw avg of xgb and nnet
+  storage2[ii,2] <- log_loss(y1, exp(rowMeans(log(x1[,1:2]))))
   
-  par0 <- buildEnsemble(c(1,15, 5,0.6), x0,y0)
-  pr1 <- as.matrix(x1) %*% as.matrix(par0)
-  storage2[ii,1] <- log_loss(y1, pr1)
-  param_mat[ii,] <- par0
-  
+  net0 <- nnet(factor(y0) ~ ., data = x0,  size = 2, 
+               MaxNWts = 20000, decay = 0.03)
+  prx3 <- predict(net0, x1)
+  storage2[ii,3] <- log_loss(y1,prx3)
 }
 
- 
-# construct forecast
-par0 <- buildEnsemble(c(1,15, 5,0.6), xvalid2,y)
-prx <- as.matrix(xfull2) %*% as.matrix(par0)
+
+# final forecast 
+prx <- rowMeans(xfull2[,1:2])
 xfor <- data.frame(ID = id_full, PredictedProb = prx)
 
 print(paste("mean: ", mean(storage2[,1])))
