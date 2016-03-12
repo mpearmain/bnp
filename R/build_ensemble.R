@@ -83,11 +83,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("./input/xtrain_lvl220160311.csv")
+xvalid <- read_csv("./input/xtrain_lvl220160312.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("./input/xtest_lvl220160311.csv")
+xfull <- read_csv("./input/xtest_lvl220160312.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
