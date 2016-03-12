@@ -164,13 +164,22 @@ Stopping. Best iteration:
 XGBOOST: -0.446965
 XGBOOST: {'colsample_bytree': 0.90000000000000002, 
         'learning_rate': 0.012076188827537701, 
-        'min_child_weight': 15.0, 'n_estimators': 899.95570682701236, 'subsample': 0.70002465004732506, 'max_depth': 10.543964159646864, 'gamma': 9.9999999999999995e-07}
+        'min_child_weight': 15.0, 
+        'n_estimators': 899.95570682701236, 
+        'subsample': 0.70002465004732506, 
+        'max_depth': 10.543964159646864, 
+        'gamma': 9.9999999999999995e-07}
 
 ## lvl220160311
 
 # early stopping
 XGBOOST: -0.435110
 XGBOOST: {'colsample_bytree': 0.69999999999999996, 'learning_rate': 0.016044678534012986, 'min_child_weight': 25.0, 'n_estimators': 474, 'subsample': 0.69999999999999996, 'max_depth': 5.0, 'gamma': 9.9999999999999995e-07}
+
+## lvl220160312
+
+XGBOOST: -0.434920
+XGBOOST: {'colsample_bytree': 0.90000000000000002, 'learning_rate': 0.010820711595184912, 'min_child_weight': 23.702175758509274, 'n_estimators': 524, 'subsample': 0.69999999999999996, 'max_depth': 8.0451534532336577, 'gamma': 0.01}
 
 
 ## HERE BE DRAGONS ##
