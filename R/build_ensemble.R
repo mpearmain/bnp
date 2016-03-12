@@ -83,17 +83,17 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("./input/xtrain_lvl220160312.csv")
+xvalid <- read_csv("../input/xtrain_lvl220160312.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("./input/xtest_lvl220160312.csv")
+xfull <- read_csv("../input/xtest_lvl220160312.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
 
 # folds for cv evaluation
-xfolds <- read_csv("./input/xfolds.csv")
+xfolds <- read_csv("../input/xfolds.csv")
 xfolds$fold_index <- xfolds$fold5
 xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
@@ -275,4 +275,4 @@ print(paste("sd: ", sd(storage2[,2])))
 
 # store
 todate <- str_replace_all(Sys.Date(), "-","")
-write_csv(xfor, path = paste("./submissions/enscorr_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
+write_csv(xfor, path = paste("../submissions/enscorr_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
