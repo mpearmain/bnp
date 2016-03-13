@@ -181,6 +181,11 @@ XGBOOST: {'colsample_bytree': 0.69999999999999996, 'learning_rate': 0.0160446785
 XGBOOST: -0.434920
 XGBOOST: {'colsample_bytree': 0.90000000000000002, 'learning_rate': 0.010820711595184912, 'min_child_weight': 23.702175758509274, 'n_estimators': 524, 'subsample': 0.69999999999999996, 'max_depth': 8.0451534532336577, 'gamma': 0.01}
 
+## lvl220160313
+
+XGBOOST: -0.435035
+XGBOOST: {'colsample_bytree': 0.69385877713632493, 'learning_rate': 0.024717557543508219, 'min_child_weight': 14.336652584506087, 'n_estimators': 495, 'subsample': 0.83056035213418378, 'max_depth': 5.5209270431817634, 'gamma': 0.0029338752003340248}
+
 
 ## HERE BE DRAGONS ##
 
