@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "lvl220160311"
+    dataset_version = "lvlc220160315"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -66,12 +66,12 @@ if __name__ == "__main__":
     y1 = ytrain[ytrain.index.isin(idx1)]
 
     xgboostBO = BayesianOptimization(xgboostcv,
-                                     {'max_depth': (int(5), int(15)),
-                                      'learning_rate': (0.0005, 0.02),
+                                     {'max_depth': (int(3), int(15)),
+                                      'learning_rate': (0.0005, 0.03),
                                       'n_estimators': (int(500), int(2000)),
-                                      'subsample': (0.7, 0.9),
-                                      'colsample_bytree': (0.7, 0.9),
-                                      'gamma': (0.000001, 0.01),
+                                      'subsample': (0.65, 0.95),
+                                      'colsample_bytree': (0.65, 0.9),
+                                      'gamma': (0.000001, 0.02),
                                       'min_child_weight': (int(4), int(25))
                                      })
     xgboostBO.maximize(init_points=5, n_iter=15, acq='ei')
