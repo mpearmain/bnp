@@ -83,11 +83,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("../input/xtrain_lvl220160312.csv")
+xvalid <- read_csv("../input/xtrain_lvl220160315.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("../input/xtest_lvl220160312.csv")
+xfull <- read_csv("../input/xtest_lvl220160315.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
@@ -132,13 +132,13 @@ for (ii in 1:nfolds)
     clf <- xgb.train(booster = "gbtree", 
                      maximize = TRUE, 
                      print.every.n = 25, 
-                     nrounds = 524,
-                     eta = 0.010820711595184912, 
-                     max.depth = 8,
-                     colsample_bytree = 0.90000000000000002, 
-                     subsample = 0.69999999999999996,
-                     min_child_weight = 23.702175758509274,
-                     gamma= 0.01,
+                     nrounds = 246,
+                     eta = 0.020605799914981199, 
+                     max.depth = 7,
+                     colsample_bytree = 0.76837273781968118, 
+                     subsample = 0.65000000000000002,
+                     min_child_weight = 7.2696012513463524,
+                     gamma= 0.02,
                      data = x0d, 
                      objective = "binary:logistic",
                      eval_metric = "logloss")
@@ -187,13 +187,13 @@ for (jj in 1:nbag)
   clf <- xgb.train(booster = "gbtree", 
                    maximize = TRUE, 
                    print.every.n = 25, 
-                   nrounds = 524,
-                   eta = 0.010820711595184912, 
-                   max.depth = 8,
-                   colsample_bytree = 0.90000000000000002, 
-                   subsample = 0.69999999999999996,
-                   min_child_weight = 23.702175758509274,
-                   gamma= 0.01,
+                   nrounds = 246,
+                   eta = 0.020605799914981199, 
+                   max.depth = 7,
+                   colsample_bytree = 0.76837273781968118, 
+                   subsample = 0.65000000000000002,
+                   min_child_weight = 7.2696012513463524,
+                   gamma= 0.02,
                    data = x0d, 
                    objective = "binary:logistic",
                    eval_metric = "logloss")
