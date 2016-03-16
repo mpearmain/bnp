@@ -658,8 +658,8 @@ buildKB8 <- function(ref_data = 'kb4', cut_level = 0.999)
   
   str_replace(cut_level, "[.]","")
   
-  write.csv(dist1, paste('input/xtrain_',ref_data,'c',str_replace(cut_level, "[.]",""),   '.csv', sep = ""), row.names = F)
-  write.csv(dist2, paste('input/xtest_',ref_data,'c',str_replace(cut_level, "[.]",""),   '.csv', sep = ""), row.names = F)
+  write.csv(xtrain, paste('input/xtrain_',ref_data,'c',str_replace(cut_level, "[.]",""),   '.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('input/xtest_',ref_data,'c',str_replace(cut_level, "[.]",""),   '.csv', sep = ""), row.names = F)
   
   return(cat("KB8 dataset built"))
 }
@@ -680,6 +680,6 @@ buildKB7(ref_data = 'kb4', nof_clusters = 50)
 buildKB7(ref_data = 'kb4', nof_clusters = 250)
 buildKB7(ref_data = 'kb6099', nof_clusters = 50)
 buildKB7(ref_data = 'kb6099', nof_clusters = 250)
-
+buildKB8(ref_data = 'kb3', cut_level = 0.999)
 
 
