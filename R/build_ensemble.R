@@ -83,11 +83,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("../input/xtrain_lvlc220160315.csv")
+xvalid <- read_csv("../input/xtrain_lvl220160315.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("../input/xtest_lvlc220160315.csv")
+xfull <- read_csv("../input/xtest_lvl220160315.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
@@ -155,11 +155,22 @@ for (ii in 1:nfolds)
   prx3 <- y1 * 0
   for (jj in 1:nbag)
   {
+    wx <- apply(x0,1,sd)
     set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
     net0 <- nnet(factor(y0) ~ ., data = x0, size = round(0.5 * ncol(x0)), 
                  MaxNWts = 20000, decay = 0.03)
-    log_loss(y1,predict(net0, x1))
-    prx3 <- prx3 + predict(net0, x1)
+    pr1 <- predict(net0, x1)
+    net0 <- nnet(factor(y0) ~ ., data = x0, size = round(0.5 * ncol(x0)), 
+                 MaxNWts = 20000, decay = 0.03, weights = wx )
+    pr2 <- predict(net0, x1)
+    net0 <- nnet(factor(y0) ~ ., data = x0, size = round(0.5 * ncol(x0)), 
+                 MaxNWts = 20000, decay = 0.03, weights = 1/wx)
+    pr3 <- predict(net0, x1)
+    
+    prmix <- (pr1 + pr2 + pr3)/3
+    
+    print(log_loss(y1,prmix))
+    prx3 <- prx3 + prmix
   }
   prx3 <- prx3 /nbag
   storage_matrix[ii,2] <- log_loss(y1,prx3)
@@ -207,10 +218,23 @@ xfull2[,1] <- prx2
 prx3 <- rep(0, nrow(xfull))
 for (jj in 1:nbag)
 {
+ 
+  wx <- apply(xvalid,1,sd)
   set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
-  net0 <- nnet(factor(y) ~ ., data = xvalid,  size = round(0.5 * ncol(xvalid)), 
+  net0 <- nnet(factor(y) ~ ., data = xvalid, size = round(0.5 * ncol(x0)), 
                MaxNWts = 20000, decay = 0.03)
-  prx3 <- prx3 + predict(net0, xfull)
+  pr1 <- predict(net0, xfull)
+  net0 <- nnet(factor(y) ~ ., data = xvalid, size = round(0.5 * ncol(x0)), 
+               MaxNWts = 20000, decay = 0.03, weights = wx )
+  pr2 <- predict(net0, xfull)
+  net0 <- nnet(factor(y) ~ ., data = xvalid, size = round(0.5 * ncol(x0)), 
+               MaxNWts = 20000, decay = 0.03, weights = 1/wx)
+  pr3 <- predict(net0, xfull)
+  
+  prmix <- (pr1 + pr2 + pr3)/3
+  
+  prx3 <- prx3 + prmix
+  
 }
 prx3 <- prx3 /nbag
 xfull2[,2] <- prx3
