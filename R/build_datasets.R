@@ -7,6 +7,8 @@ library(lubridate)
 require(lme4)
 require(chron)
 require(Metrics)
+require(kohonen)
+require(h2o)
 
 set.seed(260681)
 
@@ -625,6 +627,41 @@ buildKB7 <- function(ref_data = 'kb4', nof_clusters = 50)
   write.csv(dist2, paste('input/xtest_kb7c',nof_clusters,'d',ref_data,'.csv', sep = ""), row.names = F)
   
   return(cat("KB7 dataset built"))
+}
+
+# SFSG # 
+
+# PCA version
+buildKB8 <- function(ref_data = 'kb4', cut_level = 0.999)
+{
+  xtrain <- read_csv(paste('../input/xtrain_',ref_data,'.csv', sep = ""))
+  xtest <- read_csv(paste('../input/xtest_',ref_data,'.csv', sep = ""))
+  
+  y <- xtrain$target; xtrain$target <- NULL
+  id_train <- xtrain$ID; id_test <- xtest$ID
+  xtrain$ID <- xtest$ID <- NULL
+
+  # drop linear dependencies
+  xcor <- cor(xtrain)
+  flc <- findLinearCombos(xcor)
+  xtrain <- xtrain[,-flc$remove]
+  xtest <- xtest[,-flc$remove]
+  
+  # transform to PCA-representation
+  prep0 <- preProcess(x = xtrain, method = c("pca"), thresh = cut_level)
+  xtrain <- predict(prep0, xtrain)
+  xtest <- predict(prep0, xtest)
+  
+  xtrain$ID <- id_train
+  xtest$ID <- id_test
+  xtrain$target <- y
+  
+  str_replace(cut_level, "[.]","")
+  
+  write.csv(dist1, paste('input/xtrain_',ref_data,'c',str_replace(cut_level, "[.]",""),   '.csv', sep = ""), row.names = F)
+  write.csv(dist2, paste('input/xtest_',ref_data,'c',str_replace(cut_level, "[.]",""),   '.csv', sep = ""), row.names = F)
+  
+  return(cat("KB8 dataset built"))
 }
 
 
