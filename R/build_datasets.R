@@ -681,5 +681,7 @@ buildKB7(ref_data = 'kb4', nof_clusters = 250)
 buildKB7(ref_data = 'kb6099', nof_clusters = 50)
 buildKB7(ref_data = 'kb6099', nof_clusters = 250)
 buildKB8(ref_data = 'kb3', cut_level = 0.999)
+buildKB8(ref_data = 'kb4', cut_level = 0.999)
+
 
 
