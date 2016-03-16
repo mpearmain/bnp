@@ -282,11 +282,6 @@ for (ii in 1:nfolds)
   storage2[ii,2] <- log_loss(y1, exp(rowMeans(log(x1[,1:2]))))
   storage2[ii,3] <- log_loss(y1, rowMeans(x1[,1:2]))
   
-#   net0 <- nnet(factor(y0) ~ ., data = x0,  size = 2, 
-#                MaxNWts = 20000, decay = 0.03)
-#   prx3 <- predict(net0, x1)
-#   storage2[ii,3] <- log_loss(y1,prx3)
-#   
 }
 
 
