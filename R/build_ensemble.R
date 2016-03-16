@@ -279,18 +279,18 @@ for (ii in 1:nfolds)
  
   storage2[ii,1] <- min(apply(x1,2,function(s) log_loss(y1,s)))
 
-  storage2[ii,2] <- log_loss(y1, exp(rowMeans(log(x1[,1:2]))))
-  storage2[ii,3] <- log_loss(y1, rowMeans(x1[,1:2]))
+  storage2[ii,2] <- log_loss(y1, exp(0.4 * log(x1[,1]) + 0.6 * log(x1[,2])))
+  storage2[ii,3] <- log_loss(y1, exp(0.3 * log(x1[,1]) + 0.7 * log(x1[,2])))
   
 }
 
 
 # final forecast 
-prx <- exp(rowMeans(log(xfull2[,1:2])))
+prx <- exp( 0.3 * log(xfull2[,1]) + 0.7 * log(xfull2[,2]))
 xfor <- data.frame(ID = id_full, PredictedProb = prx)
 
-print(paste("mean: ", mean(storage2[,2])))
-print(paste("sd: ", sd(storage2[,2])))
+print(paste("mean: ", mean(storage2[,3])))
+print(paste("sd: ", sd(storage2[,3])))
 
 # store
 todate <- str_replace_all(Sys.Date(), "-","")
