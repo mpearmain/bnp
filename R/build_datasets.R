@@ -629,8 +629,6 @@ buildKB7 <- function(ref_data = 'kb4', nof_clusters = 50)
   return(cat("KB7 dataset built"))
 }
 
-# SFSG # 
-
 # PCA version
 buildKB8 <- function(ref_data = 'kb4', cut_level = 0.999)
 {
@@ -663,7 +661,6 @@ buildKB8 <- function(ref_data = 'kb4', cut_level = 0.999)
   
   return(cat("KB8 dataset built"))
 }
-
 
 ## actual construction ####
 buildMP1()
