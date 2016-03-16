@@ -275,4 +275,4 @@ print(paste("sd: ", sd(storage2[,2])))
 
 # store
 todate <- str_replace_all(Sys.Date(), "-","")
-write_csv(xfor, path = paste("../submissions/enscorr_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
+write_csv(xfor, path = paste("../submissions/ens_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
