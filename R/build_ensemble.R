@@ -8,7 +8,7 @@ require(nnet)
 require(ranger)
 require(Metrics)
 
-seed_value <- 3901
+seed_value <- 181
 todate <- str_replace_all(Sys.Date(), "-","")
 nbag <- 3
 nthreads <- 8
