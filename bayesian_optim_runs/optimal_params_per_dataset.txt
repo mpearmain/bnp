@@ -196,28 +196,23 @@ XGBOOST: {'colsample_bytree': 0.65159756910293465, 'learning_rate': 0.0250307013
 
 Final Results
 XGBOOST: -0.435340
-XGBOOST: {'colsample_bytree': 0.76837273781968118, 'learning_rate': 0.020605799914981199, 'min_child_weight': 7.2696012513463524, 'n_estimators': 246, 'subsample': 0.65000000000000002, 'max_depth': 7.2725422638157564, 'gamma': 0.02}
+XGBOOST: {'colsample_bytree': 0.76837273781968118, 
+        'learning_rate': 0.020605799914981199, 
+        'min_child_weight': 7.2696012513463524, 
+        'n_estimators': 246, 
+        'subsample': 0.65000000000000002, 
+        'max_depth': 7.2725422638157564, 
+        'gamma': 0.02}
 
 ## lvlc220160315
 
+Final Results
+XGBOOST: -0.438343
+XGBOOST: {'colsample_bytree': 0.76717470749039629, 
+        'learning_rate': 0.014488330981375516, 
+        'min_child_weight': 24.763980738786419, 
+        'n_estimators': 306, 
+        'subsample': 0.8805044962663664, 
+        'max_depth': 6.9041101613862654, 
+        'gamma': 0.019380347893782034}
 
-
-## HERE BE DRAGONS ##
-
-## changes to model aprams
-First XGB model params:
-    # setup model instances
-    clf = [XGBClassifier(max_depth=9, learning_rate=0.0062, n_estimators=1819, silent=True, nthread=-1, subsample=0.7, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=12, learning_rate=0.00708, n_estimators=1781, silent=True, nthread=-1, subsample=0.7104, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5.5917305068934944, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=11, learning_rate=0.00925, n_estimators=1906, silent=True, nthread=-1, subsample=0.89, colsample_bytree=0.8909, gamma=0.004537, min_child_weight = 5.6470775432075406, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=14, learning_rate=0.007336, n_estimators=2408, silent=True, nthread=-1, subsample=0.7267, colsample_bytree=0.7642, gamma=0.00719, min_child_weight = 14.634866816577702, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=10, learning_rate=0.025, n_estimators=2500, silent=True, nthread=-1, subsample=0.9, colsample_bytree=0.7, gamma=0.00077979306474894653, min_child_weight = 1.633309904669616, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=10, learning_rate=0.013901402098648891, n_estimators=1519, silent=True, nthread=-1, subsample=0.804, colsample_bytree=0.772, gamma=0.00060856204654098059, min_child_weight = 12.326654624743421, seed=random_seed, objective="binary:logistic")]
-Second XGB model Params (changed 2016.03.05)
-    # setup model instances
-    clf = [XGBClassifier(max_depth=9, learning_rate=0.0162, n_estimators=919, silent=True, nthread=-1, subsample=0.7, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=12, learning_rate=0.01708, n_estimators=881, silent=True, nthread=-1, subsample=0.7104, colsample_bytree=0.7, gamma=0.01, min_child_weight = 5.5917305068934944, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=11, learning_rate=0.01925, n_estimators=806, silent=True, nthread=-1, subsample=0.89, colsample_bytree=0.8909, gamma=0.004537, min_child_weight = 5.6470775432075406, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=14, learning_rate=0.017336, n_estimators=708, silent=True, nthread=-1, subsample=0.7267, colsample_bytree=0.7642, gamma=0.00719, min_child_weight = 14.634866816577702, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=10, learning_rate=0.025, n_estimators=500, silent=True, nthread=-1, subsample=0.9, colsample_bytree=0.7, gamma=0.00077979306474894653, min_child_weight = 1.633309904669616, seed=random_seed, objective="binary:logistic"),
-           XGBClassifier(max_depth=10, learning_rate=0.023, n_estimators=759, silent=True, nthread=-1, subsample=0.804, colsample_bytree=0.772, gamma=0.00060856204654098059, min_child_weight = 12.326654624743421, seed=random_seed, objective="binary:logistic")]
