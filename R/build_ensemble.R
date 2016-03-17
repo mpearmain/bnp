@@ -83,11 +83,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("../input/xtrain_lvl220160315.csv")
+xvalid <- read_csv("../input/xtrain_lvl220160317.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("../input/xtest_lvl220160315.csv")
+xfull <- read_csv("../input/xtest_lvl220160317.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
@@ -132,13 +132,13 @@ for (ii in 1:nfolds)
     clf <- xgb.train(booster = "gbtree", 
                      maximize = TRUE, 
                      print.every.n = 25, 
-                     nrounds = 306,
-                     eta = 0.014488330981375516, 
-                     max.depth = 7,
-                     colsample_bytree = 0.76717470749039629, 
-                     subsample = 0.8805044962663664,
-                     min_child_weight = 24.763980738786419,
-                     gamma= 0.019380347893782034,
+                     nrounds = 438,
+                     eta = 0.012162008200849976, 
+                     max.depth = 10,
+                     colsample_bytree = 0.73980766989966085, 
+                     subsample = 0.74189647880869336,
+                     min_child_weight = 24.070404606824759,
+                     gamma= 0.003585497279613728,
                      data = x0d, 
                      objective = "binary:logistic",
                      eval_metric = "logloss")
@@ -198,13 +198,13 @@ for (jj in 1:nbag)
   clf <- xgb.train(booster = "gbtree", 
                    maximize = TRUE, 
                    print.every.n = 25, 
-                   nrounds = 306,
-                   eta = 0.014488330981375516, 
-                   max.depth = 7,
-                   colsample_bytree = 0.76717470749039629, 
-                   subsample = 0.8805044962663664,
-                   min_child_weight = 24.763980738786419,
-                   gamma= 0.019380347893782034,
+                   nrounds = 438,
+                   eta = 0.012162008200849976, 
+                   max.depth = 10,
+                   colsample_bytree = 0.73980766989966085, 
+                   subsample = 0.74189647880869336,
+                   min_child_weight = 24.070404606824759,
+                   gamma= 0.003585497279613728,
                    data = x0d, 
                    objective = "binary:logistic",
                    eval_metric = "logloss")
@@ -267,7 +267,11 @@ xfull2$ID <- NULL
 # SFSG # 
 
 ## final ensemble forecasts ####
-# evaluate performance across folds
+# evaluate performance using repeated cv
+
+# ctrl <- trainControl(method="repeatedcv", number=3, repeats=3, verboseIter=T, 
+#                      classProbs=T, summaryFunction=twoClassSummary)
+
 storage2 <- array(0, c(nfolds,3))
 for (ii in 1:nfolds)
 {
