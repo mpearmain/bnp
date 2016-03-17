@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "lvlc220160315"
+    dataset_version = "nb"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -70,7 +70,7 @@ if __name__ == "__main__":
                                       'learning_rate': (0.0005, 0.03),
                                       'n_estimators': (int(500), int(2000)),
                                       'subsample': (0.65, 0.95),
-                                      'colsample_bytree': (0.65, 0.9),
+                                      'colsample_bytree': (0.65, 0.95),
                                       'gamma': (0.000001, 0.02),
                                       'min_child_weight': (int(4), int(25))
                                      })
