@@ -4,8 +4,8 @@ require(ranger)
 require(caret)
 require(stringr)
 
-dataset_version <- "kb3"
-seed_value <- 132234
+dataset_version <- "kb4"
+seed_value <- 43
 model_type <- "ranger"
 todate <- str_replace_all(Sys.Date(), "-","")
 
