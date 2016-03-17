@@ -271,8 +271,12 @@ xfull2$ID <- NULL
 
 # ctrl <- trainControl(method="repeatedcv", number=3, repeats=3, verboseIter=T, 
 #                      classProbs=T, summaryFunction=twoClassSummary)
+idFix <- createDataPartition(y, 
+                    times = 10,
+                    p = 0.8,
+                    list = TRUE)
 
-storage2 <- array(0, c(nfolds,3))
+storage2 <- array(0, c(nfolds,4))
 for (ii in 1:nfolds)
 {
   isTrain <- which(xfolds$fold_index != ii)
@@ -283,19 +287,19 @@ for (ii in 1:nfolds)
  
   storage2[ii,1] <- min(apply(x1,2,function(s) log_loss(y1,s)))
 
-  storage2[ii,2] <- log_loss(y1, exp(0.4 * log(x1[,1]) + 0.6 * log(x1[,2])))
-  storage2[ii,3] <- log_loss(y1, exp(0.3 * log(x1[,1]) + 0.7 * log(x1[,2])))
+  storage2[ii,2] <- log_loss(y1, exp(0.5 * log(x1[,1]) + 0.5 * log(x1[,2])))
+  storage2[ii,3] <- log_loss(y1, exp(0.4 * log(x1[,1]) + 0.6 * log(x1[,2])))
+  storage2[ii,4] <- log_loss(y1, exp(0.3 * log(x1[,1]) + 0.7 * log(x1[,2])))
   
 }
 
-
 # final forecast 
-prx <- exp( 0.3 * log(xfull2[,1]) + 0.7 * log(xfull2[,2]))
-xfor <- data.frame(ID = id_full, PredictedProb = prx)
-
-print(paste("mean: ", mean(storage2[,3])))
-print(paste("sd: ", sd(storage2[,3])))
-
-# store
-todate <- str_replace_all(Sys.Date(), "-","")
-write_csv(xfor, path = paste("../submissions/ens_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
+# prx <- exp( 0.3 * log(xfull2[,1]) + 0.7 * log(xfull2[,2]))
+# xfor <- data.frame(ID = id_full, PredictedProb = prx)
+# 
+# print(paste("mean: ", mean(storage2[,3])))
+# print(paste("sd: ", sd(storage2[,3])))
+# 
+# # store
+# todate <- str_replace_all(Sys.Date(), "-","")
+# write_csv(xfor, path = paste("../submissions/ens_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
