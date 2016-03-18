@@ -269,12 +269,7 @@ xfull2$ID <- NULL
 ## final ensemble forecasts ####
 # evaluate performance using repeated cv
 
-# ctrl <- trainControl(method="repeatedcv", number=3, repeats=3, verboseIter=T, 
-#                      classProbs=T, summaryFunction=twoClassSummary)
-idFix <- createDataPartition(y, 
-                    times = 10,
-                    p = 0.8,
-                    list = TRUE)
+idFix <- createDataPartition(y,  times = 10, p = 0.8, list = TRUE)
 
 storage2 <- array(0, c(nfolds,4))
 for (ii in 1:nfolds)
@@ -294,12 +289,12 @@ for (ii in 1:nfolds)
 }
 
 # final forecast 
-# prx <- exp( 0.3 * log(xfull2[,1]) + 0.7 * log(xfull2[,2]))
-# xfor <- data.frame(ID = id_full, PredictedProb = prx)
+prx <- exp( 0.3 * log(xfull2[,1]) + 0.7 * log(xfull2[,2]))
+xfor <- data.frame(ID = id_full, PredictedProb = prx)
 # 
-# print(paste("mean: ", mean(storage2[,3])))
-# print(paste("sd: ", sd(storage2[,3])))
+print(paste("mean: ", mean(storage2[,3])))
+print(paste("sd: ", sd(storage2[,3])))
 # 
 # # store
-# todate <- str_replace_all(Sys.Date(), "-","")
-# write_csv(xfor, path = paste("../submissions/ens_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
+todate <- str_replace_all(Sys.Date(), "-","")
+write_csv(xfor, path = paste("../submissions/ens_bag",nbag,"_",todate,"_seed",seed_value,".csv", sep = ""))
