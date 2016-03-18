@@ -72,7 +72,7 @@ for (ii in 1:nrow(param_grid))
   }
   
   # full version 
-  mars.model <- earth(x = x0, y = y0, degree = param_grid$deg[ii], glm=list(family=binomial))
+  mars.model <- earth(x = xtrain, y = factor(y), degree = param_grid$deg[ii], glm=list(family=binomial))
   
   pred_full <- predict(mars.model, xtest, type = "response")
   mtest[,ii] <- pred_full
