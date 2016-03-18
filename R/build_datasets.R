@@ -9,6 +9,7 @@ require(chron)
 require(Metrics)
 require(kohonen)
 require(h2o)
+require(Rtsne)
 
 set.seed(260681)
 
@@ -343,6 +344,7 @@ buildKB3 <- function()
 }
 
 # KB2 with extras:
+# - bi- and tri- element factor combos
 # - all factors mapped to response rates
 buildKB4 <- function()
 {
@@ -661,6 +663,109 @@ buildKB8 <- function(ref_data = 'kb4', cut_level = 0.999)
   
   return(cat("KB8 dataset built"))
 }
+
+# WORK IN PROGRESS
+# varia: tsne and som
+buildKB9 <- function(ref_data = 'kb3')
+{
+  # prep data
+  xtrain <- read_csv(paste('../input/xtrain_',ref_data,'.csv', sep = ""))
+  xtest <- read_csv(paste('../input/xtest_',ref_data,'.csv', sep = ""))
+  
+  y <- xtrain$target; xtrain$target <- NULL
+  id_train <- xtrain$ID; id_test <- xtest$ID
+  xtrain$ID <- xtest$ID <- NULL
+  
+  # tsne
+  xdat <- rbind(xtrain, xtest)
+  tsne <- Rtsne(as.matrix(xdat), check_duplicates = FALSE, pca = FALSE, 
+                perplexity=30, theta=0.5, dims=2, verbose = T)
+  
+  xtr <- scale(xtrain)
+  Xtraining <- scale(xtr)
+  Xtest <- scale(xtest,
+                 center = attr(Xtraining, "scaled:center"),
+                 scale = attr(Xtraining, "scaled:scale"))
+ 
+  som.wines <- som(Xtraining, grid = somgrid(5, 5, "hexagonal"))
+  
+  som.prediction <- predict(som.wines, newdata = Xtest,
+                            trainX = Xtraining,
+                            trainY = factor(wine.classes[training]))
+  
+}
+
+# reduced version of lvl2 features
+buildKB10 <- function(ref_data = 'lvl220160317')
+{
+  train <- read_csv(paste('../input/xtrain_',ref_data,'.csv', sep = "" ))
+  test <- read_csv(paste('../input/xtest_',ref_data,'.csv', sep = "" ))
+  
+  # Lets first align the datasets for equal vars to work with.
+  y <- train$target; train$target <- NULL
+  id_train <- train$ID; train$ID <- NULL
+  id_test <- test$ID; test$ID <- NULL
+  
+  ix <- grep("xgb|mars", colnames(train))
+  train <- train[,ix]
+  test <- test[,ix]
+  
+  train$ID <- id_train; test$ID <- id_test
+  train$target <- y
+  
+  write.csv(train, paste('../input/xtrain_',ref_data,'red.csv', sep = ""), row.names = F)
+  write.csv(test, paste('../input/xtest_',ref_data,'red.csv', sep = ""), row.names = F)
+  
+  return("finished")
+}
+
+# combo version of lvl2 features - differences of heavily correlated ones
+buildKB11 <- function(ref_data = 'lvl220160317', cut_level = 0.99)
+{
+  train <- read_csv(paste('../input/xtrain_',ref_data,'.csv', sep = "" ))
+  test <- read_csv(paste('../input/xtest_',ref_data,'.csv', sep = "" ))
+  
+  # Lets first align the datasets for equal vars to work with.
+  y <- train$target; train$target <- NULL
+  id_train <- train$ID; train$ID <- NULL
+  id_test <- test$ID; test$ID <- NULL
+  
+  xdat <- rbind(train, test); isTrain <- 1:nrow(train)
+  # correlated pairs
+  ## analysis of correlations
+  xcor <- cor(xdat)
+  flc <- findCorrelation(xcor, cut_level)
+  corr_pairs <- which(xcor > cut_level, arr.ind = T)
+  corr_pairs <- corr_pairs[corr_pairs[,1] > corr_pairs[,2],]
+  # create new features
+  xnum1 <- array(0, c(nrow(xdat), nrow(corr_pairs)))
+  for (ii in 1:nrow(corr_pairs))
+  {
+    xnum1[,ii] <- apply(xdat[,corr_pairs[ii,]],1,diff)
+    print(colnames(xdat)[corr_pairs[ii,]])
+  }
+  colnames(xnum1) <- paste("diff", 1:ncol(xnum1), sep = "")
+  xdat <- xdat[,-flc]; xdat <- data.frame(xdat, xnum1)
+  xtrain <- xdat[isTrain,]
+  xtest <- xdat[-isTrain,]
+  
+  
+  xtrain$ID <- id_train; xtest$ID <- id_test
+  xtrain$target <- y
+  
+  write.csv(xtrain, paste('../input/xtrain_',ref_data,'diff.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('../input/xtest_',ref_data,'diff.csv', sep = ""), row.names = F)
+  
+  return("finished")
+}
+
+
+
+# TODO
+# som (kohonnen)
+# nbayes -> Python
+# tsne
+# proper bagging
 
 ## actual construction ####
 buildMP1()
