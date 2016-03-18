@@ -279,7 +279,7 @@ for (ii in 1:length(idFix))
  
   storagex[ii,1] <- min(apply(x1,2,function(s) log_loss(y1,s)))
   
-  storagex[ii,2] <- log_loss(y1, exp(0.5 * log(x1[,1]) + 0.5 * log(x1[,2])))
+  storagex[ii,2] <- log_loss(y1, x1[,2])
   storagex[ii,3] <- log_loss(y1, exp(0.4 * log(x1[,1]) + 0.6 * log(x1[,2])))
   storagex[ii,4] <- log_loss(y1, exp(0.3 * log(x1[,1]) + 0.7 * log(x1[,2])))
   
