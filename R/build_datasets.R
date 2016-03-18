@@ -663,7 +663,7 @@ buildKB8 <- function(ref_data = 'kb4', cut_level = 0.999)
 }
 
 # WORK IN PROGRESS
-# varia: tsne and som
+# varia: tsne
 buildKB9 <- function(ref_data = 'kb1')
 {
   # prep data
@@ -760,7 +760,6 @@ buildKB11 <- function(ref_data = 'lvl220160317', cut_level = 0.99)
 
 
 # TODO
-# som (kohonnen)
 # nbayes -> Python -> 2- and 3-way interactions, along with feature selection
 # tsne
 # proper bagging
