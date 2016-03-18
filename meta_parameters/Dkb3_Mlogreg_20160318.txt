@@ -1,0 +1,5 @@
+dataset version: kb3
+model type:logreg
+seed value: 123
+parameter grid 
+[(0.01, 'l1', True, 'balanced'), (0.01, 'l1', True, None), (0.01, 'l2', True, 'balanced'), (0.01, 'l2', True, None), (0.1, 'l1', True, 'balanced'), (0.1, 'l1', True, None), (0.1, 'l2', True, 'balanced'), (0.1, 'l2', True, None), (0.9, 'l1', True, 'balanced'), (0.9, 'l1', True, None), (0.9, 'l2', True, 'balanced'), (0.9, 'l2', True, None), (2, 'l1', True, 'balanced'), (2, 'l1', True, None), (2, 'l2', True, 'balanced'), (2, 'l2', True, None)]
