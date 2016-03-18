@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "nb"
+    dataset_version = "lvl220160317diff"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -74,7 +74,7 @@ if __name__ == "__main__":
                                       'gamma': (0.000001, 0.02),
                                       'min_child_weight': (int(4), int(25))
                                      })
-    xgboostBO.maximize(init_points=5, n_iter=15, acq='ei')
+    xgboostBO.maximize(init_points=5, n_iter=20, acq='ei')
     print('-' * 53)
 
     print('Final Results')
