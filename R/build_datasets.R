@@ -656,8 +656,6 @@ buildKB8 <- function(ref_data = 'kb4', cut_level = 0.999)
   xtest$ID <- id_test
   xtrain$target <- y
   
-  str_replace(cut_level, "[.]","")
-  
   write.csv(xtrain, paste('../input/xtrain_',ref_data,'c',str_replace(cut_level, "[.]",""),   '.csv', sep = ""), row.names = F)
   write.csv(xtest, paste('../input/xtest_',ref_data,'c',str_replace(cut_level, "[.]",""),   '.csv', sep = ""), row.names = F)
   
@@ -666,11 +664,12 @@ buildKB8 <- function(ref_data = 'kb4', cut_level = 0.999)
 
 # WORK IN PROGRESS
 # varia: tsne and som
-buildKB9 <- function(ref_data = 'kb3')
+buildKB9 <- function(ref_data = 'kb1')
 {
   # prep data
   xtrain <- read_csv(paste('../input/xtrain_',ref_data,'.csv', sep = ""))
   xtest <- read_csv(paste('../input/xtest_',ref_data,'.csv', sep = ""))
+  isTrain <- 1:nrow(xtrain)
   
   y <- xtrain$target; xtrain$target <- NULL
   id_train <- xtrain$ID; id_test <- xtest$ID
@@ -681,18 +680,17 @@ buildKB9 <- function(ref_data = 'kb3')
   tsne <- Rtsne(as.matrix(xdat), check_duplicates = FALSE, pca = FALSE, 
                 perplexity=30, theta=0.5, dims=2, verbose = T)
   
-  xtr <- scale(xtrain)
-  Xtraining <- scale(xtr)
-  Xtest <- scale(xtest,
-                 center = attr(Xtraining, "scaled:center"),
-                 scale = attr(Xtraining, "scaled:scale"))
- 
-  som.wines <- som(Xtraining, grid = somgrid(5, 5, "hexagonal"))
+  xtrain <- data.frame(tsne$Y[isTrain,])
+  xtest <- data.frame(tsne$Y[-isTrain,])
+  xtrain$target <- y; xtrain$ID <- id_train
+  xtest$ID <- id_test
   
-  som.prediction <- predict(som.wines, newdata = Xtest,
-                            trainX = Xtraining,
-                            trainY = factor(wine.classes[training]))
+  write.csv(xtrain, paste('../input/xtrain_',ref_data,'tsne.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('../input/xtest_',ref_data,'tsne.csv', sep = ""), row.names = F)
   
+  return(paste(ref_data, " + tsne: built"))
+  
+
 }
 
 # reduced version of lvl2 features
@@ -763,7 +761,7 @@ buildKB11 <- function(ref_data = 'lvl220160317', cut_level = 0.99)
 
 # TODO
 # som (kohonnen)
-# nbayes -> Python
+# nbayes -> Python -> 2- and 3-way interactions, along with feature selection
 # tsne
 # proper bagging
 
