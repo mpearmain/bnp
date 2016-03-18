@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "kb5099"
+    dataset_version = "kb7c50dkb4"
     model_type = "logreg" 
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -70,7 +70,8 @@ if __name__ == '__main__':
     mfull = np.zeros((xtest.shape[0],len(param_grid)))
     
     ## build 2nd level forecasts
-    for i in range(len(param_grid)):        
+    for i in range(len(param_grid)): 
+        
             print "processing parameter combo:", i
             # configure model with j-th combo of parameters
             x = param_grid[i]
