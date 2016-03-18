@@ -766,22 +766,24 @@ buildKB11 <- function(ref_data = 'lvl220160317', cut_level = 0.99)
 # proper bagging
 
 ## actual construction ####
-buildMP1()
-buildKB1()
-buildKB2()
-buildKB3()
-buildKB4()
+# buildMP1()
+# buildKB1()
+# buildKB2()
+# buildKB3()
+# buildKB4()
 # buildKB5(cut_level = 0.99)
 # buildKB5(cut_level = 0.95)
 # buildKB6(cut_level = 0.99)
 # drop KB6 with cut_level = 0.95 since its HUGE - over 7000 columns
 # buildKB6(cut_level = 0.95)
-buildKB7(ref_data = 'kb4', nof_clusters = 50)
-buildKB7(ref_data = 'kb4', nof_clusters = 250)
-buildKB7(ref_data = 'kb6099', nof_clusters = 50)
-buildKB7(ref_data = 'kb6099', nof_clusters = 250)
-buildKB8(ref_data = 'kb3', cut_level = 0.999)
-buildKB8(ref_data = 'kb4', cut_level = 0.999)
-
+# buildKB7(ref_data = 'kb4', nof_clusters = 50)
+# buildKB7(ref_data = 'kb4', nof_clusters = 250)
+# buildKB7(ref_data = 'kb6099', nof_clusters = 50)
+# buildKB7(ref_data = 'kb6099', nof_clusters = 250)
+# buildKB8(ref_data = 'kb3', cut_level = 0.999)
+# buildKB8(ref_data = 'kb4', cut_level = 0.999)
+buildKB9(ref_data = 'kb2')
+buildKB9(ref_data = 'kb3')
+buildKB9(ref_data = 'kb4')
 
 
