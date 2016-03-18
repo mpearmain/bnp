@@ -270,6 +270,21 @@ xfull2$ID <- NULL
 # evaluate performance using repeated cv
 
 idFix <- createDataPartition(y,  times = 10, p = 0.8, list = TRUE)
+storagex <- array(0, c(length(idFix),4))
+for (ii in 1:length(idFix))
+{
+  idx <- idFix[[ii]]
+  x0 <- xvalid2[idx,]; x1 <- xvalid2[-idx,]
+  y0 <- y[idx]; y1 <- y[-idx]
+ 
+  storagex[ii,1] <- min(apply(x1,2,function(s) log_loss(y1,s)))
+  
+  storagex[ii,2] <- log_loss(y1, exp(0.5 * log(x1[,1]) + 0.5 * log(x1[,2])))
+  storagex[ii,3] <- log_loss(y1, exp(0.4 * log(x1[,1]) + 0.6 * log(x1[,2])))
+  storagex[ii,4] <- log_loss(y1, exp(0.3 * log(x1[,1]) + 0.7 * log(x1[,2])))
+  
+}
+
 
 storage2 <- array(0, c(nfolds,4))
 for (ii in 1:nfolds)
