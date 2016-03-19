@@ -757,8 +757,6 @@ buildKB11 <- function(ref_data = 'lvl220160317', cut_level = 0.99)
   return("finished")
 }
 
-
-
 # TODO
 # nbayes -> Python -> 2- and 3-way interactions, along with feature selection
 # tsne
