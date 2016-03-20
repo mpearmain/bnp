@@ -46,7 +46,7 @@ nfolds <- length(unique(xfolds$fold_index))
 
 ## fit models ####
 # parameter grid
-param_grid <- expand.grid(deg = c(2,3,4))
+param_grid <- expand.grid(deg = c(2,3))
 
 # storage structures 
 mtrain <- array(0, c(nrow(xtrain), nrow(param_grid)))
