@@ -5,7 +5,7 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "kb5099"
+dataset_version <- "kb3"
 seed_value <- 1901
 model_type <- "mars"
 todate <- str_replace_all(Sys.Date(), "-","")
@@ -28,8 +28,8 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 
 ## data ####
 # read actual data
-xtrain <- read_csv(paste("./input/xtrain_",dataset_version,".csv", sep = ""))
-xtest <- read_csv(paste("./input/xtest_",dataset_version,".csv", sep = ""))
+xtrain <- read_csv(paste("../input/xtrain_",dataset_version,".csv", sep = ""))
+xtest <- read_csv(paste("../input/xtest_",dataset_version,".csv", sep = ""))
 y <- xtrain$target; 
 xtrain$target <- NULL
 id_train <- xtrain$ID
@@ -38,7 +38,7 @@ xtrain$ID <- xtest$ID <- NULL
 xtrain$SalesField8 <- xtest$SalesField8 <- NULL
 
 # division into folds: 5-fold
-xfolds <- read_csv("./input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
+xfolds <- read_csv("../input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
 xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
 
@@ -63,6 +63,11 @@ for (ii in 1:nrow(param_grid))
     isValid <- which(xfolds$fold_index == jj)
     x0 <- xtrain[isTrain,]; x1 <- xtrain[isValid,]
     y0 <- factor(y)[isTrain]; y1 <- factor(y)[isValid]
+    
+    # WORK IN PROGRESS #
+    
+    
+    # WORK IN PROGRESS # 
     
     mars.model <- earth(x = x0, y = y0, degree = param_grid$deg[ii], glm=list(family=binomial))
     
@@ -100,7 +105,7 @@ print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
 
 
 
-write_csv(mtrain, path = paste("./metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
-write_csv(mtest, path = paste("./metafeatures/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtrain, path = paste("../metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtest, path = paste("../metafeatures/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 
