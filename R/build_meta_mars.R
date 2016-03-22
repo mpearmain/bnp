@@ -5,8 +5,8 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "kb3"
-seed_value <- 1901
+dataset_version <- "kb15"
+seed_value <- 23
 model_type <- "mars"
 todate <- str_replace_all(Sys.Date(), "-","")
 
@@ -35,7 +35,6 @@ xtrain$target <- NULL
 id_train <- xtrain$ID
 id_test <- xtest$ID
 xtrain$ID <- xtest$ID <- NULL
-xtrain$SalesField8 <- xtest$SalesField8 <- NULL
 
 # division into folds: 5-fold
 xfolds <- read_csv("../input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
@@ -63,11 +62,6 @@ for (ii in 1:nrow(param_grid))
     isValid <- which(xfolds$fold_index == jj)
     x0 <- xtrain[isTrain,]; x1 <- xtrain[isValid,]
     y0 <- factor(y)[isTrain]; y1 <- factor(y)[isValid]
-    
-    # WORK IN PROGRESS #
-    
-    
-    # WORK IN PROGRESS # 
     
     mars.model <- earth(x = x0, y = y0, degree = param_grid$deg[ii], glm=list(family=binomial))
     
