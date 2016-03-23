@@ -757,6 +757,33 @@ buildKB11 <- function(ref_data = 'lvl220160317', cut_level = 0.99)
   return("finished")
 }
 
+# aggregate multiple datasets
+buildKB12 <- function(data_list = c('kb1', 'kb1tsne', 'kb2tsne'))
+{
+  dset <- data_list[1]
+  train <- read_csv(paste('../input/xtrain_',dset,'.csv', sep = "" ))
+  test <- read_csv(paste('../input/xtest_',dset,'.csv', sep = "" ))
+  
+  # correction of column names in case there are duplicates
+  y <- train$target; train$target <- NULL;  id_train <- train$ID; train$ID <- NULL
+  id_test <- test$ID; test$ID <- NULL
+  
+  
+  for (ii in 2:length(data_list))
+  {
+    xtr <- read_csv(paste('../input/xtrain_',data_list[ii],'.csv', sep = "" ))
+    xte <- read_csv(paste('../input/xtest_',data_list[ii],'.csv', sep = "" ))
+    
+    train <- merge(x = train, y = xtr, by = c("ID", "target"))
+    test <- merge(x = test, y = xte, by = c("ID"))
+  }
+
+  write.csv(xtrain, paste('../input/xtrain_',ref_data,'diff.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('../input/xtest_',ref_data,'diff.csv', sep = ""), row.names = F)
+  
+  
+}
+
 # TODO
 # nbayes -> Python -> 2- and 3-way interactions, along with feature selection
 # tsne
