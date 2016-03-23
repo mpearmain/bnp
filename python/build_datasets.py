@@ -12,6 +12,7 @@ from sklearn.metrics import log_loss
 import xgboost as xgb
 from sklearn.naive_bayes import BernoulliNB
 from itertools import combinations
+from sklearn.decomposition import TruncatedSVD
 
 def buildKB15():
     ## data
@@ -96,6 +97,45 @@ def buildKB15():
     
     return
     
+    
+def buildKB16(n_comp = 200, seed_value = 123):
+    ## data
+    # read the training/test data  
+    print('Importing Data')
+    xtrain = pd.read_csv('../input/xtrain_kb6099.csv')
+    xtest = pd.read_csv('../input/xtest_kb6099.csv')
+    
+    # separate 
+    id_train = xtrain.ID; xtrain.drop('ID', axis = 1, inplace = True)
+    ytrain = xtrain.target; xtrain.drop('target', axis = 1, inplace = True)
+    id_test = xtest.ID; xtest.drop('ID', axis = 1, inplace = True)
+    
+    # fit SVD
+    svd = TruncatedSVD(n_components = n_comp,n_iter=5, random_state= seed_value)
+    svd.fit(xtrain)
+    xtrain = svd.transform(xtrain)
+    xtest = svd.transform(xtest)
+    xtrain = pd.DataFrame(xtrain)
+    xtest = pd.DataFrame(xtest)
+    
+    ## store the results
+    # add indices etc
+    xtrain = pd.DataFrame(xtrain)
+    xtrain['ID'] = id_train
+    xtrain['target'] = ytrain
+#
+    xtest = pd.DataFrame(xtest)
+    xtest['ID'] = id_test
+#
+#
+#    # save the files
+    xtrain.to_csv('../input/xtrain_kb16c'+str(n_comp)+'.csv', index = False, header = True)
+    xtest.to_csv('../input/xtest_kb16c'+str(n_comp)+'.csv', index = False, header = True)
+    
+    return
+    
 if __name__ == "__main__":
     
-    buildKB15()
+    # buildKB15()
+    buildKB16(n_comp = 200, seed_value = 12)
+    buildKB16(n_comp = 300)
