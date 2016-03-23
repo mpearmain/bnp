@@ -81,7 +81,7 @@ for (ii in 1:nrow(param_grid))
   nnet.model <- nnet(factor(y) ~ ., data = xtrain, size = param_grid$size[ii],
                      decay = param_grid$decay[ii], MaxNWts = 50000 )
   
-  pred_full <- predict(nnet.model, xtest, type = "response")
+  pred_full <- predict(nnet.model, xtest, type = "raw")
   mtest[,ii] <- pred_full
   msg(ii)
 }
