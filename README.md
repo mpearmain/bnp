@@ -67,6 +67,12 @@ All datasets are generated using the script `./R/build_datasets.R`. Each dataset
 * KB2 as basis
 * all factors mapped to response rates
 
+#### KB15
+
+
+#### KB16
+* KB6099 as basis
+* SVD (via `sklearn.decomposition.TruncatedSVD`) with `n_components` as function argument
 
 ## Running
 
@@ -81,4 +87,4 @@ All datasets are generated using the script `./R/build_datasets.R`. Each dataset
 5. Final stage is to blend the above models weights. (python L-BFGS-L or other optim methos in scipy - mpearmian to produce.)
 
 
-To avoid local running problems all files should be run from the top level bnp dir to avoid errors. i.e `./`
+We follow the convention adopted in Kaggle scripts, so R scripts should be executed from within the R subfolder (relative paths are given as `../submissions` etc) 
