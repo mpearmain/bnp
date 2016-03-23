@@ -5,7 +5,7 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "kb15"
+dataset_version <- "kb5099"
 seed_value <- 23
 model_type <- "nnet"
 todate <- str_replace_all(Sys.Date(), "-","")
@@ -67,7 +67,7 @@ for (ii in 1:nrow(param_grid))
     x0 <- predict(prep0, x0); x1 <- predict(prep0, x1)
     
     nnet.model <- nnet(y0 ~ ., data = x0, size = param_grid$size[ii],
-                       decay = param_grid$decay[ii], MaxNWts = 50000 )
+                       decay = param_grid$decay[ii], MaxNWts = 250000 )
     
     pred_valid <- predict(nnet.model, x1, type = "raw")
     print(log_loss((y1 == 1) + 0, pred_valid))
@@ -79,7 +79,7 @@ for (ii in 1:nrow(param_grid))
   prep0 <- preProcess(x = xtrain, method = c("range"))
   xtr <- predict(prep0, xtrain); xte <- predict(prep0, xtest)
   nnet.model <- nnet(factor(y) ~ ., data = xtrain, size = param_grid$size[ii],
-                     decay = param_grid$decay[ii], MaxNWts = 50000 )
+                     decay = param_grid$decay[ii], MaxNWts = 250000 )
   
   pred_full <- predict(nnet.model, xtest, type = "raw")
   mtest[,ii] <- pred_full
