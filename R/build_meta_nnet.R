@@ -44,7 +44,7 @@ nfolds <- length(unique(xfolds$fold_index))
 ## fit models ####
 # parameter grid
 param_grid <- expand.grid(size = round(ncol(xtrain) * c(0.5, 0.3, 0.2)),
-                          decay = c(0.01, 0.025, 0.05, 0.1))
+                          decay = c(0.025, 0.1, 0.25))
 
 # storage structures 
 mtrain <- array(0, c(nrow(xtrain), nrow(param_grid)))
