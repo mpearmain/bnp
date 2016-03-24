@@ -662,7 +662,6 @@ buildKB8 <- function(ref_data = 'kb4', cut_level = 0.999)
   return(cat("KB8 dataset built"))
 }
 
-# WORK IN PROGRESS
 # varia: tsne
 buildKB9 <- function(ref_data = 'kb1')
 {
@@ -784,6 +783,224 @@ buildKB12 <- function(data_list = c('kb1', 'kb1tsne', 'kb2tsne'))
   
 }
 
+# check 2,3 and 4-way combinations
+buildKB17 <- function(cutoff = 25, cutoff2 = 50)
+{
+  train <- read_csv('../input/train.csv')
+  test <- read_csv('../input/test.csv')
+  
+  # separation
+  y <- train$target; train$target <- NULL
+  train$dset <- 0; test$dset <- 1
+  
+  # Join the datasets for simple manipulations.
+  bigD <- rbind(train, test); isTrain <- 1:nrow(train)
+  rm(list = c('train', 'test'))
+  ID <- bigD$ID; bigD$ID <- NULL
+  dset <- bigD$dset; bigD$dset <- NULL
+  
+  # column types
+  column_types <- sapply(bigD, class)
+  numeric_columns <- which(column_types == "numeric")
+  character_columns <- which(column_types == "character")
+  character_names <- colnames(bigD)[character_columns]
+  # Count NAs across the data set
+  countnas <- rowSums(is.na(bigD))
+  
+  # attach to the dataset
+  bigD$countnas <- countnas; rm(countnas)
+  
+  # replace NA with -1
+  bigD[is.na(bigD)] <- -1
+  
+  xfolds <- read_csv("../input/xfolds.csv")
+  xfolds$fold_index <- xfolds$fold5
+  xfolds <- xfolds[,c("ID", "fold_index")]
+  nfolds <- length(unique(xfolds$fold_index))
+  idFix <- list()
+  for (ii in 1:5)
+  {
+    idFix[[ii]] <- which(xfolds$fold_index == ii)
+  }
+  rm(xfolds,ii)  
+  
+  
+  ## create bivariate combos of factors and keep the relevant ones
+  xcomb <- combn(character_columns,2)
+  # storage matrix for summary stats
+  relev_values <- rep(0, ncol(xcomb))
+  for (ii in 1:ncol(xcomb))
+  {
+    # construct candidate feature
+    xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], sep = "")
+    xfeat <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], sep = "")
+    # lump infrequent values (= anything below top "cutoff" ones)
+    xtab <- table(xfeat)
+    freqnames <- names(tail(sort(xtab), cutoff ))
+    xfeat[!(xfeat %in% freqnames)] <- "rare"
+    xfeat <- factor(xfeat)
+    # cross validated variation in response rates
+    cv_vec <- rep(0, nfolds)
+    for (jj in 1:nfolds)
+    {
+      idx <- idFix[[jj]]
+      y0 <- y[isTrain][idx]; feat0 <- xfeat[isTrain][idx]
+      mx <- aggregate(y0, by = list(feat0), mean)
+      cv_vec[jj] <- sd(mx[,2])
+    }
+    relev_values[ii] <- mean(cv_vec)
+    msg(ii)
+  }
+  # pick the relevant ones and add them to the matrix
+  big_ones <- which(rank(-relev_values) < cutoff2)
+  for (ii in big_ones)
+  {
+    xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], sep = "")
+    xfeat <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], sep = "")
+    bigD[,xname] <- xfeat
+  }
+
+  # create trivariate combos of factors
+  xcomb <- combn(character_columns,3)
+  for (ii in 1:ncol(xcomb))
+  {
+    xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], colnames(bigD)[xcomb[3,ii]], sep = "")
+    xfeat <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], bigD[,xcomb[3,ii]],sep = "")
+
+    # lump infrequent values (= anything below top "cutoff" ones)
+    xtab <- table(xfeat)
+    freqnames <- names(tail(sort(xtab), cutoff ))
+    xfeat[!(xfeat %in% freqnames)] <- "rare"
+    xfeat <- factor(xfeat)
+    # cross validated variation in response rates
+    cv_vec <- rep(0, nfolds)
+    for (jj in 1:nfolds)
+    {
+      idx <- which(xfolds$fold_index  == jj)
+      y0 <- y[isTrain][idx]; feat0 <- xfeat[isTrain][idx]
+      mx <- aggregate(y0, by = list(feat0), mean)
+      cv_vec[jj] <- sd(mx[,2])
+    }
+    relev_values[ii] <- mean(cv_vec)
+    msg(ii)
+    
+  }
+  # pick the relevant ones and add them to the matrix
+  big_ones <- which(rank(-relev_values) < cutoff2)
+  for (ii in big_ones)
+  {
+    xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], colnames(bigD)[xcomb[3,ii]], sep = "")
+    xfeat <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], bigD[,xcomb[3,ii]],sep = "")
+    bigD[,xname] <- xfeat
+  }
+  
+  # create 4-element combos of factors
+  xcomb <- combn(character_columns,4)
+  for (ii in 1:ncol(xcomb))
+  {
+    xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], 
+                   colnames(bigD)[xcomb[3,ii]],colnames(bigD)[xcomb[3,ii]], sep = "")
+    xfeat <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], 
+                   bigD[,xcomb[3,ii]], bigD[,xcomb[4,ii]] ,sep = "")
+    # lump infrequent values (= anything below top "cutoff" ones)
+    xtab <- table(xfeat)
+    freqnames <- names(tail(sort(xtab), cutoff ))
+    xfeat[!(xfeat %in% freqnames)] <- "rare"
+    xfeat <- factor(xfeat)
+    # cross validated variation in response rates
+    cv_vec <- rep(0, nfolds)
+    for (jj in 1:nfolds)
+    {
+      idx <- which(xfolds$fold_index  == jj)
+      y0 <- y[isTrain][idx]; feat0 <- xfeat[isTrain][idx]
+      mx <- aggregate(y0, by = list(feat0), mean)
+      cv_vec[jj] <- sd(mx[,2])
+    }
+    relev_values[ii] <- mean(cv_vec)
+    msg(ii)
+  }
+  # pick the relevant ones and add them to the matrix
+  big_ones <- which(rank(-relev_values) < cutoff2)
+  for (ii in big_ones)
+  {
+    xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], 
+                   colnames(bigD)[xcomb[3,ii]],colnames(bigD)[xcomb[3,ii]], sep = "")
+    xfeat <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], 
+                   bigD[,xcomb[3,ii]], bigD[,xcomb[4,ii]] ,sep = "")
+    bigD[,xname] <- xfeat
+  }
+  
+  # separate into train and test 
+  bigD$ID <- ID
+  ## Split files & Export 
+  xtrain <- bigD[which(dset == 0), ]
+  xtest <- bigD[which(dset == 1), ]
+  rm(bigD)
+  
+  
+  # map categoricals to response rates
+  col_types <- sapply(xtrain, class)
+  factor_vars <- colnames(xtrain)[which(col_types == "character")]
+  for (varname in factor_vars)
+  {
+    # placeholder for the new variable values
+    x <- rep(NA, nrow(xtrain))
+    for (ii in seq(idFix))
+    {
+      # separate ~ fold
+      idx <- idFix[[ii]]
+      x0 <- xtrain[-idx, varname, drop = F]; x1 <- xtrain[idx, varname, drop = F]
+      y0 <- y[-idx]; y1 <- y[idx]
+      # take care of factor lvl mismatches
+      x0[,varname] <- factor(as.character(x0[,varname]))
+      # fit LMM model
+      myForm <- as.formula (paste ("y0 ~ (1|", varname, ")"))
+      myLME <- lmer (myForm, x0, REML=FALSE, verbose=F)
+      myFixEf <- fixef (myLME); myRanEf <- unlist (ranef (myLME))
+      # table to match to the original
+      myLMERDF <- data.frame (levelName = as.character(levels(x0[,varname])), 
+                              myDampVal = myRanEf+myFixEf)
+      rownames(myLMERDF) <- NULL
+      x[idx] <- myLMERDF[,2][match(xtrain[idx, varname], myLMERDF[,1])]
+      x[idx][is.na(x[idx])] <- mean(y0)
+    }
+    rm(x0,x1,y0,y1, myLME, myLMERDF, myFixEf, myRanEf)
+    # add the new variable
+    xtrain[,paste(varname, "dmp", sep = "")] <- x
+    
+    # create the same on test set
+    xtrain[,varname] <- factor(as.character(xtrain[,varname]))
+    x <- rep(NA, nrow(xtest))
+    # fit LMM model
+    myForm <- as.formula (paste ("y ~ (1|", varname, ")"))
+    myLME <- lmer (myForm, xtrain[,factor_vars], REML=FALSE, verbose=F)
+    myFixEf <- fixef (myLME); myRanEf <- unlist (ranef (myLME))
+    # table to match to the original
+    myLMERDF <- data.frame (levelName = as.character(levels(xtrain[,varname])), 
+                            myDampVal = myRanEf+myFixEf)
+    rownames(myLMERDF) <- NULL
+    x <- myLMERDF[,2][match(xtest[, varname], myLMERDF[,1])]
+    x[is.na(x)] <- mean(y)
+    xtest[,paste(varname, "dmp", sep = "")] <- x
+    # msg(varname)
+  }
+  
+  # drop the factors
+  ix <- which(colnames(xtrain) %in% factor_vars)
+  xtrain <- xtrain[,-ix]
+  ix <- which(colnames(xtest) %in% factor_vars)
+  xtest <- xtest[,-ix]
+  
+  xtrain$target <- y
+  
+  write.csv(xtrain, paste('../input/xtrain_kb17c',cutoff, 'c', cutoff2, '.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('../input/xtest_kb17c',cutoff, 'c', cutoff2, '.csv', sep = ""), row.names = F)
+  
+  msg("KB17 dataset built")
+}
+
+
+
 # TODO
 # nbayes -> Python -> 2- and 3-way interactions, along with feature selection
 # tsne
@@ -809,5 +1026,6 @@ buildKB12 <- function(data_list = c('kb1', 'kb1tsne', 'kb2tsne'))
 buildKB9(ref_data = 'kb2')
 buildKB9(ref_data = 'kb3')
 buildKB9(ref_data = 'kb4')
+buildKB17(cutoff = 50, cutoff2 = 100)
 
 
