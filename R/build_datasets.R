@@ -876,7 +876,7 @@ buildKB17 <- function(cutoff = 25, cutoff2 = 50)
     cv_vec <- rep(0, nfolds)
     for (jj in 1:nfolds)
     {
-      idx <- which(xfolds$fold_index  == jj)
+      idx <- idFix[[jj]]
       y0 <- y[isTrain][idx]; feat0 <- xfeat[isTrain][idx]
       mx <- aggregate(y0, by = list(feat0), mean)
       cv_vec[jj] <- sd(mx[,2])
@@ -911,7 +911,7 @@ buildKB17 <- function(cutoff = 25, cutoff2 = 50)
     cv_vec <- rep(0, nfolds)
     for (jj in 1:nfolds)
     {
-      idx <- which(xfolds$fold_index  == jj)
+      idx <- idFix[[jj]]
       y0 <- y[isTrain][idx]; feat0 <- xfeat[isTrain][idx]
       mx <- aggregate(y0, by = list(feat0), mean)
       cv_vec[jj] <- sd(mx[,2])
@@ -997,9 +997,7 @@ buildKB17 <- function(cutoff = 25, cutoff2 = 50)
   write.csv(xtest, paste('../input/xtest_kb17c',cutoff, 'c', cutoff2, '.csv', sep = ""), row.names = F)
   
   msg("KB17 dataset built")
-}
-
-
+}                                                    
 
 # TODO
 # nbayes -> Python -> 2- and 3-way interactions, along with feature selection
@@ -1027,5 +1025,5 @@ buildKB9(ref_data = 'kb2')
 buildKB9(ref_data = 'kb3')
 buildKB9(ref_data = 'kb4')
 buildKB17(cutoff = 50, cutoff2 = 100)
-
+buildKB17(cutoff = 100, cutoff2 = 200)
 
