@@ -7,8 +7,7 @@ Created on Thu Dec 10 10:44:27 2015
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_auc_score
-from sklearn import cross_validation
+from sklearn.metrics import log_loss
 from itertools import product
 import datetime
 import os
@@ -17,7 +16,7 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "kb7c50dkb4"
+    dataset_version = "kb17c25c50"
     model_type = "logreg" 
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -88,6 +87,7 @@ if __name__ == '__main__':
                 # fit the model on observations associated with subject whichSubject in this fold
                 model.fit(x0, y0)
                 mvalid[idx1,i] = model.predict_proba(x1)[:,1]
+                print log_loss(y1, mvalid[idx1,i])
                 print "finished fold:", j
                 
             # fit on complete dataset
