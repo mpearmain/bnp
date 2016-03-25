@@ -15,7 +15,7 @@ import datetime
 if __name__ == '__main__':
 
     ## settings
-    dataset_version = "kb1"
+    dataset_version = "kb17c25c50"
     model_type = "etrees" 
     seed_value = 789
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -54,12 +54,12 @@ if __name__ == '__main__':
 
     # parameter grids    
     ntree_vals = [500]
-    maxdepth_vals = [10, 25, None]
+    maxdepth_vals = [10, 25]
     minsampsplit_vals = [2, 10]
-    minsampleaf_vals = [1, 10, 25]
+    minsampleaf_vals = [1, 10]
     mwfl_vals = [0.0, 0.005]
-    maxfeat_vals = [None, 5]
-    classweight = [None, 'balanced_subsample']
+    maxfeat_vals = ['auto']
+    classweight = ['balanced_subsample']
     param_grid = tuple([ntree_vals, maxdepth_vals, minsampsplit_vals, 
                         minsampleaf_vals, mwfl_vals, maxfeat_vals, classweight])
     param_grid = list(product(*param_grid))
