@@ -108,36 +108,36 @@ param_grid = [[int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.02
               [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 20, 2256],
               [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 20, 2256],
                
-               [int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.025, 40, 10000],
-              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 40, 10000]],
-              [int(1.2 * train.shape[1]), 0.05, int(0.6 * train.shape[1]), 0.025, 40, 10000]],
-              [int(0.5 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 40, 10000]],
-              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 40, 10000]],
-              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 40, 10000]],
-              [int(0.5 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 40, 10000]],
-              [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 40, 10000]],
-              [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 40, 10000]],
-              [int(0.5 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 40, 10000]],
-              [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 40, 10000]],
-              [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 40, 10000]],
-              [int(0.5 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 40, 10000]],
-              [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 40, 10000]],
-              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 40, 10000]],
-              [int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.025, 20, 10000]],
-              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 20, 10000]],
-              [int(1.2 * train.shape[1]), 0.05, int(0.6 * train.shape[1]), 0.025, 20, 10000]],
-              [int(0.5 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 20, 10000]],
-              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 20, 10000]],
-              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 20, 10000]],
-              [int(0.5 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 20, 10000]],
-              [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 20, 10000]],
-              [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 20, 10000]],
-              [int(0.5 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 20, 10000]],
-              [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 20, 10000]],
-              [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 20, 10000]],
-              [int(0.5 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 20, 10000]],
-              [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 20, 10000]],
-              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 20, 10000]]]
+              [int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.025, 40, 10000],
+              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 40, 10000],
+              [int(1.2 * train.shape[1]), 0.05, int(0.6 * train.shape[1]), 0.025, 40, 10000],
+              [int(0.5 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 40, 10000],
+              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 40, 10000],
+              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 40, 10000],
+              [int(0.5 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 40, 10000],
+              [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 40, 10000],
+              [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 40, 10000],
+              [int(0.5 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 40, 10000],
+              [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 40, 10000],
+              [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 40, 10000],
+              [int(0.5 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 40, 10000],
+              [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 40, 10000],
+              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 40, 10000],
+              [int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.025, 20, 10000],
+              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 20, 10000],
+              [int(1.2 * train.shape[1]), 0.05, int(0.6 * train.shape[1]), 0.025, 20, 10000],
+              [int(0.5 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 20, 10000],
+              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 20, 1000],
+              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 20, 10000],
+              [int(0.5 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 20, 10000],
+              [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 20, 10000],
+              [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 20, 10000],
+              [int(0.5 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 20, 10000],
+              [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 20, 10000],
+              [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 20, 10000],
+              [int(0.5 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 20, 10000],
+              [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 20, 10000],
+              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 20, 10000]]
 
 # storage structure for forecasts
 mvalid = np.zeros((train.shape[0],len(param_grid)))
@@ -184,17 +184,17 @@ for i in range(len(param_grid)):
         # configure model with j-th combo of parameters
         x = param_grid[i]
         model = Sequential()
-            model.add(Dense(x[0], input_shape=(dims,)))
-            model.add(Dropout(x[1]))# input dropout
-            #model.add(PReLU())
-            # model.add(BatchNormalization())
-            model.add(Dense(x[2]))
-            #model.add(PReLU())
-            model.add(BatchNormalization())
-            model.add(Dropout(x[3]))
-            model.add(Dense(nb_classes))
-            model.add(Activation('softmax'))
-            model.compile(loss='binary_crossentropy', optimizer="adadelta")
+        model.add(Dense(x[0], input_shape=(dims,)))
+        model.add(Dropout(x[1]))# input dropout
+        #model.add(PReLU())
+        # model.add(BatchNormalization())
+        model.add(Dense(x[2]))
+        #model.add(PReLU())
+        model.add(BatchNormalization())
+        model.add(Dropout(x[3]))
+        model.add(Dense(nb_classes))
+        model.add(Activation('softmax'))
+        model.compile(loss='binary_crossentropy', optimizer="adadelta")
         # fit on complete dataset
 
         model.fit(np.array(train), y_train, nb_epoch=x[4], batch_size=x[5])
