@@ -11,7 +11,7 @@ from sklearn.preprocessing import StandardScaler
 import datetime
 
 ## settings
-dataset_version = "kb5099"
+dataset_version = "kb4"
 model_type = "keras"
 seed_value = 1543
 todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -127,7 +127,7 @@ param_grid = [[int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.02
               [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 20, 10000],
               [int(1.2 * train.shape[1]), 0.05, int(0.6 * train.shape[1]), 0.025, 20, 10000],
               [int(0.5 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 20, 10000],
-              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 20, 1000],
+              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 20, 10000],
               [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 20, 10000],
               [int(0.5 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 20, 10000],
               [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 20, 10000],
@@ -137,7 +137,21 @@ param_grid = [[int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.02
               [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 20, 10000],
               [int(0.5 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 20, 10000],
               [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 20, 10000],
-              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 20, 10000]]
+              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 20, 10000],
+
+              [int(1.9 * train.shape[1]), 0.1, int(1.45 * train.shape[1]), 0.05, 20, 10000],
+              [int(2.2 * train.shape[1]), 0.1, int(1.6 * train.shape[1]), 0.05, 20, 10000],
+              [int(4.5 * train.shape[1]), 0.2, int(1.25 * train.shape[1]), 0.1, 20, 10000],
+              [int(1.9 * train.shape[1]), 0.2, int(1.45 * train.shape[1]), 0.1, 20, 10000],
+              [int(2.2 * train.shape[1]), 0.2, int(1.6 * train.shape[1]), 0.1, 20, 10000],
+              [int(4.5 * train.shape[1]), 0.25,int(1.25 * train.shape[1]), 0.125, 20, 10000],
+              [int(1.9 * train.shape[1]), 0.25,int(1.45 * train.shape[1]), 0.125, 20, 10000],
+              [int(2.2 * train.shape[1]), 0.25,int(1.6 * train.shape[1]), 0.125, 20, 10000],
+              [int(4.5 * train.shape[1]), 0.4, int(1.25 * train.shape[1]), 0.2, 20, 10000],
+              [int(1.9 * train.shape[1]), 0.4, int(1.45 * train.shape[1]), 0.2, 20, 10000],
+              [int(1.2 * train.shape[1]), 0.4, int(1.6 * train.shape[1]), 0.2, 20, 10000]
+
+              ]
 
 # storage structure for forecasts
 mvalid = np.zeros((train.shape[0],len(param_grid)))
