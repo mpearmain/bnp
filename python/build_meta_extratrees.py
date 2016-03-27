@@ -15,7 +15,7 @@ import datetime
 if __name__ == '__main__':
 
     ## settings
-    dataset_version = "kb17c25c50"
+    dataset_version = "kb3"
     model_type = "etrees" 
     seed_value = 789
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -53,11 +53,11 @@ if __name__ == '__main__':
                                  class_weight=None)
 
     # parameter grids    
-    ntree_vals = [500]
-    maxdepth_vals = [10, 25]
+    ntree_vals = [2500]
+    maxdepth_vals = [5,10]
     minsampsplit_vals = [2, 10]
     minsampleaf_vals = [1, 10]
-    mwfl_vals = [0.0, 0.005]
+    mwfl_vals = [ 0.005]
     maxfeat_vals = ['auto']
     classweight = ['balanced_subsample']
     param_grid = tuple([ntree_vals, maxdepth_vals, minsampsplit_vals, 
@@ -101,8 +101,8 @@ if __name__ == '__main__':
                 y1 = np.array(y)[idx1]
 
                 model.fit(x0, y0)
-                mvalid[idx1,i] = model.predict_proba(x1)[:,1]
                 y_pre = model.predict_proba(x1)[:,1]
+                mvalid[idx1,i] = y_pre
                 print 'log loss: ', log_loss(y1,y_pre)
                 print "finished fold:", j
                 
