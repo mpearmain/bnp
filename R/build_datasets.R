@@ -757,8 +757,12 @@ buildKB11 <- function(ref_data = 'lvl220160317', cut_level = 0.99)
 }
 
 # aggregate multiple datasets
-buildKB12 <- function(data_list = c('kb1', 'kb1tsne', 'kb2tsne'))
+buildKB12 <- function(data_list = c('kb17c50c100', 'kb1tsne', 'kb2tsne'))
 {
+  
+  todate <- str_replace_all(Sys.Date(), "-","")
+  
+  
   dset <- data_list[1]
   train <- read_csv(paste('../input/xtrain_',dset,'.csv', sep = "" ))
   test <- read_csv(paste('../input/xtest_',dset,'.csv', sep = "" ))
@@ -766,19 +770,27 @@ buildKB12 <- function(data_list = c('kb1', 'kb1tsne', 'kb2tsne'))
   # correction of column names in case there are duplicates
   y <- train$target; train$target <- NULL;  id_train <- train$ID; train$ID <- NULL
   id_test <- test$ID; test$ID <- NULL
-  
-  
+  colnames(train) <- colnames(test) <- paste("X", 1:ncol(train), "1", sep = "")
+  train$target <- y; train$ID <- id_train; test$ID <- id_test
+   
   for (ii in 2:length(data_list))
   {
     xtr <- read_csv(paste('../input/xtrain_',data_list[ii],'.csv', sep = "" ))
     xte <- read_csv(paste('../input/xtest_',data_list[ii],'.csv', sep = "" ))
     
+    y <- xtr$target; xtr$target <- NULL;  id_train <- xtr$ID; xtr$ID <- NULL
+    id_test <- xte$ID; xte$ID <- NULL
+    colnames(xtr) <- colnames(xte) <- paste("X", 1:ncol(xtr), ii, sep = "")
+    xtr$target <- y; xtr$ID <- id_train; xte$ID <- id_test
+    
     train <- merge(x = train, y = xtr, by = c("ID", "target"))
     test <- merge(x = test, y = xte, by = c("ID"))
+    
+    msg(ii)
   }
 
-  write.csv(xtrain, paste('../input/xtrain_',ref_data,'diff.csv', sep = ""), row.names = F)
-  write.csv(xtest, paste('../input/xtest_',ref_data,'diff.csv', sep = ""), row.names = F)
+  write.csv(train, paste('../input/xtrain_combo',length(data_list), 'x',todate,'csv', sep = ""), row.names = F)
+  write.csv(test, paste('../input/xtest_combo',length(data_list), 'x',todate,'csv', sep = ""), row.names = F)
   
   
 }
@@ -1026,4 +1038,4 @@ buildKB9(ref_data = 'kb3')
 buildKB9(ref_data = 'kb4')
 buildKB17(cutoff = 50, cutoff2 = 100)
 buildKB17(cutoff = 100, cutoff2 = 200)
-
+buildKB12(data_list = c('kb17c50c100', 'kb1tsne', 'kb2tsne', 'kb3tsne', 'kb4tsne'))
