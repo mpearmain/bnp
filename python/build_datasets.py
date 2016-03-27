@@ -138,4 +138,4 @@ if __name__ == "__main__":
     
     # buildKB15()
     buildKB16(n_comp = 200, seed_value = 12)
-    buildKB16(n_comp = 300)
+    buildKB16(n_comp = 300, seed_value = 12)
