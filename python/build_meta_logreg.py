@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "kb17c25c50"
+    dataset_version = "kb17c100c200"
     model_type = "logreg" 
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     model = LogisticRegression()
            
     # parameter grids
-    c_vals = [0.01, 0.1, 0.9, 2]         
+    c_vals = [0.01, 0.1, 0.9, 2, 5]         
     pen_vals = ['l1', 'l2']                                
     f_vals = [ True]                                 
     c_weights = ['balanced', None]
@@ -86,8 +86,9 @@ if __name__ == '__main__':
 			
                 # fit the model on observations associated with subject whichSubject in this fold
                 model.fit(x0, y0)
-                mvalid[idx1,i] = model.predict_proba(x1)[:,1]
-                print log_loss(y1, mvalid[idx1,i])
+                prx = model.predict_proba(x1)[:,1]
+                mvalid[idx1,i] = prx
+                print log_loss(y1, prx)
                 print "finished fold:", j
                 
             # fit on complete dataset
