@@ -789,8 +789,8 @@ buildKB12 <- function(data_list = c('kb17c50c100', 'kb1tsne', 'kb2tsne'))
     msg(ii)
   }
 
-  write.csv(train, paste('../input/xtrain_combo',length(data_list), 'x',todate,'csv', sep = ""), row.names = F)
-  write.csv(test, paste('../input/xtest_combo',length(data_list), 'x',todate,'csv', sep = ""), row.names = F)
+  write.csv(train, paste('../input/xtrain_combo',length(data_list), 'x',todate,'.csv', sep = ""), row.names = F)
+  write.csv(test, paste('../input/xtest_combo',length(data_list), 'x',todate,'.csv', sep = ""), row.names = F)
   
   
 }
