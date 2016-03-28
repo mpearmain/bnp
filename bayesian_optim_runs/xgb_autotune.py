@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "kb17c100c300"
+    dataset_version = "combo5x20160327"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -66,13 +66,13 @@ if __name__ == "__main__":
     y1 = ytrain[ytrain.index.isin(idx1)]
 
     xgboostBO = BayesianOptimization(xgboostcv,
-                                     {'max_depth': (int(3), int(15)),
+                                     {'max_depth': (int(2), int(16)),
                                       'learning_rate': (0.0005, 0.04),
                                       'n_estimators': (int(500), int(2000)),
                                       'subsample': (0.5, 0.95),
                                       'colsample_bytree': (0.5, 0.95),
                                       'gamma': (0.000001, 0.02),
-                                      'min_child_weight': (int(3), int(25))
+                                      'min_child_weight': (int(1), int(25))
                                      })
     xgboostBO.maximize(init_points=5, n_iter=20, acq='ei')
     print('-' * 53)
