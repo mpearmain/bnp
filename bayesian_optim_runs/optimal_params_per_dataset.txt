@@ -259,3 +259,5 @@ XGBOOST: -0.440757
 XGBOOST: {'colsample_bytree': 0.94999999999999996, 
           'learning_rate': 0.02010479952870162, 
             'min_child_weight': 7.532354045697514, 'n_estimators': 876, 'subsample': 0.94999999999999996, 'max_depth': 7.6006681179927469, 'gamma': 0.02}
+
+## combo5x20160327
