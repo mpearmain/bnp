@@ -5,7 +5,7 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "kb17c25c50"
+dataset_version <- "lvl220160329"
 seed_value <- 23
 model_type <- "nnet"
 todate <- str_replace_all(Sys.Date(), "-","")
@@ -28,8 +28,8 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 
 ## data ####
 # read actual data
-xtrain <- read_csv(paste("../input/xtrain_",dataset_version,".csv", sep = ""))
-xtest <- read_csv(paste("../input/xtest_",dataset_version,".csv", sep = ""))
+xtrain <- read_csv(paste("../input2/xtrain_",dataset_version,".csv", sep = ""))
+xtest <- read_csv(paste("../input2/xtest_",dataset_version,".csv", sep = ""))
 y <- xtrain$target; 
 xtrain$target <- NULL
 id_train <- xtrain$ID
@@ -107,7 +107,7 @@ print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
 
 
 todate <- str_replace_all(Sys.Date(), "-","")
-write_csv(mtrain, path = paste("../metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
-write_csv(mtest, path = paste("../metafeatures/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtrain, path = paste("../metafeatures2/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtest, path = paste("../metafeatures2/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 
