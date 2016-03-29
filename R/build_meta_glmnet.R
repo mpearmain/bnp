@@ -72,7 +72,7 @@ for (ii in 1:nrow(param_grid))
   }
   
   # full version 
-  mod0 <- glmnet(x = as.matrix(xtrain), y = y0, family = "binomial", alpha = param_grid$alpha[ii],
+  mod0 <- glmnet(x = as.matrix(xtrain), y = y, family = "binomial", alpha = param_grid$alpha[ii],
          standardize = param_grid$stand[ii])
   pred_full <- predict(mod0, as.matrix(xtest))
   pred_full <- pred_full[,ncol(pred_full)]
