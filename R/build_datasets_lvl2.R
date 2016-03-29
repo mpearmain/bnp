@@ -109,8 +109,8 @@ rm(xq1, xq2, xq3, xq4, xMad, xMax, xMed, xMin)
 ## save the datasets  ####
 xvalid$target <- y 
 xvalid$ID <- id_train
-write.csv(xvalid, paste('../input/xtrain_lvl2',todate,'.csv', sep = ""), row.names = F)
+write.csv(xvalid, paste('../input2/xtrain_lvl2',todate,'.csv', sep = ""), row.names = F)
 
 xfull$ID <- id_test
-write.csv(xfull, paste('../input/xtest_lvl2',todate,'.csv', sep = ""), row.names = F)
+write.csv(xfull, paste('../input2/xtest_lvl2',todate,'.csv', sep = ""), row.names = F)
 
