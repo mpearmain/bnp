@@ -50,7 +50,6 @@ param_grid <- expand.grid(alpha = seq(0,10)/10,
 # storage structures 
 mtrain <- array(0, c(nrow(xtrain), nrow(param_grid)))
 mtest <- array(0, c(nrow(xtest), nrow(param_grid)))
-xrange <- 1:(ncol(xtrain) - 1)
 
 # loop over parameters
 for (ii in 1:nrow(param_grid))
