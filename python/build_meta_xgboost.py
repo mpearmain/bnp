@@ -16,9 +16,9 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "kb17c50c100"
+    dataset_version = "combo5x20160327"
     model_type = "xgb"
-    seed_value = 671
+    seed_value = 491
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -53,15 +53,14 @@ if __name__ == '__main__':
     '''
     
     param_grid = [
-         (0.7,0.0090705965482161376,5.0,1341,0.7,13, 0.01),
-          (0.50887988780815985, 0.005581295650692597,  12.170986900746332, 
-             1612,  0.84371765653243447, 7, 0.019594803332159547),
+          (0.86939934445906852,0.02992847302109345, 20.631692294719159,
+           318, 0.72547208975310051, 10, 0.01966513396708065 ),
              (0.59461387900382301, 0.01058200585695002,
               8.5193167994862655, 758, 0.7899466628174614, 
               14, 0.015413770403341487)
              
     ]
-
+    
     # dump the meta description for this set into a file
     # (dataset version, model type, seed, parameter grid) 
     par_dump = '../meta_parameters/'+'D'+dataset_version+'_M'+model_type  
