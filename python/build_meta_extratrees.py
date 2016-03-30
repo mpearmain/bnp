@@ -15,19 +15,19 @@ import datetime
 if __name__ == '__main__':
 
     ## settings
-    dataset_version = "kb3"
+    dataset_version = "lvl220160329"
     model_type = "etrees" 
     seed_value = 789
     todate = datetime.datetime.now().strftime("%Y%m%d")
     	    
     ## data
-    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')     
+    xtrain = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')     
     id_train = xtrain.ID
     y = xtrain.target
     xtrain.drop('target', axis = 1, inplace = True)
     xtrain.drop('ID', axis = 1, inplace = True)
 
-    xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')     
+    xtest = pd.read_csv('../input2/xtest_'+ dataset_version + '.csv')     
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
 
@@ -53,12 +53,12 @@ if __name__ == '__main__':
                                  class_weight=None)
 
     # parameter grids    
-    ntree_vals = [2500]
-    maxdepth_vals = [5,10]
+    ntree_vals = [1000]
+    maxdepth_vals = [15,35]
     minsampsplit_vals = [2, 10]
     minsampleaf_vals = [1, 10]
     mwfl_vals = [ 0.005]
-    maxfeat_vals = ['auto']
+    maxfeat_vals = [25, 50]
     classweight = ['balanced_subsample']
     param_grid = tuple([ntree_vals, maxdepth_vals, minsampsplit_vals, 
                         minsampleaf_vals, mwfl_vals, maxfeat_vals, classweight])
@@ -124,6 +124,6 @@ if __name__ == '__main__':
     
 
     # save the files            
-    mvalid.to_csv('../metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    mfull.to_csv('../metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mvalid.to_csv('../metafeatures2/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mfull.to_csv('../metafeatures2/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
     
