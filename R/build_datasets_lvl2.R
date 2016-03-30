@@ -84,26 +84,26 @@ if (length(flc$remove))
 }
 print(paste(" Number of cols after linear combo extraction:", dim(xvalid)[2]))
 
-# amend the data
-xMed <- apply(xvalid,1,median); xMin <- apply(xvalid,1,min)
-xMax <- apply(xvalid,1,max); xMad <- apply(xvalid,1,mad)
-xq1 <- apply(xvalid,1, function(s) quantile(s, 0.1))
-xq2 <- apply(xvalid,1, function(s) quantile(s, 0.25))
-xq3 <- apply(xvalid,1, function(s) quantile(s, 0.75))
-xq4 <- apply(xvalid,1, function(s) quantile(s, 0.9))
-xvalid$xmed <- xMed; xvalid$xmax <- xMax ; xvalid$xmin <- xMin ; # xvalid$xmad <- xMad
-xvalid$xq1 <- xq1 ;xvalid$xq2 <- xq2 ;xvalid$xq3 <- xq3; xvalid$xq4 <- xq4
-
-xMed <- apply(xfull,1,median); xMin <- apply(xfull,1,min)
-xMax <- apply(xfull,1,max); xMad <- apply(xfull,1,mad)
-xq1 <- apply(xfull,1, function(s) quantile(s, 0.1))
-xq2 <- apply(xfull,1, function(s) quantile(s, 0.25))
-xq3 <- apply(xfull,1, function(s) quantile(s, 0.75))
-xq4 <- apply(xfull,1, function(s) quantile(s, 0.9))
-xfull$xmed <- xMed ;xfull$xmax <- xMax ;xfull$xmin <- xMin ;# xfull$xmad <- xMad
-xfull$xq1 <- xq1 ;xfull$xq2 <- xq2 ;xfull$xq3 <- xq3 ;xfull$xq4 <- xq4
-
-rm(xq1, xq2, xq3, xq4, xMad, xMax, xMed, xMin)
+# # amend the data
+# xMed <- apply(xvalid,1,median); xMin <- apply(xvalid,1,min)
+# xMax <- apply(xvalid,1,max); xMad <- apply(xvalid,1,mad)
+# xq1 <- apply(xvalid,1, function(s) quantile(s, 0.1))
+# xq2 <- apply(xvalid,1, function(s) quantile(s, 0.25))
+# xq3 <- apply(xvalid,1, function(s) quantile(s, 0.75))
+# xq4 <- apply(xvalid,1, function(s) quantile(s, 0.9))
+# xvalid$xmed <- xMed; xvalid$xmax <- xMax ; xvalid$xmin <- xMin ; # xvalid$xmad <- xMad
+# xvalid$xq1 <- xq1 ;xvalid$xq2 <- xq2 ;xvalid$xq3 <- xq3; xvalid$xq4 <- xq4
+# 
+# xMed <- apply(xfull,1,median); xMin <- apply(xfull,1,min)
+# xMax <- apply(xfull,1,max); xMad <- apply(xfull,1,mad)
+# xq1 <- apply(xfull,1, function(s) quantile(s, 0.1))
+# xq2 <- apply(xfull,1, function(s) quantile(s, 0.25))
+# xq3 <- apply(xfull,1, function(s) quantile(s, 0.75))
+# xq4 <- apply(xfull,1, function(s) quantile(s, 0.9))
+# xfull$xmed <- xMed ;xfull$xmax <- xMax ;xfull$xmin <- xMin ;# xfull$xmad <- xMad
+# xfull$xq1 <- xq1 ;xfull$xq2 <- xq2 ;xfull$xq3 <- xq3 ;xfull$xq4 <- xq4
+# 
+# rm(xq1, xq2, xq3, xq4, xMad, xMax, xMed, xMin)
 
 
 ## save the datasets  ####
