@@ -1,8 +1,10 @@
 import pandas as pd
 import numpy as np
 import datetime
+import re
 from sklearn.ensemble import RandomForestClassifier
 from itertools import permutations, combinations
+
 
 def build_new_features(xtrain, xtest, top_feats):
     """ Generate 2way new features based on a list of feature names.
@@ -34,6 +36,11 @@ def build_new_features(xtrain, xtest, top_feats):
         train[prods] = train[A] * train[B]
         test[prods] = test[A] * test[B]
 
+    for A in top_feats:
+        sqcentre = "SQCentre".join([A])
+        train[sqcentre] = (train[A] * train[A]) - train[A]
+        train[sqcentre] = (test[A] * test[A]) - test[A]
+
     return train, test
 
 # We need to import all the meta based predictions from ./metafeatures and
@@ -44,7 +51,7 @@ projPath = '../'
 dataset_version = "lvl220160330"
 todate = datetime.datetime.now().strftime("%Y%m%d")
 # Top fetures to develop meta more interactions variables.
-topNfeatures = 10
+topNfeatures = 7
 
 ## data
 # read the training and test sets
@@ -62,25 +69,49 @@ xtest.drop('ID', axis = 1, inplace = True)
 # Use Sklearn feature importance to select the 'best' features from our
 # metafeatures.
 
+base_feat = list(xtrain)
+xgb_feat = filter(lambda x:re.match(r'^xgb',x), base_feat)
+noxgb_feat = [x for x in base_feat if x not in xgb_feat]
+
 # First Build a forest and compute the feature importance
 forest = RandomForestClassifier(n_jobs=-1,
                                 class_weight='auto',
-                                max_depth=20,
-                                n_estimators=1000)
-print "Building RF"
-forest.fit(xtrain, ytrain)
+                                max_depth=5,
+                                n_estimators=500)
+print "Building RF - XGB"
+forest.fit(xtrain[xgb_feat], ytrain)
 importances = forest.feature_importances_
 # Select most important features
 indices = np.argsort(importances)[::-1]
-top_n_feature_names = list(list(xtrain)[i] for i in indices[:topNfeatures])
+top_n_feature_names = list(list(xtrain[xgb_feat])[i] for i in indices[:topNfeatures])
 print top_n_feature_names
 
 xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
+
+
+print "Building RF - Not XGB Features"
+forest.fit(xtrain[noxgb_feat], ytrain)
+importances = forest.feature_importances_
+# Select most important features
+indices = np.argsort(importances)[::-1]
+top_n_feature_names = list(list(xtrain[noxgb_feat])[i] for i in indices[:topNfeatures])
+print top_n_feature_names
+
+xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
+
+# Lets add some simple features.
+# This counts the number of meata features that predict target > 0.9
+xtrain['gt9'] = (xtrain[base_feat] > 0.9).sum(1)
+xtest['gt9'] = (xtest[base_feat] > 0.9).sum(1)
+
+xtrain['lt01'] = (xtrain[base_feat] < 0.1).sum(1)
+xtest['lt01'] = (xtest[base_feat] < 0.1).sum(1)
+
 
 xtrain['ID'] = id_train
 xtrain['target'] = ytrain
 xtest['ID'] = id_test
 
 print 'Writing Data Files.'
-xtrain.to_csv("./input/xtrain_secondLvL_meta.csv", index = False, header = True)
-xtest.to_csv("./input/xtest_secondLvL_meta.csv", index = False, header = True)
+xtrain.to_csv("./input2/xtrain_lvl2MP.csv", index = False, header = True)
+xtest.to_csv("./input2/xtest_lvl2MP.csv", index = False, header = True)
