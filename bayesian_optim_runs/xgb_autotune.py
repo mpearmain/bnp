@@ -41,19 +41,16 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "combo5x20160327"
+    dataset_version = "lvl220160331xgb"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
-    id_train = xtrain.ID
-    ytrain = xtrain.target
-    xtrain.drop('ID', axis = 1, inplace = True)
-    xtrain.drop('target', axis = 1, inplace = True)
-    xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
-    id_test = xtest.ID
-    xtest.drop('ID', axis = 1, inplace = True)
+    xtrain = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')
+    id_train = xtrain.ID; xtrain.drop('ID', axis = 1, inplace = True)
+    ytrain = xtrain.target; xtrain.drop('target', axis = 1, inplace = True)
+    xtest = pd.read_csv('../input2/xtest_'+ dataset_version + '.csv')
+    id_test = xtest.ID; xtest.drop('ID', axis = 1, inplace = True)
 
     # folds
     xfolds = pd.read_csv('../input/xfolds.csv')
@@ -67,12 +64,12 @@ if __name__ == "__main__":
 
     xgboostBO = BayesianOptimization(xgboostcv,
                                      {'max_depth': (int(2), int(16)),
-                                      'learning_rate': (0.0005, 0.04),
+                                      'learning_rate': (0.0005, 0.05),
                                       'n_estimators': (int(500), int(2000)),
-                                      'subsample': (0.5, 0.95),
-                                      'colsample_bytree': (0.5, 0.95),
+                                      'subsample': (0.6, 0.95),
+                                      'colsample_bytree': (0.4, 0.95),
                                       'gamma': (0.000001, 0.02),
-                                      'min_child_weight': (int(1), int(25))
+                                      'min_child_weight': (int(1), int(30))
                                      })
     xgboostBO.maximize(init_points=5, n_iter=20, acq='ei')
     print('-' * 53)
