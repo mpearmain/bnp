@@ -319,3 +319,15 @@ XGBOOST: {'colsample_bytree': 0.94999999999999996,
         'gamma': 0.02}
 
 ## lvl220160331keras
+
+Final Results
+XGBOOST: -0.457854
+XGBOOST: {'colsample_bytree': 0.94999999999999996, 
+        'learning_rate': 0.045817478651341371, 
+        'min_child_weight': 3.4667680823335658, 
+        'n_estimators': 349, 
+        'subsample': 0.94999999999999996, 
+        'max_depth': 5, 
+        'gamma': 0.02}
+
+## c2dlvl220160331xgb
