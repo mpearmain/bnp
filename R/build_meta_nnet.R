@@ -5,8 +5,8 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "lvl220160331xgb"
-seed_value <- 23
+dataset_version <- "lvl220160331combo"
+seed_value <- 440
 model_type <- "nnet"
 todate <- str_replace_all(Sys.Date(), "-","")
 
@@ -44,7 +44,7 @@ nfolds <- length(unique(xfolds$fold_index))
 ## fit models ####
 # parameter grid
 param_grid <- expand.grid(size = round(ncol(xtrain) * c(0.5, 0.3, 0.2)),
-                          decay = c(0.025, 0.1, 0.25))
+                          decay = c(0.01, 0.025, 0.1, 0.25))
 
 # storage structures 
 mtrain <- array(0, c(nrow(xtrain), nrow(param_grid)))
