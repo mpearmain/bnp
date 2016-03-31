@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "lvl220160331xgb"
+    dataset_version = "lvl220160331combo"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
