@@ -317,3 +317,5 @@ XGBOOST: {'colsample_bytree': 0.94999999999999996,
         'subsample': 0.84172191810733488, 
         'max_depth': 6, 
         'gamma': 0.02}
+
+## lvl220160331keras
