@@ -5,8 +5,8 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "lvl220160331combo"
-seed_value <- 440
+dataset_version <- "c2dlvl220160331xgb"
+seed_value <- 886
 model_type <- "nnet"
 todate <- str_replace_all(Sys.Date(), "-","")
 
@@ -111,6 +111,6 @@ write_csv(mtrain, path = paste("../metafeatures2/prval_",model_type,"_", todate,
 write_csv(mtest, path = paste("../metafeatures2/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 # store the parameters
-write_csv(param_grid, path = paste("../meta_parameters2/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(param_grid, path = paste("../meta_parameters2/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".txt",sep = "" ))
 
 
