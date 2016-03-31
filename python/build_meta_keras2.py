@@ -11,7 +11,7 @@ from sklearn.preprocessing import StandardScaler
 import datetime
 
 ## settings
-dataset_version = "kb4"
+dataset_version = "lvl2MP"
 model_type = "keras"
 seed_value = 1543
 todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -36,14 +36,14 @@ def getDummy(df,col):
 
     return df
 
-train = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
+train = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')
 id_train = train.ID
 y_train_target = train.target
 y_train = train.target
 train.drop('ID', axis = 1, inplace = True)
 train.drop('target', axis = 1, inplace = True)
 
-test = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
+test = pd.read_csv('../input2/xtest_'+ dataset_version + '.csv')
 id_test = test.ID
 test.drop('ID', axis = 1, inplace = True)
 
