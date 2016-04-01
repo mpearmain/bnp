@@ -5,8 +5,8 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "lvl220160329"
-seed_value <- 23
+dataset_version <- "lvl2MP"
+seed_value <- 44556877
 model_type <- "mars"
 todate <- str_replace_all(Sys.Date(), "-","")
 
@@ -27,8 +27,8 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 
 ## data ####
 # read actual data
-xtrain <- read_csv(paste("../input2/xtrain_",dataset_version,".csv", sep = ""))
-xtest <- read_csv(paste("../input2/xtest_",dataset_version,".csv", sep = ""))
+xtrain <- read_csv(paste("./input2/xtrain_",dataset_version,".csv", sep = ""))
+xtest <- read_csv(paste("./input2/xtest_",dataset_version,".csv", sep = ""))
 y <- xtrain$target; 
 xtrain$target <- NULL
 id_train <- xtrain$ID
@@ -36,7 +36,7 @@ id_test <- xtest$ID
 xtrain$ID <- xtest$ID <- NULL
 
 # division into folds: 5-fold
-xfolds <- read_csv("../input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
+xfolds <- read_csv("./input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
 xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
 
@@ -96,7 +96,7 @@ print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
 
 
 
-write_csv(mtrain, path = paste("../metafeatures2/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
-write_csv(mtest, path = paste("../metafeatures2/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtrain, path = paste("./metafeatures2/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtest, path = paste("./metafeatures2/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 
