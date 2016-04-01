@@ -1011,10 +1011,38 @@ buildKB17 <- function(cutoff = 25, cutoff2 = 50)
   msg("KB17 dataset built")
 }                                                    
 
-# TODO
-# nbayes -> Python -> 2- and 3-way interactions, along with feature selection
-# tsne
-# proper bagging
+# split: original numerical columns / response rates KB6099
+buildKB18 <- function(ref_data = 'kb6099')
+{
+  todate <- str_replace_all(Sys.Date(), "-","")
+  train <- read_csv(paste('../input/xtrain_',ref_data,'.csv', sep = "" ))
+  test <- read_csv(paste('../input/xtest_',ref_data,'.csv', sep = "" ))
+  
+  # correction of column names in case there are duplicates
+  y <- train$target; train$target <- NULL;  id_train <- train$ID; train$ID <- NULL
+  id_test <- test$ID; test$ID <- NULL
+  
+  # grab dmp columns
+  which_dmp <- grep(pattern = "dmp", colnames(train))
+
+  xtrain <- train[,which_dmp]; xtest <- test[,which_dmp]
+  xtrain$target <- y; xtrain$ID <- id_train
+  xtest$ID <- id_test
+
+  write.csv(xtrain, paste('../input/xtrain_',ref_data, 'dmp.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('../input/xtest_',ref_data, 'dmp.csv', sep = ""), row.names = F)
+
+  # grab numerical columns
+  which_num <- setdiff(1:ncol(train), which_dmp)
+  
+  xtrain <- train[,which_num]; xtest <- test[,which_num]
+  xtrain$target <- y; xtrain$ID <- id_train
+  xtest$ID <- id_test
+  
+  write.csv(xtrain, paste('../input/xtrain_',ref_data, 'num.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('../input/xtest_',ref_data, 'num.csv', sep = ""), row.names = F)
+  
+}
 
 ## actual construction ####
 # buildMP1()
@@ -1039,3 +1067,5 @@ buildKB9(ref_data = 'kb4')
 buildKB17(cutoff = 50, cutoff2 = 100)
 buildKB17(cutoff = 100, cutoff2 = 200)
 buildKB12(data_list = c('kb17c50c100', 'kb1tsne', 'kb2tsne', 'kb3tsne', 'kb4tsne'))
+buildKB12(data_list = c('lvl220160331xgb', 'kb1tsne', 'kb2tsne', 'kb3tsne', 
+                          'kb4tsne', 'kb5099tsne', 'kb6099tsne'))
