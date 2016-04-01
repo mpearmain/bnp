@@ -5,8 +5,8 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "lvl220160331combo"
-seed_value <- 440
+dataset_version <- "lvl2MP"
+seed_value <- 440223
 model_type <- "nnet"
 todate <- str_replace_all(Sys.Date(), "-","")
 
@@ -28,8 +28,8 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 
 ## data ####
 # read actual data
-xtrain <- read_csv(paste("../input2/xtrain_",dataset_version,".csv", sep = ""))
-xtest <- read_csv(paste("../input2/xtest_",dataset_version,".csv", sep = ""))
+xtrain <- read_csv(paste("./input2/xtrain_",dataset_version,".csv", sep = ""))
+xtest <- read_csv(paste("./input2/xtest_",dataset_version,".csv", sep = ""))
 y <- xtrain$target; 
 xtrain$target <- NULL
 id_train <- xtrain$ID
@@ -37,7 +37,7 @@ id_test <- xtest$ID
 xtrain$ID <- xtest$ID <- NULL
 
 # division into folds: 5-fold
-xfolds <- read_csv("../input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
+xfolds <- read_csv("./input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
 xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
 
