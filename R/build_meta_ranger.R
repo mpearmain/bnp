@@ -4,7 +4,7 @@ require(ranger)
 require(caret)
 require(stringr)
 
-dataset_version <- "kb4"
+dataset_version <- "lvl220160331combo"
 seed_value <- 43
 model_type <- "ranger"
 todate <- str_replace_all(Sys.Date(), "-","")
@@ -16,29 +16,25 @@ msg <- function(mmm,...)
   cat(sprintf(paste0("[%s] ",mmm),Sys.time(),...)); cat("\n")
 }
 
-
-auc<-function (actual, predicted) {
-  
-  r <- as.numeric(rank(predicted))
-  
-  n_pos <- as.numeric(sum(actual == 1))
-  n_neg <- as.numeric(length(actual) - n_pos)
-  auc <- (sum(r[actual == 1]) - n_pos * (n_pos + 1)/2)/(n_pos *  n_neg)
-  auc
-  
+# wrapper around logloss preventing Inf/-Inf for 1/0 values
+log_loss <- function(actual, predicted, cutoff = 1e-15)
+{
+  predicted <- pmax(predicted, cutoff)
+  predicted <- pmin(predicted, 1- cutoff)
+  return(logLoss(actual,predicted))
 }
 
 ## data ####
 # read actual data
-xtrain <- read_csv(paste("./input/xtrain_",dataset_version,".csv", sep = ""))
-xtest <- read_csv(paste("./input/xtest_",dataset_version,".csv", sep = ""))
+xtrain <- read_csv(paste("../input2/xtrain_",dataset_version,".csv", sep = ""))
+xtest <- read_csv(paste("../input2/xtest_",dataset_version,".csv", sep = ""))
 y <- xtrain$target; xtrain$target <- NULL
 id_train <- xtrain$ID
 id_test <- xtest$ID
 xtrain$ID <- xtest$ID <- NULL
 
 # division into folds: 5-fold
-xfolds <- read_csv("./input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
+xfolds <- read_csv("../input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
 xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
 
@@ -51,7 +47,6 @@ param_grid <- expand.grid(ntree = c(500, 1000),
 # storage structures 
 mtrain <- array(0, c(nrow(xtrain), nrow(param_grid)))
 mtest <- array(0, c(nrow(xtest), nrow(param_grid)))
-xrange <- 1:(ncol(xtrain) - 1)
 
 # loop over parameters
 for (ii in 1:nrow(param_grid))
@@ -116,9 +111,9 @@ if (length(flc$remove))
 
 print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
 # store the metas
-write_csv(mtrain, path = paste("./metafeatures/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
-write_csv(mtest, path = paste("./metafeatures/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtrain, path = paste("../metafeatures2/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtest, path = paste("../metafeatures2/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 # store the parameters
-write_csv(param_grid, path = paste("./meta_parameters/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(param_grid, path = paste("../meta_parameters2/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 

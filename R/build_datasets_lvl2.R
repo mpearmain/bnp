@@ -114,3 +114,35 @@ write.csv(xvalid, paste('../input2/xtrain_lvl2',todate,'.csv', sep = ""), row.na
 xfull$ID <- id_test
 write.csv(xfull, paste('../input2/xtest_lvl2',todate,'.csv', sep = ""), row.names = F)
 
+## limited versions of the dataset (restricted to specific model class)
+y <- xvalid$target; xvalid$target <- NULL
+id_train <- xvalid$ID; xvalid$ID <- NULL
+id_test <- xfull$ID; xfull$ID <- NULL
+
+# xgb only
+idx <- grep("xgb", colnames(xvalid))
+xv <- xvalid[,idx]; xf <- xfull[,idx]
+xv$ID <- id_train; xv$target <- y; xf$ID <- id_test
+write.csv(xv, paste('../input2/xtrain_lvl2',todate,'xgb.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../input2/xtest_lvl2',todate,'xgb.csv', sep = ""), row.names = F)
+
+# keras only
+idx <- grep("keras", colnames(xvalid))
+xv <- xvalid[,idx]; xf <- xfull[,idx]
+xv$ID <- id_train; xv$target <- y; xf$ID <- id_test
+write.csv(xv, paste('../input2/xtrain_lvl2',todate,'keras.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../input2/xtest_lvl2',todate,'keras.csv', sep = ""), row.names = F)
+
+# trees only
+idx <- grep("etrees|ranger|xgb", colnames(xvalid))
+xv <- xvalid[,idx]; xf <- xfull[,idx]
+xv$ID <- id_train; xv$target <- y; xf$ID <- id_test
+write.csv(xv, paste('../input2/xtrain_lvl2',todate,'trees.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../input2/xtest_lvl2',todate,'trees.csv', sep = ""), row.names = F)
+
+# combo
+idx <- grep("xgb|mars|nnet", colnames(xvalid))
+xv <- xvalid[,idx]; xf <- xfull[,idx]
+xv$ID <- id_train; xv$target <- y; xf$ID <- id_test
+write.csv(xv, paste('../input2/xtrain_lvl2',todate,'combo.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../input2/xtest_lvl2',todate,'combo.csv', sep = ""), row.names = F)
