@@ -23,13 +23,13 @@ if __name__ == '__main__':
 
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
 
-    xtest = pd.read_csv('../input2/xtest_'+ dataset_version + '.csv')
+    xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
 
@@ -53,14 +53,14 @@ if __name__ == '__main__':
     '''
     
     param_grid = [
-          #(0.86939934445906852,0.02992847302109345, 20.631692294719159,
-          # 318, 0.72547208975310051, 10, 0.01966513396708065 ),
+          (0.86939934445906852,0.02992847302109345, 20.631692294719159,
+           318, 0.72547208975310051, 10, 0.01966513396708065 ),
           #   (0.59461387900382301, 0.01058200585695002,
           #    8.5193167994862655, 758, 0.7899466628174614, 
           #    14, 0.015413770403341487),
               # optimized for lvl220160329
-            (0.59449161316455967, 0.03723339549515764,3.8858379480282639, 
-          113,  0.63669942372294597,  9, 0.0064676261299398399),
+          #  (0.59449161316455967, 0.03723339549515764,3.8858379480282639, 
+          #113,  0.63669942372294597,  9, 0.0064676261299398399),
           #(0.85, 0.02, 1, 500, 0.9, 6, 0),
           #(0.71641653481931888,  0.012967411293674902, 22.080483788936164, 
           # 507, 0.77459872346718606, 8, 0.0083553529050680725),
@@ -74,6 +74,10 @@ if __name__ == '__main__':
             ## optimized for lvl220160331combo
             (0.94999999999999996,  0.031469810335467224, 
                  30.0, 336,  0.84172191810733488,  6,  0.02)
+            # optimized for kb6099num
+           (0.79637131133240435, 0.02325932078657638, 
+            5.5688598224060568, 512,  0.55562854771368753, 15, 
+                0.0041103453838154513)      
              
     ]
     
@@ -150,5 +154,5 @@ if __name__ == '__main__':
 
 
     # save the files
-    mvalid.to_csv('../metafeatures2/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    mfull.to_csv('../metafeatures2/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mvalid.to_csv('../metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mfull.to_csv('../metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
