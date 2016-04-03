@@ -375,3 +375,12 @@ XGBOOST: {'colsample_bytree': 0.40000000000000002,
             'gamma': 0.0065788712506389957}
 
 ## kb6099num
+
+XGBOOST: -0.454127
+XGBOOST: {'colsample_bytree': 0.79637131133240435, 
+        'learning_rate': 0.02325932078657638, 
+        'min_child_weight': 5.5688598224060568, 
+        'n_estimators': 512, 
+        'subsample': 0.55562854771368753, 
+        'max_depth': 15, 
+        'gamma': 0.0041103453838154513}
