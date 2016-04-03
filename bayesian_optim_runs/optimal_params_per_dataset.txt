@@ -331,3 +331,47 @@ XGBOOST: {'colsample_bytree': 0.94999999999999996,
         'gamma': 0.02}
 
 ## c2dlvl220160331xgb
+
+XGBOOST: -0.433564
+XGBOOST: {'colsample_bytree': 0.48459571005939406, 
+        'learning_rate': 0.050000000000000003, 
+        'min_child_weight': 6.3451369791849137, 
+        'n_estimators': 97, 
+        'subsample': 0.88005909793603776, 
+        'max_depth': 10, 
+        'gamma': 0.02}
+
+## lvl320160401xgbnnet
+
+XGBOOST: -0.432193
+XGBOOST: {'colsample_bytree': 0.40000000000000002, 
+        'learning_rate': 0.02517174517978878, 
+         'min_child_weight': 9.188843134519912, 
+        'n_estimators': 261, 
+        'subsample': 0.40000000000000002, 
+        'max_depth': 2.130309171165937, 
+        'gamma': 0.02}
+
+## combo7x20160401
+
+XGBOOST: -0.433787
+XGBOOST: {'colsample_bytree': 0.94999999999999996, 
+        'learning_rate': 0.027658197502128549, 
+        'min_child_weight': 1.0,
+         'n_estimators': 185, 
+        'subsample': 0.70304674752135021,
+         'max_depth': 10.645162521978422,
+         'gamma': 9.9999999999999995e-07}
+
+## kb6099dmp
+
+XGBOOST: -0.459107
+XGBOOST: {'colsample_bytree': 0.40000000000000002, 
+            'learning_rate': 0.016583133671152554, 
+            'min_child_weight': 10.364167908508753, 
+            'n_estimators': 494, 
+            'subsample': 0.94999999999999996,
+             'max_depth': 16.0, 
+            'gamma': 0.0065788712506389957}
+
+## kb6099num
