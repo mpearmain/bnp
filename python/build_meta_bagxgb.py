@@ -20,10 +20,11 @@ if __name__ == '__main__':
     ## settings
     projPath = os.getcwd()
     dataset_version = "lvl220160331xgb"
-    model_type = "bagxgb" 
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    	    
+    nbag = 100
+    model_type = 'bagxgb' + str(nbag)
+    
     ## data
     # read the training and test sets
     xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')     
