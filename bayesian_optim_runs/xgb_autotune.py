@@ -41,15 +41,15 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "lvl220160331combo"
+    dataset_version = "kb6099num"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID; xtrain.drop('ID', axis = 1, inplace = True)
     ytrain = xtrain.target; xtrain.drop('target', axis = 1, inplace = True)
-    xtest = pd.read_csv('../input2/xtest_'+ dataset_version + '.csv')
+    xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID; xtest.drop('ID', axis = 1, inplace = True)
 
     # folds
@@ -64,9 +64,9 @@ if __name__ == "__main__":
 
     xgboostBO = BayesianOptimization(xgboostcv,
                                      {'max_depth': (int(2), int(16)),
-                                      'learning_rate': (0.0005, 0.05),
+                                      'learning_rate': (0.0005, 0.06),
                                       'n_estimators': (int(500), int(2000)),
-                                      'subsample': (0.6, 0.95),
+                                      'subsample': (0.4, 0.95),
                                       'colsample_bytree': (0.4, 0.95),
                                       'gamma': (0.000001, 0.02),
                                       'min_child_weight': (int(1), int(30))

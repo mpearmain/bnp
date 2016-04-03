@@ -79,14 +79,16 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("../input2/xtrain_lvl220160329.csv")
+# xvalid <- read_csv("../input2/xtrain_lvl220160329.csv")
+xvalid <- read_csv("../input/xtrain_kb1.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("../input2/xtest_lvl220160329.csv")
+# xfull <- read_csv("../input2/xtest_lvl220160329.csv")
+xfull <- read_csv("../input/xtest_kb1.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
-## pick top lvl1 model ####
+## pick top lvl1 model - disabled for now ####
 
 # # division into folds: 5-fold
 # xfolds <- read_csv("../input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
