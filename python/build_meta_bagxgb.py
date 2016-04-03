@@ -6,7 +6,6 @@ Created on Thu Dec 10 10:44:27 2015
 """
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import log_loss
 from itertools import product
 import datetime
@@ -22,18 +21,18 @@ if __name__ == '__main__':
     dataset_version = "lvl220160331xgb"
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    nbag = 100
+    nbag = 300
     model_type = 'bagxgb' + str(nbag)
     
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')     
+    xtrain = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')     
     id_train = xtrain.ID
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
     
-    xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')     
+    xtest = pd.read_csv('../input2/xtest_'+ dataset_version + '.csv')     
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
     
@@ -46,8 +45,7 @@ if __name__ == '__main__':
     
     ## model
     # setup model instances
-    model = xgb.XGBClassifier(
-                                nthread=-1,
+    model = xgb.XGBClassifier(nthread=-1,
                                 seed=seed_value,
                                 silent=True)
                                 
@@ -95,14 +93,14 @@ if __name__ == '__main__':
 		
                 # setup bagging classifier
                 bag0 = BaggingClassifier(base_estimator=model, 
-                        n_estimators=10, 
+                        n_estimators=nbag, 
                         max_samples=0.05, 
-                        max_features=0.9, 
+                        max_features=0.97, 
                         bootstrap=True, 
                         bootstrap_features=False, 
                         oob_score=False, 
                         warm_start=False, 
-                        n_jobs=-1, random_state=seed_value, 
+                        n_jobs=1, random_state=seed_value, 
                         verbose=2)
                         
                 bag0.fit(x0, y0)
@@ -129,6 +127,6 @@ if __name__ == '__main__':
     
 
     # save the files            
-    mvalid.to_csv('../metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    mfull.to_csv('../metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mvalid.to_csv('../metafeatures2/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mfull.to_csv('../metafeatures2/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
     
