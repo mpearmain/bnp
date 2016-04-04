@@ -15,7 +15,7 @@ import datetime
 if __name__ == '__main__':
 
     ## settings
-    dataset_version = "lvl220160329"
+    dataset_version = "lvl220160331combo"
     model_type = "etrees" 
     seed_value = 789
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -53,7 +53,7 @@ if __name__ == '__main__':
                                  class_weight=None)
 
     # parameter grids    
-    ntree_vals = [1000]
+    ntree_vals = [250]
     maxdepth_vals = [15,35]
     minsampsplit_vals = [2, 10]
     minsampleaf_vals = [1, 10]
@@ -65,14 +65,14 @@ if __name__ == '__main__':
     param_grid = list(product(*param_grid))
 
     # (dataset version, model type, seed, parameter grid) 
-    par_dump = '../meta_parameters/'+'D'+dataset_version+'_M'+model_type  
-    par_dump = par_dump + '_'+todate+'.txt'
-    f1=open(par_dump, 'w+')
-    f1.write('dataset version: '); f1.write(str(dataset_version))
-    f1.write('\nmodel type:'); f1.write(str(model_type))
-    f1.write('\nseed value: '); f1.write(str(seed_value))    
-    f1.write('\nparameter grid \n'); f1.write(str(param_grid)    )
-    f1.close()
+#    par_dump = '../meta_parameters/'+'D'+dataset_version+'_M'+model_type  
+#    par_dump = par_dump + '_'+todate+'.txt'
+#    f1=open(par_dump, 'w+')
+#    f1.write('dataset version: '); f1.write(str(dataset_version))
+#    f1.write('\nmodel type:'); f1.write(str(model_type))
+#    f1.write('\nseed value: '); f1.write(str(seed_value))    
+#    f1.write('\nparameter grid \n'); f1.write(str(param_grid)    )
+#    f1.close()
     
     # storage structure for forecasts
     mvalid = np.zeros((xtrain.shape[0],len(param_grid)))

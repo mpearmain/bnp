@@ -24,8 +24,8 @@ import datetime
 if __name__ == "__main__":
 
     # xtrain_lvl320160315.csv
-
-    dataset_version = "lvl220160329"
+    c_val = 2
+    dataset_version = "lvl220160331xgb"
 
     # read data
     xtrain = pd.read_csv('../input2/xtrain_' + dataset_version + '.csv')
@@ -75,7 +75,7 @@ if __name__ == "__main__":
            ymat_valid[idx1,1] = y_iso
 
             # fit a logistic regression for Platt scaling           
-           lr = LR(C = 1)														
+           lr = LR(C = c_val)														
            lr.fit( np.array(x0)[:,0].reshape( -1, 1 ), y0 )
            y_platt = lr.predict_proba(np.array(x1)[:,0].reshape(-1,1))[:,1]
            storage_mat[j,2] = log_loss(y1, y_platt)
@@ -101,7 +101,7 @@ if __name__ == "__main__":
         ir.fit( np.array(xtrain)[:,wfold], y )
         ymat_full[:,1] = ir.transform((np.array(xtest)[:,wfold]))
         
-        lr = LR(C = 1)														
+        lr = LR(C = c_val)														
         lr.fit( np.array(xtrain)[:,wfold].reshape( -1, 1 ), y )
         ymat_full[:,2] = lr.predict_proba(np.array(xtest)[:,wfold].reshape(-1,1))[:,1]
            
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     xtest2['ID'] = id_test
     
     
-    xtrain2.to_csv('../input2/xtrain_c20160330.csv', index = False, header = True)
-    xtest2.to_csv('../input2/xtest_c20160330.csv', index = False, header = True)
+    xtrain2.to_csv('../input2/xtrain_c'+str(c_val)+'d'+dataset_version+'.csv', index = False, header = True)
+    xtest2.to_csv('../input2/xtest_c'+str(c_val)+'d'+dataset_version+'.csv', index = False, header = True)
     
         

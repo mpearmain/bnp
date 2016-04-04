@@ -317,3 +317,70 @@ XGBOOST: {'colsample_bytree': 0.94999999999999996,
         'subsample': 0.84172191810733488, 
         'max_depth': 6, 
         'gamma': 0.02}
+
+## lvl220160331keras
+
+Final Results
+XGBOOST: -0.457854
+XGBOOST: {'colsample_bytree': 0.94999999999999996, 
+        'learning_rate': 0.045817478651341371, 
+        'min_child_weight': 3.4667680823335658, 
+        'n_estimators': 349, 
+        'subsample': 0.94999999999999996, 
+        'max_depth': 5, 
+        'gamma': 0.02}
+
+## c2dlvl220160331xgb
+
+XGBOOST: -0.433564
+XGBOOST: {'colsample_bytree': 0.48459571005939406, 
+        'learning_rate': 0.050000000000000003, 
+        'min_child_weight': 6.3451369791849137, 
+        'n_estimators': 97, 
+        'subsample': 0.88005909793603776, 
+        'max_depth': 10, 
+        'gamma': 0.02}
+
+## lvl320160401xgbnnet
+
+XGBOOST: -0.432193
+XGBOOST: {'colsample_bytree': 0.40000000000000002, 
+        'learning_rate': 0.02517174517978878, 
+         'min_child_weight': 9.188843134519912, 
+        'n_estimators': 261, 
+        'subsample': 0.40000000000000002, 
+        'max_depth': 2.130309171165937, 
+        'gamma': 0.02}
+
+## combo7x20160401
+
+XGBOOST: -0.433787
+XGBOOST: {'colsample_bytree': 0.94999999999999996, 
+        'learning_rate': 0.027658197502128549, 
+        'min_child_weight': 1.0,
+         'n_estimators': 185, 
+        'subsample': 0.70304674752135021,
+         'max_depth': 10.645162521978422,
+         'gamma': 9.9999999999999995e-07}
+
+## kb6099dmp
+
+XGBOOST: -0.459107
+XGBOOST: {'colsample_bytree': 0.40000000000000002, 
+            'learning_rate': 0.016583133671152554, 
+            'min_child_weight': 10.364167908508753, 
+            'n_estimators': 494, 
+            'subsample': 0.94999999999999996,
+             'max_depth': 16.0, 
+            'gamma': 0.0065788712506389957}
+
+## kb6099num
+
+XGBOOST: -0.454127
+XGBOOST: {'colsample_bytree': 0.79637131133240435, 
+        'learning_rate': 0.02325932078657638, 
+        'min_child_weight': 5.5688598224060568, 
+        'n_estimators': 512, 
+        'subsample': 0.55562854771368753, 
+        'max_depth': 15, 
+        'gamma': 0.0041103453838154513}

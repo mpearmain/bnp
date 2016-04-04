@@ -83,11 +83,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 }
 
 ## data ####
-xvalid <- read_csv("../input/xtrain_lvl220160317red.csv")
+xvalid <- read_csv("../input3/xtrain_lvl320160401xgbnnet.csv")
 y <- xvalid$target; xvalid$target <- NULL
 id_valid <- xvalid$ID; xvalid$ID <- NULL
 
-xfull <- read_csv("../input/xtest_lvl220160317red.csv")
+xfull <- read_csv("../input3/xtest_lvl320160401xgbnnet.csv")
 id_full <- xfull$ID; xfull$ID <- NULL
 
 ## building ####
@@ -158,13 +158,13 @@ for (ii in 1:nfolds)
     wx <- apply(x0,1,sd)
     set.seed(seed_value + 1000*jj + 2^jj + 3 * jj^2)
     net0 <- nnet(factor(y0) ~ ., data = x0, size = round(0.5 * ncol(x0)), 
-                 MaxNWts = 20000, decay = 0.03)
+                 MaxNWts = 100000, decay = 0.03)
     pr1 <- predict(net0, x1)
     net0 <- nnet(factor(y0) ~ ., data = x0, size = round(0.5 * ncol(x0)), 
-                 MaxNWts = 20000, decay = 0.03, weights = wx )
+                 MaxNWts = 100000, decay = 0.03, weights = wx )
     pr2 <- predict(net0, x1)
     net0 <- nnet(factor(y0) ~ ., data = x0, size = round(0.5 * ncol(x0)), 
-                 MaxNWts = 20000, decay = 0.03, weights = 1/wx)
+                 MaxNWts = 100000, decay = 0.03, weights = 1/wx)
     pr3 <- predict(net0, x1)
     
     prmix <- (pr1 + pr2 + pr3)/3
