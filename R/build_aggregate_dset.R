@@ -14,15 +14,6 @@ msg <- function(mmm,...)
   cat(sprintf(paste0("[%s] ",mmm),Sys.time(),...)); cat("\n")
 }
 
-
-# wrapper around logloss preventing Inf/-Inf for 1/0 values
-log_loss <- function(actual, predicted, cutoff = 1e-15)
-{
-  predicted <- pmax(predicted, cutoff)
-  predicted <- pmin(predicted, 1- cutoff)
-  return(logLoss(actual,predicted))
-}
-
 ## data ####
 # list the groups 
 xlist_val <- dir("../metafeatures/", pattern =  "prval", full.names = T)
