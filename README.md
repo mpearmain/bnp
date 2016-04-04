@@ -42,30 +42,44 @@ created we must eliminate features for second level stacking and ensembling.
 
 ### Dataset building
 
-All datasets are generated using the script `./R/build_datasets.R`. Each dataset is described in a section below - the naming convention of files is based on those, so e.g. MP1 is stored as `./input/{xtrain,xtest}_MP1.csv`.
+The datasets are generated using two scripts: `./R/build_datasets.R` and `./python/build_datasets.py`. Each dataset is described in a section below - in most cases the naming convention of files is based on those, so e.g. MP1 is stored as `./input/{xtrain,xtest}_MP1.csv`.
 
-#### MP1
-* clone of MP1 from homesite
+In the remainder of this section brackets near the name indicate which script was used to generate a particular dataset.
+
+#### buildMP1 (R)
 * count missing values per row
 * replace all NA with -1
-* map all characters to integers - **this means it makes sense as input only for tree-based models** 
+* map all characters to integers - **this means the MP1 dataset makes sense as input only for tree-based models** 
 
-#### KB1
-* MP1 as basis
-* addition of quadratic factors (pairwise combinations of all categorical variables)
+#### buildKB1 (R)
+* count missing values per row
+* replace all NA with -1
+* addition of quadratic factors (all pairwise combinations of categorical variables)
+* map all factors to integers - **this means the KB1 dataset makes sense as input only for tree-based models** 
 
-#### KB2
-* MP1 as basis
-* add quadratic factors (two-way combos)
-* add cubic factors (three-way interactions)
+#### buildKB2 (R)
+* count missing values per row
+* replace all NA with -1
+* addition of quadratic factors (all pairwise combinations of categorical variables)
+* addition of cubic factors (all three-way combinations of categorical variables)
+* map all factors to integers - **this means the KB2 dataset makes sense as input only for tree-based models** 
 
-#### KB3
-* KB1 as basis
+#### buildKB3 (R)
+* count missing values per row
+* replace all NA with -1
+* addition of quadratic factors (all pairwise combinations of categorical variables)
 * all factors mapped to response rates
 
-#### KB4
-* KB2 as basis
-* all factors mapped to response rates
+#### buildKB4 (R)
+* count missing values per row
+* replace all NA with -1
+* addition of quadratic factors (all pairwise combinations of categorical variables)
+* addition of cubic factors (all three-way combinations of categorical variables)
+* all factors mapped to response rates via (cross-validated) linear mixed-effects models using the *lmer* package in R
+
+#### buildKB5/buildKB6 (R)
+
+
 
 #### KB15
 
