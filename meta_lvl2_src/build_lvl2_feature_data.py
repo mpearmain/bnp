@@ -47,8 +47,8 @@ def build_new_features(xtrain, xtest, top_feats):
 # combine these into a single pandas dataframe.
 
 # settings
-projPath = '../'
-dataset_version = "lvl220160330"
+projPath = './'
+dataset_version = "lvl320160401"
 todate = datetime.datetime.now().strftime("%Y%m%d")
 # Top fetures to develop meta more interactions variables.
 topNfeatures = 7
@@ -115,6 +115,11 @@ xtest['lt01'] = (xtest[base_feat] < 0.1).sum(1)
 xtrain['ID'] = id_train
 xtrain['target'] = ytrain
 xtest['ID'] = id_test
+
+
+print "Shape train", xtrain.shape
+print "Shape test", xtest.shape
+
 
 print 'Writing Data Files.'
 xtrain.to_csv("../input2/xtrain_lvl2MP.csv", index = False, header = True)
