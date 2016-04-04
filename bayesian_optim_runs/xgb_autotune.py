@@ -33,8 +33,8 @@ def xgboostcv(max_depth,
                         seed=seed,
                         objective="binary:logistic")
 
-    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)],verbose=True,early_stopping_rounds=25)
-    ll = -log_loss(y1, clf.predict_proba(x1, ntree_limit = clf.best_iteration)[:,1])
+    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)],verbose=False)
+    ll = -log_loss(y1, clf.predict_proba(x1))
     return ll
 
 if __name__ == "__main__":
