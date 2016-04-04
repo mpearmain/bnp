@@ -104,8 +104,6 @@ print top_n_feature_names
 
 xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
 
-
-
 print "Shape train", xtrain.shape[1]
 print "Shape test", xtest.shape[1]
 # Lets add some simple features.
@@ -115,6 +113,8 @@ xtest['gt9'] = (xtest[base_feat] > 0.9).sum(1)
 xtrain['gt99'] = (xtrain[base_feat] > 0.99).sum(1)
 xtest['gt99'] = (xtest[base_feat] > 0.99).sum(1)
 
+xtrain['lt01'] = (xtrain[base_feat] < 0.1).sum(1)
+xtest['lt01'] = (xtest[base_feat] < 0.1).sum(1)
 xtrain['lt001'] = (xtrain[base_feat] < 0.01).sum(1)
 xtest['lt001'] = (xtest[base_feat] < 0.01).sum(1)
 
