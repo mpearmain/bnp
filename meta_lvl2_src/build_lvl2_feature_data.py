@@ -48,10 +48,10 @@ def build_new_features(xtrain, xtest, top_feats):
 
 # settings
 projPath = './'
-dataset_version = "lvl320160401"
+dataset_version = "lvl220160404"
 todate = datetime.datetime.now().strftime("%Y%m%d")
 # Top fetures to develop meta more interactions variables.
-topNfeatures = 7
+topNfeatures = 10
 
 ## data
 # read the training and test sets
@@ -66,6 +66,9 @@ xtest = pd.read_csv(projPath + 'input2/xtest_'+ dataset_version + '.csv')
 id_test = xtest.ID
 xtest.drop('ID', axis = 1, inplace = True)
 
+# Check the shape of the data is the same
+assert xtest.shape[1] == xtrain.shape[1]
+
 # Use Sklearn feature importance to select the 'best' features from our
 # metafeatures.
 
@@ -73,13 +76,11 @@ base_feat = list(xtrain)
 xgb_feat = filter(lambda x:re.match(r'^xgb',x), base_feat)
 noxgb_feat = [x for x in base_feat if x not in xgb_feat]
 
-print "Shape train", xtrain.shape
-
 # First Build a forest and compute the feature importance
 forest = RandomForestClassifier(n_jobs=-1,
                                 class_weight='auto',
-                                max_depth=10,
-                                n_estimators=1000)
+                                max_depth=7,
+                                n_estimators=500)
 print "Building RF - XGB"
 forest.fit(xtrain[xgb_feat], ytrain)
 importances = forest.feature_importances_
@@ -90,7 +91,8 @@ print top_n_feature_names
 
 xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
 
-print "Shape train", xtrain.shape
+print "Shape train", xtrain.shape[1]
+print "Shape test", xtest.shape[1]
 
 print "Building RF - Not XGB Features"
 forest.fit(xtrain[noxgb_feat], ytrain)
@@ -102,7 +104,12 @@ print top_n_feature_names
 
 xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
 
-print "Shape train", xtrain.shape
+
+
+
+
+print "Shape train", xtrain.shape[1]
+print "Shape test", xtest.shape[1]
 # Lets add some simple features.
 # This counts the number of meata features that predict target > 0.9
 xtrain['gt9'] = (xtrain[base_feat] > 0.9).sum(1)
@@ -111,16 +118,15 @@ xtest['gt9'] = (xtest[base_feat] > 0.9).sum(1)
 xtrain['lt01'] = (xtrain[base_feat] < 0.1).sum(1)
 xtest['lt01'] = (xtest[base_feat] < 0.1).sum(1)
 
+print "Shape train", xtrain.shape[1]
+print "Shape test", xtest.shape[1]
+
 
 xtrain['ID'] = id_train
 xtrain['target'] = ytrain
 xtest['ID'] = id_test
 
 
-print "Shape train", xtrain.shape
-print "Shape test", xtest.shape
-
-
 print 'Writing Data Files.'
-xtrain.to_csv("../input2/xtrain_lvl2MP.csv", index = False, header = True)
-xtest.to_csv("../input2/xtest_lvl2MP.csv", index = False, header = True)
+xtrain.to_csv("./input2/xtrain_lvl2MP.csv", index = False, header = True)
+xtest.to_csv("./input2/xtest_lvl2MP.csv", index = False, header = True)
