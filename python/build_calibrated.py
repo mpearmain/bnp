@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # xtrain_lvl320160315.csv
     c_val = 2
-    dataset_version = "lvl220160331xgb"
+    dataset_version = "lvl220160405"
 
     # read data
     xtrain = pd.read_csv('../input2/xtrain_' + dataset_version + '.csv')
@@ -49,9 +49,9 @@ if __name__ == "__main__":
         print("----------------------------")
         print("column " + str(wfold) + ": " + xtrain.columns[wfold])
         # storage structures
-        storage_mat = np.zeros((nfolds, 7))
-        ymat_valid = np.zeros((xtrain.shape[0],7))
-        ymat_full = np.zeros((xtest.shape[0],7))
+        storage_mat = np.zeros((nfolds, 13))
+        ymat_valid = np.zeros((xtrain.shape[0],13))
+        ymat_full = np.zeros((xtest.shape[0],13))
         
         # create validated calibrationss
         for j in range(0,nfolds):
@@ -73,6 +73,8 @@ if __name__ == "__main__":
            y_iso = ir.transform((np.array(x1)[:,0]))           
            storage_mat[j,1] = log_loss(y1, y_iso)        
            ymat_valid[idx1,1] = y_iso
+           storage_mat[j,7] = log_loss(y1, y_iso + y0.mean() - y_iso.mean())
+           ymat_valid[idx1,7] = y_iso + y0.mean() - y_iso.mean()
 
             # fit a logistic regression for Platt scaling           
            lr = LR(C = c_val)														
@@ -80,38 +82,65 @@ if __name__ == "__main__":
            y_platt = lr.predict_proba(np.array(x1)[:,0].reshape(-1,1))[:,1]
            storage_mat[j,2] = log_loss(y1, y_platt)
            ymat_valid[idx1,2] = y_platt
+           storage_mat[j,8] = log_loss(y1, y_platt + y0.mean() - y_platt.mean())
+           ymat_valid[idx1,8] = y_platt + y0.mean() - y_platt.mean()
            
+           y_ri = 0.5 * (y_raw + y_iso)
+           storage_mat[j,3] = log_loss(y1, y_ri)
+           ymat_valid[idx1,3] = y_ri
+           # version with "normalized" mean
+           storage_mat[j,9] = log_loss(y1, y_ri + y0.mean() - y_ri.mean())
+           ymat_valid[idx1,9] = y_ri + y0.mean() - y_ri.mean()
            
-           storage_mat[j,3] = log_loss(y1, 0.5 * (y_raw + y_iso))
-           ymat_valid[idx1,3] = 0.5 * (y_raw + y_iso)
+           y_rp =  0.5 * (y_raw + y_platt)
+           storage_mat[j,4] = log_loss(y1, y_rp)
+           ymat_valid[idx1,4] = y_rp
+           storage_mat[j,10] = log_loss(y1, y_rp + y0.mean() - y_rp.mean())
+           ymat_valid[idx1,10] = y_rp + y0.mean() - y_rp.mean()
            
-           storage_mat[j,4] = log_loss(y1, 0.5 * (y_raw + y_platt))
-           ymat_valid[idx1,4] = 0.5 * (y_raw + y_platt)
+           y_ip = 0.5 * (y_iso + y_platt)
+           storage_mat[j,5] = log_loss(y1, y_ip )
+           ymat_valid[idx1,5] = y_ip
+           storage_mat[j,11] = log_loss(y1, y_ip + y0.mean() - y_ip.mean())
+           ymat_valid[idx1,11] = y_ip + y0.mean() - y_ip.mean()
            
-           storage_mat[j,5] = log_loss(y1, 0.5 * (y_iso + y_platt))
-           ymat_valid[idx1,5] = 0.5 * (y_iso + y_platt)
-           
-           storage_mat[j,6] = log_loss(y1, 0.5 * (y_raw+ 0.5 * (y_platt + y_iso)))
-           ymat_valid[idx1,6] = 0.5 * (y_iso + 0.5 * (y_platt + y_iso))
+           y_rpi = 0.5 * (y_raw+ 0.5 * (y_platt + y_iso))
+           storage_mat[j,6] = log_loss(y1, y_rpi)
+           ymat_valid[idx1,6] = y_rpi
+           storage_mat[j,12] = log_loss(y1, y_rpi + y0.mean() - y_rpi.mean())
+           ymat_valid[idx1,12] = y_rpi + y0.mean() - y_rpi.mean()
            
         # create full calibrations
-        ymat_full[:,0] = np.array(xtest)[:, wfold]        
+        y_raw = np.array(xtest)[:, wfold]     
+        ymat_full[:,0] = y_raw   
   
         ir = IR( out_of_bounds = 'clip' )	
         ir.fit( np.array(xtrain)[:,wfold], y )
-        ymat_full[:,1] = ir.transform((np.array(xtest)[:,wfold]))
+        y_iso = ir.transform((np.array(xtest)[:,wfold]))
+        ymat_full[:,1] = y_iso
+        ymat_full[:,7] = y_iso + y.mean() - y_iso.mean()
         
         lr = LR(C = c_val)														
         lr.fit( np.array(xtrain)[:,wfold].reshape( -1, 1 ), y )
-        ymat_full[:,2] = lr.predict_proba(np.array(xtest)[:,wfold].reshape(-1,1))[:,1]
+        y_platt= lr.predict_proba(np.array(xtest)[:,wfold].reshape(-1,1))[:,1]
+        ymat_full[:,2] = y_platt
+        ymat_full[:,8] = y_platt + y.mean() - y_platt.mean()
            
-        ymat_full[:,3] = 0.5 * (ymat_full[:,0] + ymat_full[:,1])
-        ymat_full[:,4] = 0.5 * (ymat_full[:,0] + ymat_full[:,2])
-            
-        ymat_full[:,5] = 0.5 * (ymat_full[:,1] + ymat_full[:,2])
+        y_ri  = 0.5 * (y_raw + y_iso)  
+        ymat_full[:,3] = y_ri
+        ymat_full[:,9] = y_ri + y.mean() - y_ri.mean()
+        
+        y_rp =  0.5 * (y_raw + y_platt)
+        ymat_full[:,4] = y_rp
+        ymat_full[:,10] = y_rp + y.mean() - y_rp.mean()
+        
+        y_ip = 0.5 * (y_iso + y_platt)
+        ymat_full[:,5] = y_ip
+        ymat_full[:,11] = y_ip + y.mean() - y_ip.mean()
            
-        ymat_full[:,6] = 0.5 * (ymat_full[:,0] + 0.5 * (ymat_full[:,1] + ymat_full[:,2]))
-
+        y_rpi = 0.5 * (y_raw+ 0.5 * (y_platt + y_iso))
+        ymat_full[:,6] = y_rpi
+        ymat_full[:,12] = y_rpi + y.mean() - y_rpi.mean()
 
         # pick the best performing one - that's the one we propagate to xvalid2/xfull2
         wbest = np.argmin(storage_mat.mean(axis = 0))
