@@ -16,7 +16,7 @@ All submissions are stored in `submissions` but ignored from git.
 * bayesian-optimization (`pip install git+https://github.com/fmfn/BayesianOptimization.git`)
 
 ## Strategy 
-In this challenge, BNP Paribas Cardiff is providing an anonymized database with two categories of
+In this challenge, BNP Paribas Cardif is providing an anonymized database with two categories of
 claims:
 
 1. claims for which approval could be accelerated leading to faster payments.
