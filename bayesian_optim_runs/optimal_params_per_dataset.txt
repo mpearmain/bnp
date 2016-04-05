@@ -398,3 +398,15 @@ XGBOOST: {'colsample_bytree': 0.40000000000000002,
             'gamma': 9.9999999999999995e-07}
 
 ## lvl220160405combo
+
+XGBOOST: -0.432906
+XGBOOST: {'colsample_bytree': 0.95, 
+        'learning_rate': 0.017240956436818351, 
+        'min_child_weight': 18.995648569737504, 
+        'n_estimators': 1245, 
+        'subsample': 0.90940685982727887, 
+        'max_depth': 3, 
+        'gamma': 9.9999999999999995e-07}
+
+## lvl220160405
+
