@@ -384,3 +384,17 @@ XGBOOST: {'colsample_bytree': 0.79637131133240435,
         'subsample': 0.55562854771368753, 
         'max_depth': 15, 
         'gamma': 0.0041103453838154513}
+
+
+## train_dvencode_3level4
+
+XGBOOST: -0.443391
+XGBOOST: {'colsample_bytree': 0.40000000000000002, 
+            'learning_rate': 0.0096786744795317667, 
+            'min_child_weight': 11.588999880887799, 
+            'n_estimators': 848, 
+            'subsample': 0.94999999999999996, 
+            'max_depth': 16.0, 
+            'gamma': 9.9999999999999995e-07}
+
+## lvl220160405combo
