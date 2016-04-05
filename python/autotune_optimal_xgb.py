@@ -9,19 +9,19 @@ import os
 
 # settings
 projPath = os.getcwd()
-dataset_version = "lvl220160307"
+dataset_version = "lvl2MP"
 todate = datetime.datetime.now().strftime("%Y%m%d")    
 no_bags = 5
     
 ## data
 # read the training and test sets
-xtrain = pd.read_csv('./input/xvalid_'+ dataset_version + '.csv')
+xtrain = pd.read_csv('./input2/xtrain_'+ dataset_version + '.csv')
 id_train = xtrain.ID
 ytrain = xtrain.target
 xtrain.drop('ID', axis = 1, inplace = True)
 xtrain.drop('target', axis = 1, inplace = True)
 
-xtest = pd.read_csv('./input/xfull_'+ dataset_version + '.csv')
+xtest = pd.read_csv('./input2/xtest_'+ dataset_version + '.csv')
 id_test = xtest.ID
 xtest.drop('ID', axis = 1, inplace = True)
 
