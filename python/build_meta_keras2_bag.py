@@ -90,8 +90,8 @@ print dims, 'dims'
 auc_scores=[]
 best_score=-1
 
-param_grid = [[100, 0.3, 100, 0.025, 5, 2256],
-              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 5, 2256]
+param_grid = [[100, 0.3, 100, 0.25, 20, 256],
+              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 10, 256]
              ]
 
 # storage structure for forecasts
@@ -122,7 +122,7 @@ for i in range(len(param_grid)):
                 model.fit(x0, y0, nb_epoch=x[4], batch_size=x[5])
                 preds = model.predict_proba(x1)[:,1]
                 if type(pred_average) == bool:
-                    pred_average = preds.copy()/nbag
+                    pred_average = preds.copy()
                 else:
                     pred_average += preds/nbag
                 scores = log_loss(y1[:,1],pred_average)
@@ -144,7 +144,7 @@ for i in range(len(param_grid)):
             model.fit(np.array(train), y_train, nb_epoch=x[4], batch_size=x[5])
             preds = model.predict_proba(np.array(test))[:,1]
             if type(pred_average) == bool:
-                pred_average = preds.copy()/nbag
+                pred_average = preds.copy()
             else:
                 pred_average += preds/nbag
             del model
