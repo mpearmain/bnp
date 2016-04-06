@@ -16,16 +16,12 @@ msg <- function(mmm,...)
   cat(sprintf(paste0("[%s] ",mmm),Sys.time(),...)); cat("\n")
 }
 
-
-auc<-function (actual, predicted) {
-  
-  r <- as.numeric(rank(predicted))
-  
-  n_pos <- as.numeric(sum(actual == 1))
-  n_neg <- as.numeric(length(actual) - n_pos)
-  auc <- (sum(r[actual == 1]) - n_pos * (n_pos + 1)/2)/(n_pos *  n_neg)
-  auc
-  
+# wrapper around logloss preventing Inf/-Inf for 1/0 values
+log_loss <- function(predicted, actual, cutoff = 1e-15)
+{
+  predicted <- pmax(predicted, cutoff)
+  predicted <- pmin(predicted, 1- cutoff)
+  return(logLoss(actual,predicted))
 }
 
 ## data ####
