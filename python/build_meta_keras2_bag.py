@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
 from keras.models import Sequential
-from keras.layers.core import Dropout, Activation, Dense
-from keras.layers.normalization import BatchNormalization
+from keras.layers.core import Dropout, Activation, Dense, regularizers
 from keras.utils import np_utils
 from sklearn.metrics import log_loss
 from sklearn.preprocessing import LabelEncoder
@@ -37,7 +36,7 @@ def getDummy(df,col):
 
 def createModel(x):
     model = Sequential()
-    model.add(Dense(x[0], input_shape=(dims,)))
+    model.add(Dense(x[0], input_shape=(dims,), init='he_uniform', W_regularizer=regularizers.l1(0.0005)))
     model.add(Activation('relu'))
     model.add(Dropout(x[1]))# input dropout
     model.add(Dense(x[2], init='he_uniform'))
@@ -90,79 +89,39 @@ print dims, 'dims'
 auc_scores=[]
 best_score=-1
 
-param_grid = [[int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.025, 40, 256],
-              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 40, 256],
-              [int(1.2 * train.shape[1]), 0.05, int(0.6 * train.shape[1]), 0.025, 40, 256],
-              [int(0.5 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 40, 256],
-              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 40, 256],
-              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 40, 256],
-              [int(0.5 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 40, 256],
-              [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 40, 256],
-              [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 40, 256],
-              [int(0.5 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 40, 256],
-              [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 40, 256],
-              [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 40, 256],
-              [int(0.5 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 40, 256],
-              [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 40, 256],
-              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 40, 256],
-              [int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.025, 20, 256],
-              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 20, 256],
-              [int(1.2 * train.shape[1]), 0.05, int(0.6 * train.shape[1]), 0.025, 20, 256],
-              [int(0.5 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 20, 256],
+param_grid = [[int(0.25 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 20, 256],
               [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 20, 256],
               [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 20, 256],
-              [int(0.5 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 20, 256],
+              [int(0.25 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 20, 256],
               [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 20, 256],
               [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 20, 256],
-              [int(0.5 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 20, 256],
+              [int(0.25 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 20, 256],
               [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 20, 256],
               [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 20, 256],
-              [int(0.5 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 20, 256],
+              [int(0.25 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 20, 256],
               [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 20, 256],
               [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 20, 256],
-               
-              [int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.025, 40, 1000],
-              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 40, 1000],
-              [int(1.2 * train.shape[1]), 0.05, int(0.6 * train.shape[1]), 0.025, 40, 1000],
-              [int(0.5 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 40, 1000],
-              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 40, 1000],
-              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 40, 1000],
-              [int(0.5 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 40, 1000],
-              [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 40, 1000],
-              [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 40, 1000],
-              [int(0.5 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 40, 1000],
+
+              [int(0.25 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 40, 1000],
               [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 40, 1000],
               [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 40, 1000],
-              [int(0.5 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 40, 1000],
+              [int(0.25 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 40, 1000],
               [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 40, 1000],
               [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 40, 1000],
-              [int(0.5 * train.shape[1]), 0.05, int(0.25 * train.shape[1]), 0.025, 20, 1000],
-              [int(0.9 * train.shape[1]), 0.05, int(0.45 * train.shape[1]), 0.025, 20, 1000],
-              [int(1.2 * train.shape[1]), 0.05, int(0.6 * train.shape[1]), 0.025, 20, 1000],
-              [int(0.5 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 20, 1000],
-              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 20, 1000],
-              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 20, 1000],
-              [int(0.5 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 20, 1000],
-              [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 20, 1000],
-              [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 20, 1000],
-              [int(0.5 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 20, 1000],
+              [int(0.25 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 20, 1000],
               [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 20, 1000],
               [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 20, 1000],
-              [int(0.5 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 20, 1000],
+              [int(0.25 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 20, 1000],
               [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 20, 1000],
               [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 20, 1000],
 
-              [int(1.9 * train.shape[1]), 0.1, int(1.45 * train.shape[1]), 0.05, 40, 1000],
-              [int(2.2 * train.shape[1]), 0.1, int(1.6 * train.shape[1]), 0.05, 40, 1000],
-              [int(4.5 * train.shape[1]), 0.2, int(1.25 * train.shape[1]), 0.1, 40, 1000],
-              [int(1.9 * train.shape[1]), 0.2, int(1.45 * train.shape[1]), 0.1, 60, 1000],
-              [int(2.2 * train.shape[1]), 0.2, int(1.6 * train.shape[1]), 0.1, 60, 1000],
-              [int(4.5 * train.shape[1]), 0.25,int(1.25 * train.shape[1]), 0.125, 60, 1000],
-              [int(1.9 * train.shape[1]), 0.25,int(1.45 * train.shape[1]), 0.125, 120, 1000],
-              [int(2.2 * train.shape[1]), 0.25,int(1.6 * train.shape[1]), 0.125, 120, 1000],
-              [int(4.5 * train.shape[1]), 0.4, int(1.25 * train.shape[1]), 0.2, 120, 1000],
-              [int(1.9 * train.shape[1]), 0.4, int(1.45 * train.shape[1]), 0.2, 240, 1000],
-              [int(1.2 * train.shape[1]), 0.4, int(1.6 * train.shape[1]), 0.2, 240, 1000]
+              [int(2.2 * train.shape[1]), 0.4, int(1.6 * train.shape[1]), 0.1, 60, 1000],
+              [int(4.5 * train.shape[1]), 0.55,int(1.25 * train.shape[1]), 0.125, 60, 1000],
+              [int(1.9 * train.shape[1]), 0.55,int(1.45 * train.shape[1]), 0.125, 120, 1000],
+              [int(2.2 * train.shape[1]), 0.55,int(1.6 * train.shape[1]), 0.125, 120, 1000],
+              [int(4.5 * train.shape[1]), 0.8, int(1.25 * train.shape[1]), 0.2, 120, 1000],
+              [int(1.9 * train.shape[1]), 0.8, int(1.45 * train.shape[1]), 0.2, 240, 1000],
+              [int(1.2 * train.shape[1]), 0.8, int(1.6 * train.shape[1]), 0.2, 240, 1000]
 
               ]
 # storage structure for forecasts
