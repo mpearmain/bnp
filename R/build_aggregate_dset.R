@@ -89,15 +89,8 @@ y <- xvalid$target; xvalid$target <- NULL
 id_train <- xvalid$ID; xvalid$ID <- NULL
 id_test <- xfull$ID; xfull$ID <- NULL
 
-# xgb only
-idx <- grep("xgb", colnames(xvalid))
-xv <- xvalid[,idx]; xf <- xfull[,idx]
-xv$ID <- id_train; xv$target <- y; xf$ID <- id_test
-write.csv(xv, paste('../input2/xtrain_lvl2',todate,'xgb.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../input2/xtest_lvl2',todate,'xgb.csv', sep = ""), row.names = F)
-
 # combo
-idx <- grep("xgb|mars|nnet|srk", colnames(xvalid))
+idx <- grep("xgb|mars|nnet|srk|msk", colnames(xvalid))
 xv <- xvalid[,idx]; xf <- xfull[,idx]
 xv$ID <- id_train; xv$target <- y; xf$ID <- id_test
 write.csv(xv, paste('../input2/xtrain_lvl2',todate,'combo.csv', sep = ""), row.names = F)
