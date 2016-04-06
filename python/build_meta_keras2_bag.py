@@ -89,18 +89,18 @@ print dims, 'dims'
 auc_scores=[]
 best_score=-1
 
-param_grid = [[int(0.25 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 20, 256],
-              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 20, 256],
-              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 20, 256],
-              [int(0.25 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 20, 256],
-              [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 20, 256],
-              [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 20, 256],
-              [int(0.25 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 20, 256],
-              [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 20, 256],
-              [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 20, 256],
-              [int(0.25 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 20, 256],
-              [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 20, 256],
-              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 20, 256],
+param_grid = [[int(0.25 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 30, 256],
+              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 30, 256],
+              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 30, 256],
+              [int(0.25 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 30, 256],
+              [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 30, 256],
+              [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 30, 256],
+              [int(0.25 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 30, 256],
+              [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 30, 256],
+              [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 30, 256],
+              [int(0.25 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 30, 256],
+              [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 30, 256],
+              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 30, 256],
 
               [int(0.25 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 40, 1000],
               [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 40, 1000],
@@ -108,20 +108,14 @@ param_grid = [[int(0.25 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05
               [int(0.25 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 40, 1000],
               [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 40, 1000],
               [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 40, 1000],
-              [int(0.25 * train.shape[1]), 0.25, int(0.25 * train.shape[1]), 0.125, 20, 1000],
-              [int(0.9 * train.shape[1]), 0.25, int(0.45 * train.shape[1]), 0.125, 20, 1000],
-              [int(1.2 * train.shape[1]), 0.25, int(0.6 * train.shape[1]), 0.125, 20, 1000],
-              [int(0.25 * train.shape[1]), 0.4, int(0.25 * train.shape[1]), 0.2, 20, 1000],
-              [int(0.9 * train.shape[1]), 0.4, int(0.45 * train.shape[1]), 0.2, 20, 1000],
-              [int(1.2 * train.shape[1]), 0.4, int(0.6 * train.shape[1]), 0.2, 20, 1000],
 
               [int(2.2 * train.shape[1]), 0.4, int(1.6 * train.shape[1]), 0.1, 60, 1000],
-              [int(4.5 * train.shape[1]), 0.55,int(1.25 * train.shape[1]), 0.125, 60, 1000],
-              [int(1.9 * train.shape[1]), 0.55,int(1.45 * train.shape[1]), 0.125, 120, 1000],
-              [int(2.2 * train.shape[1]), 0.55,int(1.6 * train.shape[1]), 0.125, 120, 1000],
+              [int(4.5 * train.shape[1]), 0.55,int(1.25 * train.shape[1]), 0.25, 60, 1000],
+              [int(1.9 * train.shape[1]), 0.55,int(1.45 * train.shape[1]), 0.25, 120, 1000],
+              [int(2.2 * train.shape[1]), 0.55,int(1.6 * train.shape[1]), 0.25, 120, 1000],
               [int(4.5 * train.shape[1]), 0.8, int(1.25 * train.shape[1]), 0.2, 120, 1000],
-              [int(1.9 * train.shape[1]), 0.8, int(1.45 * train.shape[1]), 0.2, 240, 1000],
-              [int(1.2 * train.shape[1]), 0.8, int(1.6 * train.shape[1]), 0.2, 240, 1000]
+              [int(1.9 * train.shape[1]), 0.8, int(1.45 * train.shape[1]), 0.6, 240, 1000],
+              [int(1.2 * train.shape[1]), 0.8, int(1.6 * train.shape[1]), 0.6, 240, 1000]
 
               ]
 # storage structure for forecasts
