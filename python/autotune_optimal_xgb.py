@@ -27,8 +27,7 @@ xtest.drop('ID', axis = 1, inplace = True)
 
 sample = pd.read_csv('./input/sample_submission.csv')
 
-pred_average = True
-
+pred_sum = 0
 for k in range(no_bags):
     print 'Building bag:', k
 
@@ -45,10 +44,8 @@ for k in range(no_bags):
 
     clf.fit(xtrain, ytrain, eval_metric='logloss')
     preds = clf.predict_proba(xtest)[:,1]
-    if type(pred_average) == bool:
-        pred_average = preds.copy()
-    else:
-        pred_average += preds/no_bags
+    pred_sum += preds
+    pred_average = pred_sum / (k+1)
     print 'Finished bag:', k
 
 sample.PredictedProb = pred_average
