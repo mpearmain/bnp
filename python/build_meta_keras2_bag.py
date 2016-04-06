@@ -115,16 +115,14 @@ for i in range(len(param_grid)):
             y1 = np.array(y_train)[idx1]
 
             # setup bagging classifier
-            pred_average = True
+            pred_sum = 0
             for k in range(nbag):
                 model = createModel(x)
                 print 'Building bag:', k
                 model.fit(x0, y0, nb_epoch=x[4], batch_size=x[5])
                 preds = model.predict_proba(x1)[:,1]
-                if type(pred_average) == bool:
-                    pred_average = preds.copy()
-                else:
-                    pred_average += preds/nbag
+                pred_sum += preds
+                pred_average = pred_sum / (k+1)
                 scores = log_loss(y1[:,1],pred_average)
                 print 'LogLoss score', scores
                 del model
@@ -137,16 +135,14 @@ for i in range(len(param_grid)):
         x = param_grid[i]
 
         # setup bagging classifier
-        pred_average = True
+        pred_sum = 0
         for k in range(nbag):
             model = createModel(x)
             print 'Building bag:', k
             model.fit(np.array(train), y_train, nb_epoch=x[4], batch_size=x[5])
             preds = model.predict_proba(np.array(test))[:,1]
-            if type(pred_average) == bool:
-                pred_average = preds.copy()
-            else:
-                pred_average += preds/nbag
+            pred_sum += preds
+            pred_average = pred_sum / (k+1)
             del model
             print 'Finished bag:', k
         mfull[:,i] = pred_average

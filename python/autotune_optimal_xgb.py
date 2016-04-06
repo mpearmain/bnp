@@ -46,7 +46,7 @@ for k in range(no_bags):
     clf.fit(xtrain, ytrain, eval_metric='logloss')
     preds = clf.predict_proba(xtest)[:,1]
     if type(pred_average) == bool:
-        pred_average = preds.copy()/no_bags
+        pred_average = preds.copy()
     else:
         pred_average += preds/no_bags
     print 'Finished bag:', k
