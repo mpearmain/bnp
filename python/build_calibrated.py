@@ -152,10 +152,22 @@ if __name__ == "__main__":
         print("old logloss: %.6f "%a1)
         print("new logloss: %.6f "%a2)
         print("improvement: %.6f" %(a1 - a2))
-                
+    
+
+    
+        
     ## store calibrated version
     xtrain2 = pd.DataFrame(xtrain2); xtrain2.columns = xtrain.columns
     xtest2 = pd.DataFrame(xtest2); xtest2.columns = xtest.columns
+    
+    ## add summary statistics: mean, median, min, max
+    xtrain2['xmin'] = xtrain2.min(axis = 1)
+    xtest2['xmin'] = xtest2.min(axis = 1)
+    xtrain2['xmax'] = xtrain2.max(axis = 1)
+    xtest2['xmax'] = xtest2.max(axis = 1)
+    xtrain2['xmedian'] = xtrain2.median(axis = 1)
+    xtest2['xmedian'] = xtest2.median(axis = 1)
+    
     xtrain2['target'] = y; xtrain2['ID'] = id_train
     xtest2['ID'] = id_test
     
