@@ -89,9 +89,9 @@ print dims, 'dims'
 auc_scores=[]
 best_score=-1
 
-param_grid = [[int(0.25 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.05, 30, 256],
-              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.05, 30, 256],
-              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.05, 30, 256],
+param_grid = [[int(0.25 * train.shape[1]), 0.1, int(0.25 * train.shape[1]), 0.15, 40, 256],
+              [int(0.9 * train.shape[1]), 0.1, int(0.45 * train.shape[1]), 0.15, 40, 256],
+              [int(1.2 * train.shape[1]), 0.1, int(0.6 * train.shape[1]), 0.15, 40, 256],
               [int(0.25 * train.shape[1]), 0.2, int(0.25 * train.shape[1]), 0.1, 30, 256],
               [int(0.9 * train.shape[1]), 0.2, int(0.45 * train.shape[1]), 0.1, 30, 256],
               [int(1.2 * train.shape[1]), 0.2, int(0.6 * train.shape[1]), 0.1, 30, 256],
@@ -170,7 +170,6 @@ for i in range(len(param_grid)):
             del model
             print 'Finished bag:', k
         mfull[:,i] = pred_average
-        del model
         print "finished full prediction"
 
 ## store the results
