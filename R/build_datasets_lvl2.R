@@ -26,8 +26,8 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 
 ## data ####
 # list the groups 
-xlist_val <- dir("../metafeatures/", pattern =  "prval", full.names = T)
-xlist_full <- dir("../metafeatures/", pattern = "prfull", full.names = T)
+xlist_val <- dir("./metafeatures2/", pattern =  "prval", full.names = T)
+xlist_full <- dir("./metafeatures2/", pattern = "prfull", full.names = T)
 
 # aggregate validation set
 ii <- 1
@@ -109,10 +109,10 @@ print(paste(" Number of cols after linear combo extraction:", dim(xvalid)[2]))
 ## save the datasets  ####
 xvalid$target <- y 
 xvalid$ID <- id_train
-write.csv(xvalid, paste('../input2/xtrain_lvl2',todate,'.csv', sep = ""), row.names = F)
+write.csv(xvalid, paste('./input2/xtrain_lvl3',todate,'.csv', sep = ""), row.names = F)
 
 xfull$ID <- id_test
-write.csv(xfull, paste('../input2/xtest_lvl2',todate,'.csv', sep = ""), row.names = F)
+write.csv(xfull, paste('./input2/xtest_lvl3',todate,'.csv', sep = ""), row.names = F)
 
 ## limited versions of the dataset (restricted to specific model class)
 y <- xvalid$target; xvalid$target <- NULL
