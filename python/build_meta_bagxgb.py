@@ -18,10 +18,10 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "lvl220160331xgb"
+    dataset_version = "lvl220160406combo"
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    nbag = 300
+    nbag = 400
     model_type = 'bagxgb' + str(nbag)
     
     ## data
@@ -51,15 +51,16 @@ if __name__ == '__main__':
                                 
     param_grid = [
             ## optimized for lvl220160331xgb
-            (0.5889440722623932,  0.026336192899721379, 
-            23.06860893667988,  186,  0.94485239119170727, 
-             8, 0.016613348739321243),
-              
+            (0.76491827210567487,0.0065204749634808767, 
+            18.06814867147456,  712, 
+             0.48215850115081216, 12, 0.035761154742778502),
+            (0.62849186678452273, 0.059999999999999998, 
+         40.0, 117,  0.97999999999999998, 9, 9.9999999999999994e-12)
     ]
                             
     # dump the meta description for this set into a file
     # (dataset version, model type, seed, parameter grid) 
-    par_dump = '../meta_parameters/'+'D'+dataset_version+'_M'+model_type  
+    par_dump = '../meta_parameters2/'+'D'+dataset_version+'_M'+model_type  
     par_dump = par_dump + '_'+todate+'.txt'
     f1=open(par_dump, 'w+')
     f1.write('dataset version: '); f1.write(str(dataset_version))
