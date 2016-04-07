@@ -14,6 +14,14 @@ msg <- function(mmm,...)
   cat(sprintf(paste0("[%s] ",mmm),Sys.time(),...)); cat("\n")
 }
 
+# wrapper around logloss preventing Inf/-Inf for 1/0 values
+log_loss <- function(actual, predicted, cutoff = 1e-15)
+{
+  predicted <- pmax(predicted, cutoff)
+  predicted <- pmin(predicted, 1- cutoff)
+  return(logLoss(actual,predicted))
+}
+
 ## data ####
 # list the groups 
 xlist_val <- dir("../metafeatures/", pattern =  "prval", full.names = T)
@@ -74,8 +82,6 @@ if (length(flc$remove))
 }
 print(paste(" Number of cols after linear combo extraction:", dim(xvalid)[2]))
 
-
-
 ## save the datasets  ####
 xvalid$target <- y 
 xvalid$ID <- id_train
@@ -84,14 +90,39 @@ write.csv(xvalid, paste('../input2/xtrain_lvl2',todate,'.csv', sep = ""), row.na
 xfull$ID <- id_test
 write.csv(xfull, paste('../input2/xtest_lvl2',todate,'.csv', sep = ""), row.names = F)
 
-## limited versions of the dataset (restricted to specific model class)
+## reduced version via feature selection ####
 y <- xvalid$target; xvalid$target <- NULL
 id_train <- xvalid$ID; xvalid$ID <- NULL
 id_test <- xfull$ID; xfull$ID <- NULL
 
-# combo
-idx <- grep("xgb|mars|nnet|srk|msk", colnames(xvalid))
-xv <- xvalid[,idx]; xf <- xfull[,idx]
-xv$ID <- id_train; xv$target <- y; xf$ID <- id_test
-write.csv(xv, paste('../input2/xtrain_lvl2',todate,'combo.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../input2/xtest_lvl2',todate,'combo.csv', sep = ""), row.names = F)
+
+## VARIA ####
+# evaluate by cross-validated performance
+# idFix <- createDataPartition(y = y, times = 30, p = 2/3)
+# xmat <- array(0, c(length(idFix), ncol(xtrain) * 2 + 2))
+# # loop over folds 
+# for (jj in 1:length(idFix))
+# {
+#   idx <- idFix[[jj]]
+#   x0 <- xtrain[idx,]; x1 <- xtrain[-idx,]
+#   y0 <- y[idx]; y1 <- y[-idx]
+#   
+#   xmat[jj,1:ncol(x1)] <- apply(x1,2,function(s) log_loss(y1,s))
+#   xmat[jj,(1:ncol(x1)) + ncol(x1)] <- apply(x1,2,function(s) log_loss(y1,s + mean(y0) - mean(s)))
+#   xmat[jj, 2 * ncol(x1) + 1] <- log_loss(y1, 0.5 * (x1$xgb21 + x1$xgb22))
+#   xmat[jj, 2 * ncol(x1) + 2] <- log_loss(y1, sqrt(x1$xgb21 * x1$xgb22))
+# }
+
+# # combo
+# idx <- grep("xgb|mars|nnet|srk|msk", colnames(xvalid))
+# xv <- xvalid[,idx]; xf <- xfull[,idx]
+# xv$ID <- id_train; xv$target <- y; xf$ID <- id_test
+# write.csv(xv, paste('../input2/xtrain_lvl2',todate,'combo.csv', sep = ""), row.names = F)
+# write.csv(xf, paste('../input2/xtest_lvl2',todate,'combo.csv', sep = ""), row.names = F)
+# 
+# # combo lvl3
+# idx <- grep("xgb|nnet", colnames(xvalid))
+# xv <- xvalid[,idx]; xf <- xfull[,idx]
+# xv$ID <- id_train; xv$target <- y; xf$ID <- id_test
+# write.csv(xv, paste('../input3/xtrain_lvl3',todate,'xgbnnet.csv', sep = ""), row.names = F)
+# write.csv(xf, paste('../input3/xtest_lvl3',todate,'xgbnnet.csv', sep = ""), row.names = F)
