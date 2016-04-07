@@ -429,3 +429,37 @@ XGBOOST: {'colsample_bytree': 0.81854196394240808,
             'subsample': 0.97999999999999998, 
             'max_depth': 5.6977612472788435, 
             'gamma': 9.9999999999999995e-08}
+
+## lvl220160406combo
+
+XGBOOST: -0.432656
+XGBOOST: {'colsample_bytree': 0.76491827210567487, 
+            'learning_rate': 0.0065204749634808767, 
+            'min_child_weight': 18.06814867147456, 
+            'n_estimators': 712, 
+            'subsample': 0.48215850115081216, 
+            'max_depth': 11.573599055590346,
+         'gamma': 0.035761154742778502}
+
+## lvl320160406xgbnnet
+
+XGBOOST: -0.430948
+XGBOOST: {'colsample_bytree': 0.25, 
+        'learning_rate': 0.017406466731891734, 
+        'min_child_weight': 1.0, 
+        'n_estimators': 289, 
+        'subsample': 0.4175007637759795, 
+        'max_depth': 5.9611678329211726, 
+        'gamma': 0.050000000000000003}
+
+
+## c2dlvl220160406combo
+
+XGBOOST: -0.433089
+XGBOOST: {'colsample_bytree': 0.62849186678452273, 
+        'learning_rate': 0.059999999999999998, 
+        'min_child_weight': 40.0, 
+        'n_estimators': 117, 
+        'subsample': 0.97999999999999998, 
+        'max_depth': 8.6508781732519289, 
+        'gamma': 9.9999999999999994e-12}
