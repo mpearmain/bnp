@@ -95,6 +95,20 @@ y <- xvalid$target; xvalid$target <- NULL
 id_train <- xvalid$ID; xvalid$ID <- NULL
 id_test <- xfull$ID; xfull$ID <- NULL
 
+idFix <- createDataPartition(y = y, times = 40, p = 0.15)
+relev_mat <- array(0, c(ncol(xvalid), length(idFix)))
+# loop over folds 
+for (ii in 1:length(idFix))
+{
+  idx <- idFix[[ii]]
+  x0 <- xvalid[idx,]; y0 <- y[idx];
+  
+  mod0 <- gbm.fit(x = x0, y = y0, distribution = "bernoulli", 
+                    n.trees = 150, interaction.depth = 25, shrinkage = 0.001, verbose = T)
+  
+  relev_mat[,ii] <- summary(mod0, order = F, plot = F)[,2]
+}
+
 
 ## VARIA ####
 # evaluate by cross-validated performance
