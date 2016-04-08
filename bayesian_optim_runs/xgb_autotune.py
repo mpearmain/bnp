@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "lvl220160405"
+    dataset_version = "20160407r1"
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
@@ -66,10 +66,10 @@ if __name__ == "__main__":
                                      {'max_depth': (int(2), int(25)),
                                       'learning_rate': (0.0005, 0.06),
                                       'n_estimators': (int(500), int(2000)),
-                                      'subsample': (0.25, 0.95),
-                                      'colsample_bytree': (0.25, 0.95),
-                                      'gamma': (0.000001, 0.02),
-                                      'min_child_weight': (int(1), int(30))
+                                      'subsample': (0.25, 0.98),
+                                      'colsample_bytree': (0.25, 0.98),
+                                      'gamma': (0.00000000001, 0.05),
+                                      'min_child_weight': (int(1), int(40))
                                      })
     xgboostBO.maximize(init_points=5, n_iter=20, acq='ei')
     print('-' * 53)
