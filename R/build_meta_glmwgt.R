@@ -4,7 +4,7 @@ require(glmnet)
 require(caret)
 require(stringr)
 
-dataset_version <- "c20160330"
+dataset_version <- "lvl220160406"
 seed_value <- 43
 model_type <- "glmwgt"
 todate <- str_replace_all(Sys.Date(), "-","")
@@ -17,11 +17,17 @@ msg <- function(mmm,...)
 }
 
 # wrapper around logloss preventing Inf/-Inf for 1/0 values
-log_loss <- function(predicted, actual, cutoff = 1e-15)
+log_loss <- function(actual, predicted, cutoff = 1e-15)
 {
   predicted <- pmax(predicted, cutoff)
   predicted <- pmin(predicted, 1- cutoff)
   return(logLoss(actual,predicted))
+}
+
+get_error <- function(actual, predicted, cutoff = 1e-15)
+{
+  xerr <- -(actual * log(predicted + cutoff) + (1-actual) * log(1- predicted + cutoff))
+  return(xerr)
 }
 
 ## data ####
@@ -37,6 +43,10 @@ xtrain$ID <- xtest$ID <- NULL
 xfolds <- read_csv("../input/xfolds.csv"); xfolds$fold_index <- xfolds$fold5
 xfolds <- xfolds[,c("ID", "fold_index")]
 nfolds <- length(unique(xfolds$fold_index))
+
+# produce errors matrix
+wgt_matrix <- apply(xtrain,2, function(s) get_error(y, s))
+wgt_vec <- rowMeans(wgt_matrix)
 
 ## fit models ####
 # parameter grid
@@ -63,6 +73,13 @@ for (ii in 1:nrow(param_grid))
                    standardize = param_grid$stand[ii])
     pred0 <- predict(mod0, x1,type = "response")
     pred0 <- pred0[,ncol(pred0)]
+    
+    wgt0 <- wgt_vec[isTrain]
+    mod1 <- glmnet(x = x0[-ix,], y = y0[-ix], family = "binomial", alpha = param_grid$alpha[ii],
+                   standardize = param_grid$stand[ii])
+    pred1 <- predict(mod1, x1,type = "response")
+    pred1 <- pred1[,ncol(pred1)]
+    
     mtrain[isValid,ii] <- pred0
   }
   
