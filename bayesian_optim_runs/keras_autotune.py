@@ -20,7 +20,7 @@ def kerascv(dense1, dropout1, dense2, dropout2, epochs):
     pred_sum = 0
     for k in range(3):
         model = createModel(dense1=int(dense1), dropout1=dropout1, dense2=int(dense2), dropout2=dropout2)
-        model.fit(x0, y0, nb_epoch=int(epochs), batch_size=256, verbose=1)
+        model.fit(x0, y0, nb_epoch=int(epochs), batch_size=256, verbose=0)
 
         preds = model.predict_proba(x1)[:,1]
         pred_sum += preds
@@ -62,7 +62,7 @@ def getDummy(df,col):
 
 if __name__ == "__main__":
     ## settings
-    dataset_version = "kb1"
+    dataset_version = "dvencode_3level4"
     nbag = 5
     seed_value = 1543
     todate = datetime.datetime.now().strftime("%Y%m%d")
