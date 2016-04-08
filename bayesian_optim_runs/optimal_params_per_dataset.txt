@@ -478,5 +478,22 @@ XGBOOST: {'colsample_bytree': 0.87844290824516646,
 
 ## 20160407r1
 
+XGBOOST: -0.431922
+XGBOOST: {'colsample_bytree': 0.84769228562472265, 
+        'learning_rate': 0.052469956650194535, 
+        'min_child_weight': 29.105093386464947, 
+        'n_estimators': 122, 
+        'subsample': 0.94734898638674647, 
+        'max_depth': 6.9620133902052306, 
+        'gamma': 0.039680180207206227}
+
 ## 20160407r5
 
+XGBOOST: -0.432025
+XGBOOST: {'colsample_bytree': 0.25, 
+        'learning_rate': 0.0054049601302086402, 
+        'min_child_weight': 31.566630839750037, 
+        'n_estimators': 930, 
+        'subsample': 0.97999999999999998, 
+        'max_depth': 20.642718358384485, 
+        'gamma': 9.9999999999999994e-12}
