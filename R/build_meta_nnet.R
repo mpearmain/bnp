@@ -5,7 +5,7 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "lvl220160406combo"
+dataset_version <- "lvl320160406xgbnnet"
 seed_value <- 440223
 model_type <- "nnet"
 todate <- str_replace_all(Sys.Date(), "-","")
@@ -27,8 +27,8 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 
 ## data ####
 # read actual data
-xtrain <- read_csv(paste("../input2/xtrain_",dataset_version,".csv", sep = ""))
-xtest <- read_csv(paste("../input2/xtest_",dataset_version,".csv", sep = ""))
+xtrain <- read_csv(paste("../input3/xtrain_",dataset_version,".csv", sep = ""))
+xtest <- read_csv(paste("../input3/xtest_",dataset_version,".csv", sep = ""))
 y <- xtrain$target; 
 xtrain$target <- NULL
 id_train <- xtrain$ID
@@ -43,7 +43,7 @@ nfolds <- length(unique(xfolds$fold_index))
 ## fit models ####
 # parameter grid
 param_grid <- expand.grid(size = round(ncol(xtrain) * c(0.5, 0.3, 0.2)),
-                          decay = c(0.01, 0.025, 0.1, 0.25))
+                          decay = c(0.005, 0.01, 0.025, 0.1))
 
 # storage structures 
 mtrain <- array(0, c(nrow(xtrain), nrow(param_grid)))
@@ -106,10 +106,10 @@ print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
 
 
 todate <- str_replace_all(Sys.Date(), "-","")
-write_csv(mtrain, path = paste("../metafeatures2/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
-write_csv(mtest, path = paste("../metafeatures2/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtrain, path = paste("../metafeatures3/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtest, path = paste("../metafeatures3/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 # store the parameters
-write_csv(param_grid, path = paste("../meta_parameters2/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".txt",sep = "" ))
+write_csv(param_grid, path = paste("../meta_parameters3/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".txt",sep = "" ))
 
 
