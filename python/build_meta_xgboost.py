@@ -16,20 +16,20 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "dvencode3level4"
+    dataset_version = "lvl320160406xgbnnet"
     model_type = "xgb"
     seed_value = 874
     todate = datetime.datetime.now().strftime("%Y%m%d")
 
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('../input3/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
 
-    xtest = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
+    xtest = pd.read_csv('../input3/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
 
@@ -55,43 +55,18 @@ if __name__ == '__main__':
     param_grid = [
           #(0.86939934445906852,0.02992847302109345, 20.631692294719159,
           # 318, 0.72547208975310051, 10, 0.01966513396708065 ),
-             (0.59461387900382301, 0.01058200585695002,
-              8.5193167994862655, 758, 0.7899466628174614, 
-              14, 0.015413770403341487),
-              # optimized for lvl220160329
-          #  (0.59449161316455967, 0.03723339549515764,3.8858379480282639, 
-          #113,  0.63669942372294597,  9, 0.0064676261299398399),
-          #(0.85, 0.02, 1, 500, 0.9, 6, 0),
-          #(0.71641653481931888,  0.012967411293674902, 22.080483788936164, 
-          # 507, 0.77459872346718606, 8, 0.0083553529050680725),
-           # optimized for c20160330
-          #(0.95, 0.010802548227853035, 25.0, 438, 0.95, 
-          #  6, 9.9999999999999995e-07),
-            ## optimized for lvl220160331xgb
-           # (0.5889440722623932,  0.026336192899721379, 
-           # 23.06860893667988,  186,  0.94485239119170727, 
-           #  8, 0.016613348739321243),
-            ## optimized for lvl220160331combo
-           # (0.94999999999999996,  0.031469810335467224, 
-           #      30.0, 336,  0.84172191810733488,  6,  0.02),
-            # optimized for kb6099num
-           #(0.79637131133240435, 0.02325932078657638, 
-           # 5.5688598224060568, 512,  0.55562854771368753, 15, 
-           #     0.0041103453838154513),
-            # optimized for kb6099dmp    
-           (0.40000000000000002,  0.016583133671152554, 
-           10.364167908508753, 494,  0.94999999999999996,
-             16.0, 0.0065788712506389957),
-            # optimized for train_dvencode_3level4 
-            (0.400, 0.0096786744795317667, 
-              11.588999880887799,  848,  0.95, 16.0, 
-              9.9999999999999995e-07)
-             
+        # optimized for lvl320160406xgbnnet
+        (0.25, 0.017406466731891734, 1.0, 289, 
+         0.4175007637759795,  6, 0.050000000000000003),
+        
+        (0.40000000000000002,  0.02517174517978878, 
+             9.188843134519912, 261, 0.40000000000000002, 
+             2.130309171165937,  0.02)
     ]
     
     # dump the meta description for this set into a file
     # (dataset version, model type, seed, parameter grid) 
-    par_dump = '../meta_parameters2/'+'D'+dataset_version+'_M'+model_type  
+    par_dump = '../meta_parameters3/'+'D'+dataset_version+'_M'+model_type  
     par_dump = par_dump + '_'+todate+'.txt'
     f1=open(par_dump, 'w+')
     f1.write('dataset version: '); f1.write(str(dataset_version))
@@ -162,5 +137,5 @@ if __name__ == '__main__':
 
 
     # save the files
-    mvalid.to_csv('../metafeatures/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    mfull.to_csv('../metafeatures/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mvalid.to_csv('../metafeatures3/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mfull.to_csv('../metafeatures3/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
