@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # xtrain_lvl320160315.csv
     c_val = 2
-    dataset_version = "lvl220160405"
+    dataset_version = "lvl220160406combo"
 
     # read data
     xtrain = pd.read_csv('../input2/xtrain_' + dataset_version + '.csv')
