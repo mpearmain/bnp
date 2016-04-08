@@ -109,6 +109,40 @@ for (ii in 1:length(idFix))
   relev_mat[,ii] <- summary(mod0, order = F, plot = F)[,2]
 }
 
+# pick features that are always relevant
+idx <- which(apply(relev_mat,1,prod) != 0)
+xv <- xvalid[,idx]; xf <- xfull[,idx]
+xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
+write.csv(xv, paste('../input2/xtrain_',todate,'r1.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../input2/xtest_',todate,'r1.csv', sep = ""), row.names = F)
+
+# pick features that are never irrelevant
+idx <- which(rowMeans(relev_mat) > 0)
+xv <- xvalid[,idx]; xf <- xfull[,idx]
+xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
+write.csv(xv, paste('../input2/xtrain_',todate,'r2.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../input2/xtest_',todate,'r2.csv', sep = ""), row.names = F)
+
+# pick features with average importance > 1pct
+idx <- which(rowMeans(relev_mat) > 0.01)
+xv <- xvalid[,idx]; xf <- xfull[,idx]
+xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
+write.csv(xv, paste('../input2/xtrain_',todate,'r3.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../input2/xtest_',todate,'r3.csv', sep = ""), row.names = F)
+
+# pick features with average importance > 2pct
+idx <- which(rowMeans(relev_mat) > 0.02)
+xv <- xvalid[,idx]; xf <- xfull[,idx]
+xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
+write.csv(xv, paste('../input2/xtrain_',todate,'r4.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../input2/xtest_',todate,'r4.csv', sep = ""), row.names = F)
+
+# pick features with average importance > 5pct
+idx <- which(rowMeans(relev_mat) > 0.05)
+xv <- xvalid[,idx]; xf <- xfull[,idx]
+xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
+write.csv(xv, paste('../input2/xtrain_',todate,'r5.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../input2/xtest_',todate,'r5.csv', sep = ""), row.names = F)
 
 ## VARIA ####
 # evaluate by cross-validated performance
