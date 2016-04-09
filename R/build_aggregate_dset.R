@@ -86,10 +86,10 @@ print(paste(" Number of cols after linear combo extraction:", dim(xvalid)[2]))
 ## save the datasets  ####
 xvalid$target <- y 
 xvalid$ID <- id_train
-write.csv(xvalid, paste('../input2/xtrain_lvl2',todate,'.csv', sep = ""), row.names = F)
+write.csv(xvalid, paste('../input3/xtrain_lvl3',todate,'.csv', sep = ""), row.names = F)
 
 xfull$ID <- id_test
-write.csv(xfull, paste('../input2/xtest_lvl2',todate,'.csv', sep = ""), row.names = F)
+write.csv(xfull, paste('../input3/xtest_lvl3',todate,'.csv', sep = ""), row.names = F)
 
 ## reduced version via feature selection ####
 y <- xvalid$target; xvalid$target <- NULL
