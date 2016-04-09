@@ -1044,6 +1044,40 @@ buildKB18 <- function(ref_data = 'kb6099')
   
 }
 
+# work in progress
+# MK idea from email: "i think the magic feature is one hot of rounded counts of numerics. 
+# round 5 digits. or 4 to 6 digit rounding is important. then you count the occurances. 
+# then you one hot. this will get you the same numbers davut claimed. 
+# in my tests svd of rounded numeric counts improves cv score."
+buildMK1 <- function(sig_dig = 2)
+{
+  # prep data
+  xtrain <- read_csv(paste('../input/train.csv', sep = ""))
+  xtest <- read_csv(paste('../input/test.csv', sep = ""))
+  isTrain <- 1:nrow(xtrain)
+  
+  y <- xtrain$target; xtrain$target <- NULL
+  id_train <- xtrain$ID; id_test <- xtest$ID
+  xtrain$ID <- xtest$ID <- NULL
+  
+  # combine and purge NAs
+  xdat <- rbind(xtrain, xtest); xdat[is.na(xdat)] <- -1
+  
+  # separate column
+  num_cols <- which(sapply(xdat, class) != "character")
+  
+  # loop over numerical columns - create a factor (= rounded version of the feature)
+  # for each
+  for (ff in num_cols)
+  {
+    xname <- paste("f",colnames(xdat)[num_cols[1]], sep = "")
+    xfac <- factor(round(xdat[,ff],sig_dig))
+  }
+
+  
+    
+}
+
 ## actual construction ####
 # buildMP1()
 # buildKB1()
