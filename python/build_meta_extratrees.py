@@ -15,7 +15,7 @@ import datetime
 if __name__ == '__main__':
 
     ## settings
-    dataset_version = "lvl220160331combo"
+    dataset_version = "20160407r5"
     model_type = "etrees" 
     seed_value = 789
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -44,35 +44,31 @@ if __name__ == '__main__':
                                  criterion='gini', 
                                  max_depth=None, 
                                  min_samples_split=2, 
-                                 min_samples_leaf=1, 
+                                 min_samples_leaf=2, 
                                  min_weight_fraction_leaf=0.0, 
                                  max_features='auto', 
                                  max_leaf_nodes=None, 
                                  n_jobs=4, 
                                  random_state=seed_value, 
                                  class_weight=None)
-
-    # parameter grids    
-    ntree_vals = [250]
-    maxdepth_vals = [15,35]
-    minsampsplit_vals = [2, 10]
-    minsampleaf_vals = [1, 10]
-    mwfl_vals = [ 0.005]
-    maxfeat_vals = [25, 50]
-    classweight = ['balanced_subsample']
-    param_grid = tuple([ntree_vals, maxdepth_vals, minsampsplit_vals, 
-                        minsampleaf_vals, mwfl_vals, maxfeat_vals, classweight])
-    param_grid = list(product(*param_grid))
-
+                                 
+    
+    param_grid = [
+        (37.3418 ,31.5632, 2.3272, 3.2950 ,0.0064, 1378.3799),
+        (37.9926, 34.2666 ,2.9065,  2.0000, 0.0100 ,1606.8919),
+        (38.2554 ,17.8407 ,4.3205 ,4.1158 ,0.0100 ,1925.8207),
+        (33.9422 ,39.3180 ,4.3314 ,4.0997 ,0.0100 ,1579.4643)
+    ]
+    
     # (dataset version, model type, seed, parameter grid) 
-#    par_dump = '../meta_parameters/'+'D'+dataset_version+'_M'+model_type  
-#    par_dump = par_dump + '_'+todate+'.txt'
-#    f1=open(par_dump, 'w+')
-#    f1.write('dataset version: '); f1.write(str(dataset_version))
-#    f1.write('\nmodel type:'); f1.write(str(model_type))
-#    f1.write('\nseed value: '); f1.write(str(seed_value))    
-#    f1.write('\nparameter grid \n'); f1.write(str(param_grid)    )
-#    f1.close()
+    par_dump = '../meta_parameters2/'+'D'+dataset_version+'_M'+model_type  
+    par_dump = par_dump + '_'+todate+'.txt'
+    f1=open(par_dump, 'w+')
+    f1.write('dataset version: '); f1.write(str(dataset_version))
+    f1.write('\nmodel type:'); f1.write(str(model_type))
+    f1.write('\nseed value: '); f1.write(str(seed_value))    
+    f1.write('\nparameter grid \n'); f1.write(str(param_grid)    )
+    f1.close()
     
     # storage structure for forecasts
     mvalid = np.zeros((xtrain.shape[0],len(param_grid)))
@@ -83,13 +79,12 @@ if __name__ == '__main__':
             print "processing parameter combo:", i
             # configure model with j-th combo of parameters
             x = param_grid[i]
-            model.n_estimators = x[0]
-            model.max_depth = x[1]     
-            model.min_samples_split = x[2]
-            model.min_samples_leaf = x[3]
+            model.max_depth = int(x[0])
+            model.max_features = int(x[1])
+            model.max_features = int(x[2])
+            model.min_samples_leaf = int(x[3])
             model.min_weight_fraction_leaf = x[4]
-            model.max_features = x[5]
-            model.class_weight = x[6]
+            model.n_estimators = int(x[5])
             
             # loop over folds
             for j in range(0,n_folds):
