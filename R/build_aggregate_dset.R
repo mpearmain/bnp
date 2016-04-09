@@ -89,10 +89,10 @@ print(paste(" Number of cols after linear combo extraction:", dim(xvalid)[2]))
 ## save the datasets  ####
 xvalid$target <- y 
 xvalid$ID <- id_train
-write.csv(xvalid, paste('../',target_data_folder,'/xtrain_lvl3',todate,'.csv', sep = ""), row.names = F)
+write.csv(xvalid, paste('../',target_data_folder,'/xtrain_',todate,'.csv', sep = ""), row.names = F)
 
 xfull$ID <- id_test
-write.csv(xfull, paste('../',target_data_folder,'/xtest_lvl3',todate,'.csv', sep = ""), row.names = F)
+write.csv(xfull, paste('../',target_data_folder,'/xtest_',todate,'.csv', sep = ""), row.names = F)
 
 ## reduced version via feature selection ####
 y <- xvalid$target; xvalid$target <- NULL
@@ -108,9 +108,10 @@ for (ii in 1:length(idFix))
   x0 <- xvalid[idx,]; y0 <- y[idx];
   
   mod0 <- gbm.fit(x = x0, y = y0, distribution = "bernoulli", 
-                    n.trees = 150, interaction.depth = 25, shrinkage = 0.001, verbose = T)
+                    n.trees = 150, interaction.depth = 25, shrinkage = 0.001, verbose = F)
   
   relev_mat[,ii] <- summary(mod0, order = F, plot = F)[,2]
+  msg(ii)
 }
 
 # pick features that are always relevant
