@@ -41,7 +41,7 @@ if __name__ == '__main__':
     n_folds = len(np.unique(fold_index))
 
     ## feature selection: SelectKBest based on Chi2 statistics
-    kvals = [50, 100, 150, 200]
+    kvals = [25, 50, 100, 150, 200]
     for kk in kvals:        
         xtr = np.array(xtrain); ytr = y.values; xte = np.array(xtest) 
         selector = SelectKBest(chi2, k = kk).fit(xtr, ytr)
