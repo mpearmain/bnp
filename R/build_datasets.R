@@ -1049,33 +1049,45 @@ buildKB18 <- function(ref_data = 'kb6099')
 # round 5 digits. or 4 to 6 digit rounding is important. then you count the occurances. 
 # then you one hot. this will get you the same numbers davut claimed. 
 # in my tests svd of rounded numeric counts improves cv score."
-buildMK1 <- function(sig_dig = 2)
+buildMK1 <- function(nof_comp = 15)
 {
-  # prep data
-  xtrain <- read_csv(paste('../input/train.csv', sep = ""))
-  xtest <- read_csv(paste('../input/test.csv', sep = ""))
-  isTrain <- 1:nrow(xtrain)
+  require(data.table)
   
-  y <- xtrain$target; xtrain$target <- NULL
-  id_train <- xtrain$ID; id_test <- xtest$ID
-  xtrain$ID <- xtest$ID <- NULL
+  tmp1 = fread('../input/train.csv',data.table=F); trainY = as.matrix(tmp1$target); 
+  y <- tmp1$target;   tmp1$target=NULL; id_train <- tmp1$ID; tmp1$ID <- NULL
+  isTrain <- 1:nrow(tmp1)
+  tmp2 = fread('../input/test.csv',data.table=F)
+  id_test <- tmp2$ID; tmp2$ID <- NULL
   
-  # combine and purge NAs
-  xdat <- rbind(xtrain, xtest); xdat[is.na(xdat)] <- -1
+  tmp1=rbind(tmp1,tmp2)
+  tmp1$ID=NULL
+  tmp1[is.na(tmp1)]=-1
   
-  # separate column
-  num_cols <- which(sapply(xdat, class) != "character")
-  
-  # loop over numerical columns - create a factor (= rounded version of the feature)
-  # for each
-  for (ff in num_cols)
-  {
-    xname <- paste("f",colnames(xdat)[num_cols[1]], sep = "")
-    xfac <- factor(round(xdat[,ff],sig_dig))
-  }
-
-  
+  tmpX = NULL
+  tmpJ = 1:ncol(tmp1)
+  for (j in tmpJ) {
+    if (typeof(tmp1[,j])!="character") {
+      tmp1[,j] = round(tmp1[,j],4)
+    }
     
+    tmp2 = data.table(tmp1)
+    tmp3 = tmp2[ , `:=`( COUNT = .N , IDX = 1:.N ) , by = eval(names(tmp1)[j]) ]
+    tmpX = cbind(tmpX,tmp3$COUNT)
+  }
+  
+  model = svd(tmpX,nv=nof_comp,nu=0)
+  tmp4 = as.matrix(tmpX)%*%model$v
+  
+  tmp4 <- data.frame(tmp4)
+  
+  xtrain <- tmp4[isTrain,]
+  xtrain$target <- y; xtrain$ID <- id_train
+  xtest <- tmp4[-isTrain,]
+  xtest$ID <- id_test
+  
+  write.csv(xtrain, file=paste('../input/xtrain_mk1s',nof_comp, '.csv', sep = "" ), quote=FALSE,row.names=FALSE)
+  write.csv(xtest, file=paste('../input/xtest_mk1s',nof_comp, '.csv', sep = "" ), quote=FALSE,row.names=FALSE)
+  
 }
 
 ## actual construction ####
@@ -1103,3 +1115,5 @@ buildKB17(cutoff = 100, cutoff2 = 200)
 buildKB12(data_list = c('kb17c50c100', 'kb1tsne', 'kb2tsne', 'kb3tsne', 'kb4tsne'))
 buildKB12(data_list = c('lvl220160331xgb', 'kb1tsne', 'kb2tsne', 'kb3tsne', 
                           'kb4tsne', 'kb5099tsne', 'kb6099tsne'))
+
+buildMK1(nof_comp = 20)
