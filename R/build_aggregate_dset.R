@@ -8,6 +8,9 @@ require(gbm)
 seed_value <- 450
 todate <- str_replace_all(Sys.Date(), "-","")
 
+metas_source <- "metafeatures"
+target_data_folder <- "input2"
+
 ## functions ####
 
 msg <- function(mmm,...)
@@ -25,8 +28,8 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 
 ## data ####
 # list the groups 
-xlist_val <- dir("../metafeatures2/", pattern =  "prval", full.names = T)
-xlist_full <- dir("../metafeatures2/", pattern = "prfull", full.names = T)
+xlist_val <- dir(paste("../",metas_source, "/", sep = ""), pattern =  "prval", full.names = T)
+xlist_full <- dir(paste("../",metas_source, "/", sep = ""), pattern = "prfull", full.names = T)
 
 # aggregate validation set
 ii <- 1
@@ -86,10 +89,10 @@ print(paste(" Number of cols after linear combo extraction:", dim(xvalid)[2]))
 ## save the datasets  ####
 xvalid$target <- y 
 xvalid$ID <- id_train
-write.csv(xvalid, paste('../input3/xtrain_lvl3',todate,'.csv', sep = ""), row.names = F)
+write.csv(xvalid, paste('../',target_data_folder,'/xtrain_lvl3',todate,'.csv', sep = ""), row.names = F)
 
 xfull$ID <- id_test
-write.csv(xfull, paste('../input3/xtest_lvl3',todate,'.csv', sep = ""), row.names = F)
+write.csv(xfull, paste('../',target_data_folder,'/xtest_lvl3',todate,'.csv', sep = ""), row.names = F)
 
 ## reduced version via feature selection ####
 y <- xvalid$target; xvalid$target <- NULL
@@ -114,36 +117,22 @@ for (ii in 1:length(idFix))
 idx <- which(apply(relev_mat,1,prod) != 0)
 xv <- xvalid[,idx]; xf <- xfull[,idx]
 xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
-write.csv(xv, paste('../input3/xtrain_',todate,'r1.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../input3/xtest_',todate,'r1.csv', sep = ""), row.names = F)
-
-# pick features that are never irrelevant
-idx <- which(rowMeans(relev_mat) > 0)
-xv <- xvalid[,idx]; xf <- xfull[,idx]
-xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
-write.csv(xv, paste('../input3/xtrain_',todate,'r2.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../input3/xtest_',todate,'r2.csv', sep = ""), row.names = F)
+write.csv(xv, paste('../',target_data_folder,'/xtrain_',todate,'r1.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r1.csv', sep = ""), row.names = F)
 
 # pick features with average importance > 1pct
 idx <- which(rowMeans(relev_mat) > 0.01)
 xv <- xvalid[,idx]; xf <- xfull[,idx]
 xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
-write.csv(xv, paste('../input3/xtrain_',todate,'r3.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../input3/xtest_',todate,'r3.csv', sep = ""), row.names = F)
-
-# pick features with average importance > 2pct
-idx <- which(rowMeans(relev_mat) > 0.02)
-xv <- xvalid[,idx]; xf <- xfull[,idx]
-xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
-write.csv(xv, paste('../input3/xtrain_',todate,'r4.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../input3/xtest_',todate,'r4.csv', sep = ""), row.names = F)
+write.csv(xv, paste('../',target_data_folder,'/xtrain_',todate,'r3.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r3.csv', sep = ""), row.names = F)
 
 # pick features with average importance > 5pct
 idx <- which(rowMeans(relev_mat) > 0.05)
 xv <- xvalid[,idx]; xf <- xfull[,idx]
 xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
-write.csv(xv, paste('../input3/xtrain_',todate,'r5.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../input3/xtest_',todate,'r5.csv', sep = ""), row.names = F)
+write.csv(xv, paste('../',target_data_folder,'/xtrain_',todate,'r5.csv', sep = ""), row.names = F)
+write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r5.csv', sep = ""), row.names = F)
 
 ## VARIA ####
 # evaluate by cross-validated performance
