@@ -137,20 +137,20 @@ write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r5.csv', sep = ""
 
 ## VARIA ####
 # evaluate by cross-validated performance
-# idFix <- createDataPartition(y = y, times = 30, p = 2/3)
-# xmat <- array(0, c(length(idFix), ncol(xtrain) * 2 + 2))
-# # loop over folds 
-# for (jj in 1:length(idFix))
-# {
-#   idx <- idFix[[jj]]
-#   x0 <- xtrain[idx,]; x1 <- xtrain[-idx,]
-#   y0 <- y[idx]; y1 <- y[-idx]
-#   
-#   xmat[jj,1:ncol(x1)] <- apply(x1,2,function(s) log_loss(y1,s))
-#   xmat[jj,(1:ncol(x1)) + ncol(x1)] <- apply(x1,2,function(s) log_loss(y1,s + mean(y0) - mean(s)))
-#   xmat[jj, 2 * ncol(x1) + 1] <- log_loss(y1, 0.5 * (x1$xgb21 + x1$xgb22))
-#   xmat[jj, 2 * ncol(x1) + 2] <- log_loss(y1, sqrt(x1$xgb21 * x1$xgb22))
-# }
+idFix <- createDataPartition(y = y, times = 30, p = 2/3)
+xmat <- array(0, c(length(idFix), ncol(xvalid) * 2 + 2))
+# loop over folds 
+for (jj in 1:length(idFix))
+{
+  idx <- idFix[[jj]]
+  x0 <- xvalid[idx,]; x1 <- xvalid[-idx,]
+  y0 <- y[idx]; y1 <- y[-idx]
+  
+  xmat[jj,1:ncol(x1)] <- apply(x1,2,function(s) log_loss(y1,s))
+  xmat[jj,(1:ncol(x1)) + ncol(x1)] <- apply(x1,2,function(s) log_loss(y1,s + mean(y0) - mean(s)))
+  xmat[jj, 2 * ncol(x1) + 1] <- log_loss(y1, rowMeans(x1))
+  xmat[jj, 2 * ncol(x1) + 2] <- log_loss(y1, exp(rowMeans(log(x1))))
+}
 
 # # combo
 # idx <- grep("xgb|mars|nnet|srk|msk", colnames(xvalid))
