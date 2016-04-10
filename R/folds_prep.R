@@ -15,7 +15,7 @@ msg <- function(mmm,...)
 ## create folds ####
 # load data
 
-xtrain <- read_csv(file = "./input/train.csv")
+xtrain <- read_csv(file = "../input/train.csv")
 id_train <- xtrain$ID
 xtrain$ID <- NULL
 y <- xtrain$target
@@ -43,10 +43,10 @@ for (ii in seq(idFix10)) {
   xfolds[ idFix10[[ii]],3] <- ii
 }
 # column 4 = train/valid split (0 = train, 1 = valid)
-xfolds[subrange,4] <- 1
+xfolds[idFix5[[5]],4] <- 1
 
 # store 
 xfolds <- data.frame(xfolds)
 colnames(xfolds) <- c("ID", "fold5", "fold10", "valid")
 xfolds$ID <- as.character(id_train)
-write.table(xfolds, file = "./input/xfolds.csv", row.names = F, col.names = T, sep = ",", quote = F)
+write.table(xfolds, file = "../input/xfolds2.csv", row.names = F, col.names = T, sep = ",", quote = F)
