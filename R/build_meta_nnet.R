@@ -5,10 +5,12 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "lvl320160408"
+dataset_version <- "0411k25"
 seed_value <- 4223
 model_type <- "nnet"
 todate <- str_replace_all(Sys.Date(), "-","")
+source_folder <- "input2"
+target_folder <- "metafeatures2"
 
 ## functions ####
 
@@ -27,8 +29,8 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 
 ## data ####
 # read actual data
-xtrain <- read_csv(paste("../input3/xtrain_",dataset_version,".csv", sep = ""))
-xtest <- read_csv(paste("../input3/xtest_",dataset_version,".csv", sep = ""))
+xtrain <- read_csv(paste("../",source_folder,"/xtrain_",dataset_version,".csv", sep = ""))
+xtest <- read_csv(paste("../",source_folder,"/xtest_",dataset_version,".csv", sep = ""))
 y <- xtrain$target; 
 xtrain$target <- NULL
 id_train <- xtrain$ID
@@ -66,7 +68,7 @@ for (ii in 1:nrow(param_grid))
     x0 <- predict(prep0, x0); x1 <- predict(prep0, x1)
     
     nnet.model <- nnet(y0 ~ ., data = x0, size = param_grid$size[ii],
-                       decay = param_grid$decay[ii], MaxNWts = 250000 )
+                       decay = param_grid$decay[ii], MaxNWts = 250000, trace = F )
     
     pred_valid <- predict(nnet.model, x1, type = "raw")
     print(log_loss((y1 == 1) + 0, pred_valid))
@@ -78,7 +80,7 @@ for (ii in 1:nrow(param_grid))
   prep0 <- preProcess(x = xtrain, method = c("range"))
   xtr <- predict(prep0, xtrain); xte <- predict(prep0, xtest)
   nnet.model <- nnet(factor(y) ~ ., data = xtrain, size = param_grid$size[ii],
-                     decay = param_grid$decay[ii], MaxNWts = 250000 )
+                     decay = param_grid$decay[ii], MaxNWts = 250000, trace = F )
   
   pred_full <- predict(nnet.model, xtest, type = "raw")
   mtest[,ii] <- pred_full
@@ -106,8 +108,8 @@ print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
 
 
 todate <- str_replace_all(Sys.Date(), "-","")
-write_csv(mtrain, path = paste("../metafeatures3/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
-write_csv(mtest, path = paste("../metafeatures3/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtrain, path = paste("../",target_folder,"/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtest, path = paste("../",target_folder,"/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 # store the parameters
 write_csv(param_grid, path = paste("../meta_parameters3/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".txt",sep = "" ))
