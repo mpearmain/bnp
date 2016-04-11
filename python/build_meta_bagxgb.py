@@ -23,10 +23,13 @@ if __name__ == '__main__':
     todate = datetime.datetime.now().strftime("%Y%m%d")
     nbag = 400
     model_type = 'bagxgb' + str(nbag)
+    source_folder = 'input2'
+    target_folder = 'metafeatures2'
+    target_params = 'meta_parameters2'
     
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')     
+    xtrain = pd.read_csv('../'+source_folder+'/xtrain_'+ dataset_version + '.csv')     
     id_train = xtrain.ID
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
@@ -60,7 +63,7 @@ if __name__ == '__main__':
                             
     # dump the meta description for this set into a file
     # (dataset version, model type, seed, parameter grid) 
-    par_dump = '../meta_parameters2/'+'D'+dataset_version+'_M'+model_type  
+    par_dump = '../'+target_params+'/'+'D'+dataset_version+'_M'+model_type  
     par_dump = par_dump + '_'+todate+'.txt'
     f1=open(par_dump, 'w+')
     f1.write('dataset version: '); f1.write(str(dataset_version))
@@ -128,6 +131,6 @@ if __name__ == '__main__':
     
 
     # save the files            
-    mvalid.to_csv('../metafeatures2/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    mfull.to_csv('../metafeatures2/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mvalid.to_csv('../'+target_folder+'/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mfull.to_csv('../'+target_folder+'/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
     
