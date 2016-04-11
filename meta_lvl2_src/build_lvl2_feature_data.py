@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import datetime
 import re
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import ExtraTreesClassifier
 from itertools import permutations, combinations
 
 
@@ -77,10 +77,11 @@ xgb_feat = filter(lambda x:re.match(r'^xgb',x), base_feat)
 noxgb_feat = [x for x in base_feat if x not in xgb_feat]
 
 # First Build a forest and compute the feature importance
-forest = RandomForestClassifier(n_jobs=-1,
-                                class_weight='auto',
-                                max_depth=7,
-                                n_estimators=500)
+forest = ExtraTreesClassifier(n_jobs=-1,
+                              class_weight='auto',
+                              max_depth=7,
+                              n_estimators=500,
+                              random_state=1234)
 print "Building RF - XGB"
 forest.fit(xtrain[xgb_feat], ytrain)
 importances = forest.feature_importances_
