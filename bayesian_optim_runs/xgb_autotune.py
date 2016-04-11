@@ -41,19 +41,20 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "20160407r5"
+    dataset_version = "0411k100"
     todate = datetime.datetime.now().strftime("%Y%m%d")
+    input_folder = 'input2'
 
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('../'+input_folder+'/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID; xtrain.drop('ID', axis = 1, inplace = True)
     ytrain = xtrain.target; xtrain.drop('target', axis = 1, inplace = True)
-    xtest = pd.read_csv('../input2/xtest_'+ dataset_version + '.csv')
+    xtest = pd.read_csv('../'+input_folder+'/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID; xtest.drop('ID', axis = 1, inplace = True)
 
     # folds
-    xfolds = pd.read_csv('../input/xfolds.csv')
+    xfolds = pd.read_csv('../input/xfolds2.csv')
     # work with validation split
     idx0 = xfolds[xfolds.valid == 0].index
     idx1 = xfolds[xfolds.valid == 1].index
@@ -66,8 +67,8 @@ if __name__ == "__main__":
                                      {'max_depth': (int(2), int(25)),
                                       'learning_rate': (0.0005, 0.06),
                                       'n_estimators': (int(500), int(2000)),
-                                      'subsample': (0.25, 0.98),
-                                      'colsample_bytree': (0.25, 0.98),
+                                      'subsample': (0.1, 0.99),
+                                      'colsample_bytree': (0.1, 0.99),
                                       'gamma': (0.00000000001, 0.05),
                                       'min_child_weight': (int(1), int(40))
                                      })
