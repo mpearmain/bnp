@@ -11,6 +11,7 @@ model_type <- "nnet"
 todate <- str_replace_all(Sys.Date(), "-","")
 source_folder <- "input2"
 target_folder <- "metafeatures2"
+target_params <- 'meta_parameters2'
 
 ## functions ####
 
@@ -112,6 +113,6 @@ write_csv(mtrain, path = paste("../",target_folder,"/prval_",model_type,"_", tod
 write_csv(mtest, path = paste("../",target_folder,"/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 # store the parameters
-write_csv(param_grid, path = paste("../meta_parameters3/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".txt",sep = "" ))
+write_csv(param_grid, path = paste("../",target_params,"/params_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".txt",sep = "" ))
 
 
