@@ -18,7 +18,7 @@ if __name__ == '__main__':
     target_folder = 'input2'
     
     ## settings
-    dataset_version = "20160409"
+    dataset_version = "20160411"
     seed_value = 789
     todate = datetime.datetime.now().strftime("%Y%m%d")
     	    
@@ -33,14 +33,9 @@ if __name__ == '__main__':
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
 
-    # folds
-    xfolds = pd.read_csv('../input/xfolds.csv')
-    # work with 5-fold split
-    fold_index = xfolds.fold5
-    fold_index = np.array(fold_index) - 1
-    n_folds = len(np.unique(fold_index))
-
+    # work in progress
     ## feature selection: SelectKBest based on Chi2 statistics
+
     kvals = [25, 50, 100, 150, 200]
     for kk in kvals:        
         xtr = np.array(xtrain); ytr = y.values; xte = np.array(xtest) 
