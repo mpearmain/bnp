@@ -31,6 +31,11 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 xlist_val <- dir(paste("../",metas_source, "/", sep = ""), pattern =  "prval", full.names = T)
 xlist_full <- dir(paste("../",metas_source, "/", sep = ""), pattern = "prfull", full.names = T)
 
+# drop keras
+which_keras <- grep("keras", xlist_val)
+xlist_val <- xlist_val[-which_keras]
+xlist_full <- xlist_full[-which_keras]
+
 # aggregate validation set
 ii <- 1
 mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
