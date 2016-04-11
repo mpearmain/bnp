@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import datetime
 import re
-from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import RandomForestClassifier
 from itertools import permutations, combinations
 
 
@@ -48,7 +48,7 @@ def build_new_features(xtrain, xtest, top_feats):
 
 # settings
 projPath = './'
-dataset_version = "lvl220160404"
+dataset_version = "0411k25"
 todate = datetime.datetime.now().strftime("%Y%m%d")
 # Top fetures to develop meta more interactions variables.
 topNfeatures = 10
@@ -73,21 +73,19 @@ assert xtest.shape[1] == xtrain.shape[1]
 # metafeatures.
 
 base_feat = list(xtrain)
-xgb_feat = filter(lambda x:re.match(r'^xgb',x), base_feat)
-noxgb_feat = [x for x in base_feat if x not in xgb_feat]
 
 # First Build a forest and compute the feature importance
-forest = ExtraTreesClassifier(n_jobs=-1,
+forest = RandomForestClassifier(n_jobs=-1,
                               class_weight='auto',
                               max_depth=7,
                               n_estimators=500,
                               random_state=1234)
 print "Building RF - XGB"
-forest.fit(xtrain[xgb_feat], ytrain)
+forest.fit(xtrain[base_feat], ytrain)
 importances = forest.feature_importances_
 # Select most important features
 indices = np.argsort(importances)[::-1]
-top_n_feature_names = list(list(xtrain[xgb_feat])[i] for i in indices[:topNfeatures])
+top_n_feature_names = list(list(xtrain[base_feat])[i] for i in indices[:topNfeatures])
 print top_n_feature_names
 
 xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
@@ -95,18 +93,6 @@ xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
 print "Shape train", xtrain.shape[1]
 print "Shape test", xtest.shape[1]
 
-print "Building RF - Not XGB Features"
-forest.fit(xtrain[noxgb_feat], ytrain)
-importances = forest.feature_importances_
-# Select most important features
-indices = np.argsort(importances)[::-1]
-top_n_feature_names = list(list(xtrain[noxgb_feat])[i] for i in indices[:topNfeatures])
-print top_n_feature_names
-
-xtrain, xtest = build_new_features(xtrain, xtest, top_n_feature_names)
-
-print "Shape train", xtrain.shape[1]
-print "Shape test", xtest.shape[1]
 # Lets add some simple features.
 # This counts the number of meata features that predict target > 0.9
 xtrain['gt9'] = (xtrain[base_feat] > 0.9).sum(1)

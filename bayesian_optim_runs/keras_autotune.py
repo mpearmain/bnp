@@ -22,7 +22,7 @@ def kerascv(dense1, dropout1, dense2, dropout2, epochs):
         model = createModel(dense1=int(dense1), dropout1=dropout1, dense2=int(dense2), dropout2=dropout2)
         model.fit(x0, y0, nb_epoch=int(epochs), batch_size=256, verbose=0)
 
-        preds = model.predict_proba(x1)[:,1]
+        preds = model.predict_proba(x1, batch_size=256, verbose=0)[:,1]
         pred_sum += preds
         pred_average = pred_sum / (k+1)
         del model
@@ -62,22 +62,22 @@ def getDummy(df,col):
 
 if __name__ == "__main__":
     ## settings
-    dataset_version = "dvencode_3level4"
-    nbag = 5
+    dataset_version = "lvl2MP"
+    nbag = 3
     seed_value = 1543
     todate = datetime.datetime.now().strftime("%Y%m%d")
     np.random.seed(seed_value)
     need_normalise=True
     need_categorical=False
 
-    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID
     y_train_target = xtrain.target
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
 
-    test = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
+    test = pd.read_csv('../input2/xtest_'+ dataset_version + '.csv')
     id_test = test.ID
     test.drop('ID', axis = 1, inplace = True)
 
@@ -114,12 +114,12 @@ if __name__ == "__main__":
 
     kerasBO = BayesianOptimization(kerascv,
                                    {'dense1': (int(0.1 * xtrain.shape[1]), int(2 * xtrain.shape[1])),
-                                    'dropout1': (0.2, 0.7),
+                                    'dropout1': (0.1, 0.5),
                                     'dense2': (int(0.1 * xtrain.shape[1]), int(2 * xtrain.shape[1])),
-                                    'dropout2': (0.2, 0.7),
-                                    'epochs': (int(30), int(200))
+                                    'dropout2': (0.1, 0.5),
+                                    'epochs': (int(30), int(120))
                                     })
-    kerasBO.maximize(init_points=5, n_iter=20)
+    kerasBO.maximize(init_points=5, n_iter=25)
     print('-' * 53)
 
     print('Final Results')
