@@ -231,8 +231,8 @@ buildKB2 <- function()
 buildKB3 <- function()
 {
   set.seed(260681)
-  train <- read_csv('input/train.csv')
-  test <- read_csv('input/test.csv')
+  train <- read_csv('../input/train.csv')
+  test <- read_csv('../input/test.csv')
   
   # Lets first align the datasets for equal vars to work with.
   y <- train$target; train$target <- NULL
@@ -348,8 +348,8 @@ buildKB3 <- function()
 # - all factors mapped to response rates
 buildKB4 <- function()
 {
-  train <- read_csv('input/train.csv')
-  test <- read_csv('input/test.csv')
+  train <- read_csv('../input/train.csv')
+  test <- read_csv('../input/test.csv')
   
   # Lets first align the datasets for equal vars to work with.
   y <- train$target; train$target <- NULL
@@ -380,7 +380,7 @@ buildKB4 <- function()
   for (ii in 1:ncol(xcomb))
   {
     xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], sep = "")
-    bigD[,xname] <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], sep = "")
+    bigD[,xname] <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], sep = "_")
   }
   
   # create trivariate combos of factors
@@ -388,7 +388,7 @@ buildKB4 <- function()
   for (ii in 1:ncol(xcomb))
   {
     xname <- paste(colnames(bigD)[xcomb[1,ii]],colnames(bigD)[xcomb[2,ii]], colnames(bigD)[xcomb[3,ii]], sep = "")
-    bigD[,xname] <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], bigD[,xcomb[3,ii]], sep = "")
+    bigD[,xname] <- paste(bigD[,xcomb[1,ii]], bigD[,xcomb[2,ii]], bigD[,xcomb[3,ii]], sep = "_")
   }
   
   
