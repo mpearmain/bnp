@@ -398,7 +398,7 @@ buildKB4 <- function()
   rm(bigD)
   
   # replace categorical ones with response rates
-  xfold <- read_csv(file = "./input/xfolds.csv")
+  xfold <- read_csv(file = "../input/xfolds.csv")
   idFix <- list()
   for (ii in 1:5)
   {
@@ -450,7 +450,7 @@ buildKB4 <- function()
     x <- myLMERDF[,2][match(xtest[, varname], myLMERDF[,1])]
     x[is.na(x)] <- mean(y)
     xtest[,paste(varname, "dmp", sep = "")] <- x
-    # msg(varname)
+    msg(varname)
   }
   
   # drop the factors
@@ -460,8 +460,8 @@ buildKB4 <- function()
   xtest <- xtest[,-ix]
   
   xtrain$target <- y
-  write.csv(xtrain, 'input/xtrain_kb4.csv', row.names = F)
-  write.csv(xtest, 'input/xtest_kb4.csv', row.names = F)
+  write.csv(xtrain, '../input/xtrain_kb4.csv', row.names = F)
+  write.csv(xtest, '../input/xtest_kb4.csv', row.names = F)
   
   rm(xtrain)
   rm(xtest)
