@@ -41,17 +41,15 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "20160412v3"
+    dataset_version = "kb19d1c20"
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    input_folder = 'input2'
+    input_folder = 'input'
 
     ## data
     # read the training and test sets
     xtrain = pd.read_csv('../'+input_folder+'/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID; xtrain.drop('ID', axis = 1, inplace = True)
     ytrain = xtrain.target; xtrain.drop('target', axis = 1, inplace = True)
-    xtest = pd.read_csv('../'+input_folder+'/xtest_'+ dataset_version + '.csv')
-    id_test = xtest.ID; xtest.drop('ID', axis = 1, inplace = True)
 
     # folds
     xfolds = pd.read_csv('../input/xfolds2.csv')
