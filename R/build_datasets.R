@@ -1090,6 +1090,105 @@ buildMK1 <- function(nof_comp = 15)
   
 }
 
+buildKB19 <- function(sig_dig = 1, cutoff = 20)
+{
+  require(data.table)
+  
+  tmp1 = fread('../input/train.csv',data.table=F); trainY = as.matrix(tmp1$target); 
+  y <- tmp1$target;   tmp1$target=NULL; id_train <- tmp1$ID; tmp1$ID <- NULL
+  isTrain <- 1:nrow(tmp1)
+  tmp2 = fread('../input/test.csv',data.table=F)
+  id_test <- tmp2$ID; tmp2$ID <- NULL
+  
+  tmp1=rbind(tmp1,tmp2)
+  tmp1$ID=NULL
+  tmp1[is.na(tmp1)]=-1
+  
+  # round off the numerical ones
+  num_cols <- which(sapply(tmp1, class) != "character")
+  for (ff in num_cols)
+  {
+    tmp1[,ff] <- as.character(round(tmp1[,ff], sig_dig))
+  }
+  
+  # v22 has LOOOOTS of values - lets replace the infrequent ones 
+  # with "rare" => the frequency cutoff is controlled by the cutoff
+  # argument
+  xtab <- table(tmp1$v22)
+  rare_names <- names(which(xtab < cutoff))
+  tmp1$v22[tmp1$v22 %in% rare_names] <- "v22rare"
+  
+  # all columns are now factors => replace them with response rates
+  # replace categorical ones with response rates
+  xfold <- read_csv(file = "../input/xfolds.csv")
+  idFix <- list()
+  for (ii in 1:5)
+  {
+    idFix[[ii]] <- which(xfold$fold5 == ii)
+  }
+  rm(xfold,ii)  
+  
+  xtrain <- tmp1[isTrain,]; xtest <- tmp1[-isTrain,]
+  
+  col_types <- sapply(xtrain, class)
+  factor_vars <- colnames(xtrain)[which(col_types == "character")]
+  for (varname in factor_vars)
+  {
+    # placeholder for the new variable values
+    x <- rep(NA, nrow(xtrain))
+    for (ii in seq(idFix))
+    {
+      # separate ~ fold
+      idx <- idFix[[ii]]
+      # x0 <- xtrain[-idx, factor_vars]; x1 <- xtrain[idx, factor_vars]
+      x0 <- xtrain[-idx, varname, drop = F]; x1 <- xtrain[idx, varname, drop = F]
+      y0 <- y[-idx]; y1 <- y[idx]
+      # take care of factor lvl mismatches
+      x0[,varname] <- factor(as.character(x0[,varname]))
+      # fit LMM model
+      myForm <- as.formula (paste ("y0 ~ (1|", varname, ")"))
+      myLME <- lmer (myForm, x0, REML=FALSE, verbose=F)
+      myFixEf <- fixef (myLME); myRanEf <- unlist (ranef (myLME))
+      # table to match to the original
+      myLMERDF <- data.frame (levelName = as.character(levels(x0[,varname])), 
+                              myDampVal = myRanEf+myFixEf)
+      rownames(myLMERDF) <- NULL
+      x[idx] <- myLMERDF[,2][match(xtrain[idx, varname], myLMERDF[,1])]
+      x[idx][is.na(x[idx])] <- mean(y0)
+    }
+    rm(x0,x1,y0,y1, myLME, myLMERDF, myFixEf, myRanEf)
+    # add the new variable
+    xtrain[,paste(varname, "dmp", sep = "")] <- x
+    
+    # create the same on test set
+    xtrain[,varname] <- factor(as.character(xtrain[,varname]))
+    x <- rep(NA, nrow(xtest))
+    # fit LMM model
+    myForm <- as.formula (paste ("y ~ (1|", varname, ")"))
+    myLME <- lmer (myForm, xtrain[,factor_vars], REML=FALSE, verbose=F)
+    myFixEf <- fixef (myLME); myRanEf <- unlist (ranef (myLME))
+    # table to match to the original
+    myLMERDF <- data.frame (levelName = as.character(levels(xtrain[,varname])), 
+                            myDampVal = myRanEf+myFixEf)
+    rownames(myLMERDF) <- NULL
+    x <- myLMERDF[,2][match(xtest[, varname], myLMERDF[,1])]
+    x[is.na(x)] <- mean(y)
+    xtest[,paste(varname, "dmp", sep = "")] <- x
+    msg(varname)
+  }
+  
+  # drop the factors
+  ix <- which(colnames(xtrain) %in% factor_vars)
+  xtrain <- xtrain[,-ix]
+  ix <- which(colnames(xtest) %in% factor_vars)
+  xtest <- xtest[,-ix]
+  
+  xtrain$target <- y; xtrain$ID <- id_train
+  write.csv(xtrain, paste('../input/xtrain_kb19d',sig_dig,'c',cutoff,'.csv', sep = ""), row.names = F)
+  xtest$ID <- id_test
+  write.csv(xtest, paste('../input/xtest_kb19d',sig_dig,'c',cutoff,'.csv', sep = ""), row.names = F)
+  
+}
 ## actual construction ####
 # buildMP1()
 # buildKB1()
