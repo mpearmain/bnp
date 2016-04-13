@@ -104,7 +104,8 @@ if __name__ == '__main__':
                         bootstrap_features=False, 
                         oob_score=False, 
                         warm_start=False, 
-                        n_jobs=1, random_state=seed_value, 
+                        n_jobs=1,
+                        random_state=seed_value,
                         verbose=2)
                         
                 bag0.fit(x0, y0)
