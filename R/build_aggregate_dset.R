@@ -31,11 +31,6 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 xlist_val <- dir(paste("../",metas_source, "/", sep = ""), pattern =  "prval", full.names = T)
 xlist_full <- dir(paste("../",metas_source, "/", sep = ""), pattern = "prfull", full.names = T)
 
-# drop keras
-which_keras <- grep("keras", xlist_val)
-xlist_val <- xlist_val[-which_keras]
-xlist_full <- xlist_full[-which_keras]
-
 # aggregate validation set
 ii <- 1
 mod_class <- str_split(xlist_val[[ii]], "_")[[1]][[2]]
@@ -100,62 +95,60 @@ xfull$ID <- id_test
 write.csv(xfull, paste('../',target_data_folder,'/xtest_',todate,'.csv', sep = ""), row.names = F)
 
 ## reduced version via feature selection ####
-y <- xvalid$target; xvalid$target <- NULL
-id_train <- xvalid$ID; xvalid$ID <- NULL
-id_test <- xfull$ID; xfull$ID <- NULL
-
-idFix <- createDataPartition(y = y, times = 40, p = 0.15)
-relev_mat <- array(0, c(ncol(xvalid), length(idFix)))
-# loop over folds 
-for (ii in 1:length(idFix))
-{
-  idx <- idFix[[ii]]
-  x0 <- xvalid[idx,]; y0 <- y[idx];
-  
-  mod0 <- gbm.fit(x = x0, y = y0, distribution = "bernoulli", 
-                    n.trees = 150, interaction.depth = 25, shrinkage = 0.001, verbose = F)
-  
-  relev_mat[,ii] <- summary(mod0, order = F, plot = F)[,2]
-  msg(ii)
-}
-
-# pick features that are always relevant
-idx <- which(apply(relev_mat,1,prod) != 0)
-xv <- xvalid[,idx]; xf <- xfull[,idx]
-xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
-write.csv(xv, paste('../',target_data_folder,'/xtrain_',todate,'r1.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r1.csv', sep = ""), row.names = F)
-
-# pick features with average importance > 1pct
-idx <- which(rowMeans(relev_mat) > 0.01)
-xv <- xvalid[,idx]; xf <- xfull[,idx]
-xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
-write.csv(xv, paste('../',target_data_folder,'/xtrain_',todate,'r3.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r3.csv', sep = ""), row.names = F)
-
-# pick features with average importance > 5pct
-idx <- which(rowMeans(relev_mat) > 0.05)
-xv <- xvalid[,idx]; xf <- xfull[,idx]
-xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
-write.csv(xv, paste('../',target_data_folder,'/xtrain_',todate,'r5.csv', sep = ""), row.names = F)
-write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r5.csv', sep = ""), row.names = F)
+# y <- xvalid$target; xvalid$target <- NULL
+# id_train <- xvalid$ID; xvalid$ID <- NULL
+# id_test <- xfull$ID; xfull$ID <- NULL
+# 
+# idFix <- createDataPartition(y = y, times = 40, p = 0.15)
+# relev_mat <- array(0, c(ncol(xvalid), length(idFix)))
+# # loop over folds 
+# for (ii in 1:length(idFix))
+# {
+#   idx <- idFix[[ii]]
+#   x0 <- xvalid[idx,]; y0 <- y[idx];
+#   
+#   mod0 <- gbm.fit(x = x0, y = y0, distribution = "bernoulli", 
+#                     n.trees = 150, interaction.depth = 25, shrinkage = 0.001, verbose = F)
+#   
+#   relev_mat[,ii] <- summary(mod0, order = F, plot = F)[,2]
+#   msg(ii)
+# }
+# 
+# # pick features that are always relevant
+# idx <- which(apply(relev_mat,1,prod) != 0)
+# xv <- xvalid[,idx]; xf <- xfull[,idx]
+# xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
+# write.csv(xv, paste('../',target_data_folder,'/xtrain_',todate,'r1.csv', sep = ""), row.names = F)
+# write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r1.csv', sep = ""), row.names = F)
+# 
+# # pick features with average importance > 1pct
+# idx <- which(rowMeans(relev_mat) > 0.01)
+# xv <- xvalid[,idx]; xf <- xfull[,idx]
+# xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
+# write.csv(xv, paste('../',target_data_folder,'/xtrain_',todate,'r3.csv', sep = ""), row.names = F)
+# write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r3.csv', sep = ""), row.names = F)
+# 
+# # pick features with average importance > 5pct
+# idx <- which(rowMeans(relev_mat) > 0.05)
+# xv <- xvalid[,idx]; xf <- xfull[,idx]
+# xv$target <- y; xv$ID <- id_train; xf$ID <- id_test
+# write.csv(xv, paste('../',target_data_folder,'/xtrain_',todate,'r5.csv', sep = ""), row.names = F)
+# write.csv(xf, paste('../',target_data_folder,'/xtest_',todate,'r5.csv', sep = ""), row.names = F)
 
 ## VARIA ####
 # evaluate by cross-validated performance
-# idFix <- createDataPartition(y = y, times = 30, p = 2/3)
-# xmat <- array(0, c(length(idFix), ncol(xvalid) * 2 + 2))
-# # loop over folds 
-# for (jj in 1:length(idFix))
-# {
-#   idx <- idFix[[jj]]
-#   x0 <- xvalid[idx,]; x1 <- xvalid[-idx,]
-#   y0 <- y[idx]; y1 <- y[-idx]
-#   
-#   xmat[jj,1:ncol(x1)] <- apply(x1,2,function(s) log_loss(y1,s))
-#   xmat[jj,(1:ncol(x1)) + ncol(x1)] <- apply(x1,2,function(s) log_loss(y1,s + mean(y0) - mean(s)))
-#   xmat[jj, 2 * ncol(x1) + 1] <- log_loss(y1, rowMeans(x1))
-#   xmat[jj, 2 * ncol(x1) + 2] <- log_loss(y1, exp(rowMeans(log(x1))))
-# }
+set.seed(2388)
+idFix <- createDataPartition(y = y, times = 50, p = 2/3)
+xmat <- array(0, c(length(idFix), ncol(xvalid) * 2 + 2))
+# loop over folds 
+for (jj in 1:length(idFix))
+{
+  idx <- idFix[[jj]]
+  x0 <- xvalid[idx,]; x1 <- xvalid[-idx,]
+  y0 <- y[idx]; y1 <- y[-idx]
+  
+  xmat[jj,1] <- log_loss(y1,x1[,1])
+}
 
 # # combo
 # idx <- grep("xgb|mars|nnet|srk|msk", colnames(xvalid))
