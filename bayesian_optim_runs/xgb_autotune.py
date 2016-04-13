@@ -33,7 +33,7 @@ def xgboostcv(max_depth,
                         seed=seed,
                         objective="binary:logistic")
 
-    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)],verbose=True,early_stopping_rounds=25)
+    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)])
     ll = -log_loss(y1, clf.predict_proba(x1))
     return ll
 
@@ -41,9 +41,9 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "20160412v3"
+    dataset_version = "kb4"
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    input_folder = 'input2'
+    input_folder = 'input'
 
     ## data
     # read the training and test sets
