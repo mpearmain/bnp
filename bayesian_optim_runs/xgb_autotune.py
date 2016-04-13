@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "0411k100"
+    dataset_version = "20160412v3"
     todate = datetime.datetime.now().strftime("%Y%m%d")
     input_folder = 'input2'
 
