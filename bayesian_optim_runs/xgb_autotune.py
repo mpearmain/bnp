@@ -33,7 +33,7 @@ def xgboostcv(max_depth,
                         seed=seed,
                         objective="binary:logistic")
 
-    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)])
+    clf.fit(x0, y0, eval_metric="logloss", eval_set=[(x1, y1)], verbose=False)
     ll = -log_loss(y1, clf.predict_proba(x1))
     return ll
 
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     id_test = xtest.ID; xtest.drop('ID', axis = 1, inplace = True)
 
     # folds
-    xfolds = pd.read_csv('../input/xfolds2.csv')
+    xfolds = pd.read_csv('../input/xfolds.csv')
     # work with validation split
     idx0 = xfolds[xfolds.valid == 0].index
     idx1 = xfolds[xfolds.valid == 1].index
@@ -73,13 +73,13 @@ if __name__ == "__main__":
                                       'min_child_weight': (int(1), int(40))
                                      })
 
-    xgboostBO.explore({'colsample_bytree': 0.76427399221822834,
-                       'learning_rate': 0.0073362638967263945,
-                       'min_child_weight': 14.634866816577702,
-                       'n_estimators': 2408.0792064896827,
-                       'subsample': 0.72679682406267243,
-                       'max_depth': 14.40730693062795,
-                       'gamma': 0.0071936123399884092}
+    xgboostBO.explore({'colsample_bytree': [0.76427399221822834],
+                       'learning_rate': [0.0073362638967263945],
+                       'min_child_weight': [14.634866816577702],
+                       'n_estimators': [2408],
+                       'subsample': [0.72679682406267243],
+                       'max_depth': [14.40730693062795],
+                       'gamma': [0.0071936123399884092]}
                       )
     xgboostBO.maximize(init_points=5, n_iter=20, acq='ei')
     print('-' * 53)
