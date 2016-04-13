@@ -5,7 +5,7 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "0411k25"
+dataset_version <- "20160412v1"
 seed_value <- 4223
 model_type <- "nnet"
 todate <- str_replace_all(Sys.Date(), "-","")
