@@ -1,5 +1,5 @@
 dataset version: 20160413
 model type:xgb
-seed value: 74
+seed value: 531
 parameter grid 
 [(0.7458638274214384, 0.01734527525907255, 33.42203498655946, 453, 0.6155471682538259, 4, 0.05)]
