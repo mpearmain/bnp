@@ -20,7 +20,7 @@ def kerascv(dense1, dropout1, dense2, dropout2, epochs):
     pred_sum = 0
     for k in range(2):
         model = createModel(dense1=int(dense1), dropout1=dropout1, dense2=int(dense2), dropout2=dropout2)
-        model.fit(x0, y0, nb_epoch=int(epochs), batch_size=256, verbose=1)
+        model.fit(x0, y0, nb_epoch=int(epochs), batch_size=256, verbose=0)
 
         preds = model.predict_proba(x1, batch_size=256, verbose=0)[:,1]
         pred_sum += preds
@@ -62,7 +62,7 @@ def getDummy(df,col):
 
 if __name__ == "__main__":
     ## settings
-    dataset_version = "kb4"
+    dataset_version = "20160414v1featmp"
     nbag = 3
     seed_value = 1543
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -70,14 +70,14 @@ if __name__ == "__main__":
     need_normalise=True
     need_categorical=False
 
-    xtrain = pd.read_csv('../input/xtrain_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('../input2/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID
     y_train_target = xtrain.target
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
 
-    test = pd.read_csv('../input/xtest_'+ dataset_version + '.csv')
+    test = pd.read_csv('../input2/xtest_'+ dataset_version + '.csv')
     id_test = test.ID
     test.drop('ID', axis = 1, inplace = True)
 
@@ -117,13 +117,13 @@ if __name__ == "__main__":
                                     'dropout1': (0.05, 0.5),
                                     'dense2': (int(0.15 * xtrain.shape[1]), int(2 * xtrain.shape[1])),
                                     'dropout2': (0.05, 0.5),
-                                    'epochs': (int(50), int(150))
+                                    'epochs': (int(20), int(150))
                                     })
     kerasBO.explore({'dense1': [int(0.15 * xtrain.shape[1])],
                      'dropout1': [0.05],
                      'dense2': [int(1.5 * xtrain.shape[1])],
                      'dropout2': [0.5],
-                     'epochs': [120]})
+                     'epochs': [40]})
 
     kerasBO.maximize(init_points=3, n_iter=25)
     print('-' * 53)
