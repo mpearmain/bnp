@@ -9,6 +9,10 @@ dataset_version <- "lvl2MP"
 seed_value <- 44556877
 model_type <- "mars"
 todate <- str_replace_all(Sys.Date(), "-","")
+source_folder <- "input2"
+target_folder <- "metafeatures2"
+target_params <- 'meta_parameters2'
+
 
 ## functions ####
 
@@ -27,8 +31,8 @@ log_loss <- function(actual, predicted, cutoff = 1e-15)
 
 ## data ####
 # read actual data
-xtrain <- read_csv(paste("./input2/xtrain_",dataset_version,".csv", sep = ""))
-xtest <- read_csv(paste("./input2/xtest_",dataset_version,".csv", sep = ""))
+xtrain <- read_csv(paste("./",source_folder,"/xtrain_",dataset_version,".csv", sep = ""))
+xtest <- read_csv(paste("./",source_folder,"/xtest_",dataset_version,".csv", sep = ""))
 y <- xtrain$target; 
 xtrain$target <- NULL
 id_train <- xtrain$ID
@@ -96,7 +100,7 @@ print(paste(" Number of cols after linear combo extraction:", dim(mtrain)[2]))
 
 
 
-write_csv(mtrain, path = paste("./metafeatures2/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
-write_csv(mtest, path = paste("./metafeatures2/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtrain, path = paste("./",target_folder, "/prval_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
+write_csv(mtest, path = paste("./",target_folder,"/prfull_",model_type,"_", todate, "_data", dataset_version, "_seed", seed_value, ".csv",sep = "" ))
 
 
