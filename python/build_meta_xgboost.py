@@ -16,20 +16,22 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "lvl320160406xgbnnet"
+    dataset_version = "20160413"
     model_type = "xgb"
-    seed_value = 874
+    seed_value = 531
     todate = datetime.datetime.now().strftime("%Y%m%d")
-
+    source_folder = 'input3'
+    target_folder = 'metafeatures3'
+    
     ## data
     # read the training and test sets
-    xtrain = pd.read_csv('../input3/xtrain_'+ dataset_version + '.csv')
+    xtrain = pd.read_csv('../'+source_folder+'/xtrain_'+ dataset_version + '.csv')
     id_train = xtrain.ID
     ytrain = xtrain.target
     xtrain.drop('ID', axis = 1, inplace = True)
     xtrain.drop('target', axis = 1, inplace = True)
 
-    xtest = pd.read_csv('../input3/xtest_'+ dataset_version + '.csv')
+    xtest = pd.read_csv('../'+source_folder+'/xtest_'+ dataset_version + '.csv')
     id_test = xtest.ID
     xtest.drop('ID', axis = 1, inplace = True)
 
@@ -53,20 +55,17 @@ if __name__ == '__main__':
     '''
     
     param_grid = [
-          #(0.86939934445906852,0.02992847302109345, 20.631692294719159,
-          # 318, 0.72547208975310051, 10, 0.01966513396708065 ),
-        # optimized for lvl320160406xgbnnet
-        (0.25, 0.017406466731891734, 1.0, 289, 
-         0.4175007637759795,  6, 0.050000000000000003),
-        
-        (0.40000000000000002,  0.02517174517978878, 
-             9.188843134519912, 261, 0.40000000000000002, 
-             2.130309171165937,  0.02)
+      (0.74586382742143842, 
+       0.017345275259072548, 
+       33.42203498655946, 
+        453, 
+        0.61554716825382594, 
+        4, 0.050000000000000003)
     ]
     
     # dump the meta description for this set into a file
     # (dataset version, model type, seed, parameter grid) 
-    par_dump = '../meta_parameters3/'+'D'+dataset_version+'_M'+model_type  
+    par_dump = '../meta_parameters2/'+'D'+dataset_version+'_M'+model_type  
     par_dump = par_dump + '_'+todate+'.txt'
     f1=open(par_dump, 'w+')
     f1.write('dataset version: '); f1.write(str(dataset_version))
@@ -137,5 +136,5 @@ if __name__ == '__main__':
 
 
     # save the files
-    mvalid.to_csv('../metafeatures3/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
-    mfull.to_csv('../metafeatures3/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mvalid.to_csv('../'+target_folder+'/prval_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
+    mfull.to_csv('../'+target_folder+'/prfull_' + model_type + '_' + todate + '_data' + dataset_version + '_seed' + str(seed_value) + '.csv', index = False, header = True)
