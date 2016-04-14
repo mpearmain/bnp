@@ -498,8 +498,6 @@ XGBOOST: {'colsample_bytree': 0.25,
         'max_depth': 20.642718358384485, 
         'gamma': 9.9999999999999994e-12}
         
-
-
 ## OVERHAUL 11.04.2016
 
 ## 20160412v1 (msk, srk, mp1, kb1, kb3, kb5099, no keras)
@@ -525,3 +523,27 @@ XGBOOST: {'colsample_bytree': 0.46724496480398647,
             'subsample': 0.78147240294280296, 
             'max_depth': 4.4158525791053336, 
             'gamma': 0.025034400840298607}
+
+## 20160413
+# cv (50-fold) 0.4331905 (0.002348204)
+XGBOOST: -0.432179
+XGBOOST: {'colsample_bytree': 0.74586382742143842, 
+        'learning_rate': 0.017345275259072548, 
+        'min_child_weight': 33.42203498655946, 
+        'n_estimators': 453, 
+        'subsample': 0.61554716825382594, 
+        'max_depth': 3.7659845518196278, 
+        'gamma': 0.050000000000000003}
+
+
+## lvl2: 14v1k25
+XGBOOST: -0.433284
+XGBOOST: {'colsample_bytree': 0.98999999999999999, 
+            'learning_rate': 0.031489217057375313, 
+            'min_child_weight': 28.439591743068465,    
+            'n_estimators': 539, 
+            'subsample': 0.98999999999999999,
+             'max_depth': 2.0, 
+            'gamma': 9.9999999999999994e-12}
+
+
