@@ -18,7 +18,7 @@ if __name__ == '__main__':
     target_folder = 'input2'
     
     ## settings
-    dataset_version = "20160411"
+    dataset_version = "20160414v1"
     seed_value = 789
     todate = datetime.datetime.now().strftime("%Y%m%d")
     	    
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     # work in progress
     ## feature selection: SelectKBest based on Chi2 statistics
 
-    kvals = [25, 50, 100, 150, 200]
+    kvals = [25, 50, 100]
     for kk in kvals:        
         xtr = np.array(xtrain); ytr = y.values; xte = np.array(xtest) 
         selector = SelectKBest(chi2, k = kk).fit(xtr, ytr)
