@@ -48,7 +48,7 @@ def build_new_features(xtrain, xtest, top_feats):
 
 # settings
 projPath = './'
-dataset_version = "0411k25"
+dataset_version = "20160414v1"
 todate = datetime.datetime.now().strftime("%Y%m%d")
 # Top fetures to develop meta more interactions variables.
 topNfeatures = 10
@@ -115,5 +115,5 @@ xtest['ID'] = id_test
 
 
 print 'Writing Data Files.'
-xtrain.to_csv("./input2/xtrain_lvl2MP.csv", index = False, header = True)
-xtest.to_csv("./input2/xtest_lvl2MP.csv", index = False, header = True)
+xtrain.to_csv("./input2/xtrain_" + dataset_version + "featmp.csv", index = False, header = True)
+xtest.to_csv("./input2/xtest_" + dataset_version + "featmp.csv", index = False, header = True)

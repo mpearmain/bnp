@@ -18,7 +18,7 @@ from sklearn.preprocessing import StandardScaler
 def kerascv(dense1, dropout1, dense2, dropout2, epochs):
     # setup bagging classifier
     pred_sum = 0
-    for k in range(3):
+    for k in range(2):
         model = createModel(dense1=int(dense1), dropout1=dropout1, dense2=int(dense2), dropout2=dropout2)
         model.fit(x0, y0, nb_epoch=int(epochs), batch_size=256, verbose=0)
 
@@ -62,7 +62,7 @@ def getDummy(df,col):
 
 if __name__ == "__main__":
     ## settings
-    dataset_version = "lvl2MP"
+    dataset_version = "20160414v1featmp"
     nbag = 3
     seed_value = 1543
     todate = datetime.datetime.now().strftime("%Y%m%d")
@@ -113,13 +113,19 @@ if __name__ == "__main__":
     print(dims, 'dims')
 
     kerasBO = BayesianOptimization(kerascv,
-                                   {'dense1': (int(0.1 * xtrain.shape[1]), int(2 * xtrain.shape[1])),
-                                    'dropout1': (0.1, 0.5),
-                                    'dense2': (int(0.1 * xtrain.shape[1]), int(2 * xtrain.shape[1])),
-                                    'dropout2': (0.1, 0.5),
-                                    'epochs': (int(30), int(120))
+                                   {'dense1': (int(0.15 * xtrain.shape[1]), int(2 * xtrain.shape[1])),
+                                    'dropout1': (0.05, 0.5),
+                                    'dense2': (int(0.15 * xtrain.shape[1]), int(2 * xtrain.shape[1])),
+                                    'dropout2': (0.05, 0.5),
+                                    'epochs': (int(20), int(150))
                                     })
-    kerasBO.maximize(init_points=5, n_iter=25)
+    kerasBO.explore({'dense1': [int(0.15 * xtrain.shape[1])],
+                     'dropout1': [0.05],
+                     'dense2': [int(1.5 * xtrain.shape[1])],
+                     'dropout2': [0.5],
+                     'epochs': [40]})
+
+    kerasBO.maximize(init_points=3, n_iter=25)
     print('-' * 53)
 
     print('Final Results')
