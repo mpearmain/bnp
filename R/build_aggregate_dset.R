@@ -7,6 +7,7 @@ require(gbm)
 
 seed_value <- 450
 todate <- str_replace_all(Sys.Date(), "-","")
+todate <- paste(todate, "v1", sep = "")
 
 metas_source <- "metafeatures"
 target_data_folder <- "input2"
@@ -148,6 +149,7 @@ for (jj in 1:length(idFix))
   y0 <- y[idx]; y1 <- y[-idx]
   
   xmat[jj,1] <- log_loss(y1,x1[,1])
+  xmat[jj,2] <- log_loss(y1, x1[,1] + mean(y0) - mean(x1[,1]))
 }
 
 # # combo
