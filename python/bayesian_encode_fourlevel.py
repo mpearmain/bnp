@@ -86,8 +86,8 @@ def prepData(var4_col="v52"):
 	print "Start time : ", start_time
 
 	print "Reading files.."
-	train = pd.read_csv('../Data/train.csv')
-	test = pd.read_csv('../Data/test.csv')
+	train = pd.read_csv('../input/train.csv')
+	test = pd.read_csv('../input/test.csv')
 	print train.shape, test.shape
 
 	print "Filling NA.."
@@ -115,7 +115,7 @@ def prepData(var4_col="v52"):
 	for f in cat_columns:
 		print f
 		val_list = np.zeros(train.shape[0])
-		folds_array = np.array( pd.read_csv("./xfolds.csv")["fold5"] )
+		folds_array = np.array( pd.read_csv("../input/xfolds.csv")["fold5"] )
         	for fold_index in xrange(1,6):
                 	dev_index = np.where(folds_array != fold_index)[0]
                 	val_index = np.where(folds_array == fold_index)[0]
@@ -164,7 +164,7 @@ def prepData(var4_col="v52"):
         for f in new_var_list:
                 print f
                 val_list = np.zeros(train.shape[0])
-                folds_array = np.array( pd.read_csv("./xfolds.csv")["fold5"] )
+                folds_array = np.array( pd.read_csv("../input/xfolds.csv")["fold5"] )
                 for fold_index in xrange(1,6):
                         dev_index = np.where(folds_array != fold_index)[0]
                         val_index = np.where(folds_array == fold_index)[0]
@@ -217,7 +217,7 @@ def prepData(var4_col="v52"):
         for f in new_var_list:
                 print f
                 val_list = np.zeros(train.shape[0])
-                folds_array = np.array( pd.read_csv("./xfolds.csv")["fold5"] )
+                folds_array = np.array( pd.read_csv("../input/xfolds.csv")["fold5"] )
                 for fold_index in xrange(1,6):
                         dev_index = np.where(folds_array != fold_index)[0]
                         val_index = np.where(folds_array == fold_index)[0]
@@ -275,7 +275,7 @@ def prepData(var4_col="v52"):
         for f in new_var_list:
                 print f
                 val_list = np.zeros(train.shape[0])
-                folds_array = np.array( pd.read_csv("./xfolds.csv")["fold5"] )
+                folds_array = np.array( pd.read_csv("../input/xfolds.csv")["fold5"] )
                 for fold_index in xrange(1,6):
                         dev_index = np.where(folds_array != fold_index)[0]
                         val_index = np.where(folds_array == fold_index)[0]
@@ -293,8 +293,8 @@ def prepData(var4_col="v52"):
 
 	train = train.drop(new_var_list, axis=1)
 	test = test.drop(new_var_list, axis=1)
-	train.to_csv("train_4levelenc.csv", index=False)
-	test.to_csv("test_4levelenc.csv", index=False)
+	train.to_csv("../input/train_4levelenc.csv", index=False)
+	test.to_csv("../input/test_4levelenc.csv", index=False)
 		
 	end_time = datetime.datetime.now()
 	print "End time : ",end_time
@@ -326,8 +326,8 @@ def runET(train_X, train_y, test_X, test_y=None, validation=1, n_est_val=50, dep
 
 def prepModel(var4_col="v52"):
         print "Reading files.."
-        train = pd.read_csv('./train_4levelenc.csv')
-        test = pd.read_csv('./test_4levelenc.csv')
+        train = pd.read_csv('../input/train_4levelenc.csv')
+        test = pd.read_csv('../input/test_4levelenc.csv')
         print train.shape, test.shape
 
         print "Getting DV and ID.."
@@ -351,7 +351,7 @@ def prepModel(var4_col="v52"):
 	print "Cross validating.."
         cv_scores = []
         train_preds = np.zeros(train.shape[0])
-        folds_array = np.array( pd.read_csv("./xfolds.csv")["fold5"] )
+        folds_array = np.array( pd.read_csv("../input/xfolds.csv")["fold5"] )
         for fold_index in xrange(1,6):
                 dev_index = np.where(folds_array != fold_index)[0]
                 val_index = np.where(folds_array == fold_index)[0]
@@ -369,20 +369,20 @@ def prepModel(var4_col="v52"):
 
         out_df = pd.DataFrame({"ID":train_ID})
         out_df["et1_srk_4levelenc"] = train_preds
-        out_df.to_csv("prval_et1_srk_4levelenc.csv", index=False)
+        out_df.to_csv("../metafeatures/prval_et1_srk_4levelenc.csv", index=False)
 
 	print "Final model.."
 	preds = runET(train, train_y, test, validation=0, n_est_val=600, depth_val=40, split_val=4, leaf_val=2, feat_val=0.3, jobs_val=4, random_state_val=9237)
 	out_df = pd.DataFrame({"ID":test_ID})
         out_df["et1_srk_4levelenc"] = preds
-        out_df.to_csv("prfull_et1_srk_4levelenc.csv", index=False)
+        out_df.to_csv("../metafeatures/prfull_et1_srk_4levelenc.csv", index=False)
 
 
 
 def prepModelXGB(var4_col="v52"):
         print "Reading files.."
-        train = pd.read_csv('./train_4levelenc.csv')
-        test = pd.read_csv('./test_4levelenc.csv')
+        train = pd.read_csv('../input/train_4levelenc.csv')
+        test = pd.read_csv('../input/test_4levelenc.csv')
         print train.shape, test.shape
 
         print "Getting DV and ID.."
@@ -406,7 +406,7 @@ def prepModelXGB(var4_col="v52"):
 	print "Cross validating.."
         cv_scores = []
         train_preds = np.zeros(train.shape[0])
-        folds_array = np.array( pd.read_csv("./xfolds.csv")["fold5"] )
+        folds_array = np.array( pd.read_csv("../input/xfolds.csv")["fold5"] )
         for fold_index in xrange(1,6):
                 dev_index = np.where(folds_array != fold_index)[0]
                 val_index = np.where(folds_array == fold_index)[0]
@@ -424,14 +424,14 @@ def prepModelXGB(var4_col="v52"):
 
         out_df = pd.DataFrame({"ID":train_ID})
         out_df["xg1_srk_4levelenc"] = train_preds
-        out_df.to_csv("prval_xg1_srk_4levelenc.csv", index=False)
+        out_df.to_csv("../metafeatures/prval_xg1_srk_4levelenc.csv", index=False)
 
 	print "Final model.."
 	#preds = runET(train, train_y, test, validation=0, n_est_val=600, depth_val=40, split_val=4, leaf_val=2, feat_val=180, jobs_val=4, random_state_val=8111)
 	preds = runXGB(train, train_y, test, feature_names=feat_names)
 	out_df = pd.DataFrame({"ID":test_ID})
         out_df["xg1_srk_4levelenc"] = preds
-        out_df.to_csv("prfull_xg1_srk_4levelenc.csv", index=False)
+        out_df.to_csv("../metafeatures/prfull_xg1_srk_4levelenc.csv", index=False)
 
 
 
@@ -440,8 +440,8 @@ if __name__ == "__main__":
 	for var4_col_name in ["v30"]:
 		try:
 			prepData(var4_col_name)
-			#prepModel(var4_col_name)
-			prepModelXGB(var4_col_name)
+			prepModel(var4_col_name)
+			# prepModelXGB(var4_col_name)
 		except Exception,e:
 			print e
 			pass
