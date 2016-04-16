@@ -1,5 +1,0 @@
-dataset version: mskm19
-model type:xgb
-seed value: 531
-parameter grid 
-[(0.4, 0.01, 1, 1000, 0.96, 12, 0.05)]
