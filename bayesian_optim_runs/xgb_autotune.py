@@ -41,9 +41,9 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "14v1k50"
+    dataset_version = "20160417v2"
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    input_folder = 'input2'
+    input_folder = 'input3'
 
     ## data
     # read the training and test sets
