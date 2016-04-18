@@ -41,9 +41,9 @@ if __name__ == "__main__":
 
     # settings
     projPath = os.getcwd()
-    dataset_version = "20160417v2"
+    dataset_version = "c2d20160418v2"
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    input_folder = 'input3'
+    input_folder = 'input2'
 
     ## data
     # read the training and test sets
@@ -71,14 +71,14 @@ if __name__ == "__main__":
                                       'min_child_weight': (int(1), int(40))
                                      })
 
-    xgboostBO.explore({'colsample_bytree': [0.76427399221822834],
-                       'learning_rate': [0.0073362638967263945],
-                       'min_child_weight': [14.634866816577702],
-                       'n_estimators': [2408],
-                       'subsample': [0.72679682406267243],
-                       'max_depth': [14.40730693062795],
-                       'gamma': [0.0071936123399884092]}
-                      )
+#     xgboostBO.explore({'colsample_bytree': [0.76427399221822834],
+#                        'learning_rate': [0.0073362638967263945],
+#                        'min_child_weight': [14.634866816577702],
+#                        'n_estimators': [2408],
+#                        'subsample': [0.72679682406267243],
+#                        'max_depth': [14.40730693062795],
+#                        'gamma': [0.0071936123399884092]}
+#                       )
     xgboostBO.maximize(init_points=5, n_iter=20, acq='ei')
     print('-' * 53)
 
