@@ -1189,6 +1189,25 @@ buildKB19 <- function(sig_dig = 1, cutoff = 20)
   write.csv(xtest, paste('../input/xtest_kb19d',sig_dig,'c',cutoff,'.csv', sep = ""), row.names = F)
   
 }
+
+# counts on interactions
+buildKB20 <- function()
+{
+  require(data.table)
+  
+  tmp1 = fread('../input/train.csv',data.table=F); trainY = as.matrix(tmp1$target); 
+  y <- tmp1$target;   tmp1$target=NULL; id_train <- tmp1$ID; tmp1$ID <- NULL
+  isTrain <- 1:nrow(tmp1)
+  tmp2 = fread('../input/test.csv',data.table=F)
+  id_test <- tmp2$ID; tmp2$ID <- NULL
+  
+  tmp1=rbind(tmp1,tmp2)
+  tmp1$ID=NULL
+  tmp1[is.na(tmp1)]=-1
+  
+  
+}
+
 ## actual construction ####
 # buildMP1()
 # buildKB1()
