@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "lvl220160406combo"
+    dataset_version = "16v2k25"
     seed_value = 123
     todate = datetime.datetime.now().strftime("%Y%m%d")
     nbag = 400
@@ -53,12 +53,9 @@ if __name__ == '__main__':
                                 silent=True)
                                 
     param_grid = [
-            ## optimized for lvl220160331xgb
-            (0.76491827210567487,0.0065204749634808767, 
-            18.06814867147456,  712, 
-             0.48215850115081216, 12, 0.035761154742778502),
-            (0.62849186678452273, 0.059999999999999998, 
-         40.0, 117,  0.97999999999999998, 9, 9.9999999999999994e-12)
+            ## optimized for 16v2k25
+           ( 0.98999999999999999, 0.014830898798632419, 
+                40.0,  969,  0.80078507962768841, 2.0, 0.050000000000000003)
     ]
                             
     # dump the meta description for this set into a file
@@ -104,7 +101,8 @@ if __name__ == '__main__':
                         bootstrap_features=False, 
                         oob_score=False, 
                         warm_start=False, 
-                        n_jobs=1, random_state=seed_value, 
+                        n_jobs=1,
+                        random_state=seed_value,
                         verbose=2)
                         
                 bag0.fit(x0, y0)
