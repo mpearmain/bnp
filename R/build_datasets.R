@@ -10,8 +10,10 @@ require(Metrics)
 require(kohonen)
 require(h2o)
 require(Rtsne)
-
+require(compiler)
 set.seed(260681)
+setCompilerOptions(suppressUndefined = T)
+enableJIT(3)
 
 ## functions: helper ####
 
@@ -532,8 +534,8 @@ buildKB5 <- function(cut_level = 0.99)
 # - cutoff parameter for correlated pairs as argument
 buildKB6 <- function(cut_level = 0.99)
 {
-  xtrain <- read_csv('input/xtrain_kb4.csv')
-  xtest <- read_csv('input/xtest_kb4.csv')
+  xtrain <- read_csv('../input/xtrain_kb4.csv')
+  xtest <- read_csv('../input/xtest_kb4.csv')
   
   # Lets first align the datasets for equal vars to work with.
   y <- xtrain$target; xtrain$target <- NULL
@@ -578,8 +580,8 @@ buildKB6 <- function(cut_level = 0.99)
   
   xtrain$target <- y
   
-  write.csv(xtrain, paste('input/xtrain_kb6',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
-  write.csv(xtest, paste('input/xtest_kb6',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
+  write.csv(xtrain, paste('../input/xtrain_kb6',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
+  write.csv(xtest, paste('../input/xtest_kb6',str_replace(cut_level, "[.]",""),'.csv', sep = ""), row.names = F)
   
   rm(xtrain)
   rm(xtest)
@@ -1213,7 +1215,7 @@ buildKB20 <- function()
 # buildKB1()
 # buildKB2()
 # buildKB3()
-buildKB4()
+#buildKB4()
 # buildKB5(cut_level = 0.99)
 # buildKB5(cut_level = 0.95)
 buildKB6(cut_level = 0.99)
