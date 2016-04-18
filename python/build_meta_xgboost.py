@@ -16,12 +16,12 @@ if __name__ == '__main__':
 
     ## settings
     projPath = os.getcwd()
-    dataset_version = "20160413"
+    dataset_version = "20160418v2"
     model_type = "xgb"
-    seed_value = 531
+    seed_value = 12
     todate = datetime.datetime.now().strftime("%Y%m%d")
-    source_folder = 'input3'
-    target_folder = 'metafeatures3'
+    source_folder = 'input2'
+    target_folder = 'metafeatures2'
     
     ## data
     # read the training and test sets
@@ -55,13 +55,12 @@ if __name__ == '__main__':
     '''
     
     param_grid = [
-      (0.74586382742143842, 
-       0.017345275259072548, 
-       33.42203498655946, 
-        453, 
-        0.61554716825382594, 
-        4, 0.050000000000000003)
-    ]
+     (0.98999999999999999, 0.019887565599925855, 
+            16.548047342827374, 436, 
+             0.98999999999999999,  4.1195167178782457, 
+             9.9999999999999994e-12)
+          ]    
+        
     
     # dump the meta description for this set into a file
     # (dataset version, model type, seed, parameter grid) 
@@ -81,7 +80,6 @@ if __name__ == '__main__':
     ## build 2nd level forecasts
     for i in range(len(param_grid)):
         print "processing parameter combo:", param_grid[i]
-        # configure model with j-th combo of parameters
         x = param_grid[i]
         clf = xgb.XGBClassifier(nthread=-1,
                                 seed=seed_value,
@@ -92,8 +90,11 @@ if __name__ == '__main__':
                                 n_estimators=x[3],                                
                                 subsample=x[4],
                                 max_depth=x[5],                                
-                                gamma=x[6]
+#                                gamma=x[6],
+                                colsample_bylevel   = 0.5,
+                                scale_pos_weight    = 0.8
                                 )
+
 
         # loop over folds - Keeping as pandas for ease of use with xgb wrapper
         for j in range(1 ,n_folds+1):

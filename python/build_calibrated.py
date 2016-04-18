@@ -25,11 +25,14 @@ if __name__ == "__main__":
 
     # xtrain_lvl320160315.csv
     c_val = 2
-    dataset_version = "lvl220160406combo"
+    dataset_version = "20160418v2"
 
     # read data
     xtrain = pd.read_csv('../input2/xtrain_' + dataset_version + '.csv')
     xtest = pd.read_csv('../input2/xtest_' + dataset_version + '.csv')
+    
+    xtrain = pd.read_csv('../metafeatures2/prval_xgb_20160418_data20160418v2_seed12.csv')
+    xtest = pd.read_csv('../metafeatures2/prfull_xgb_20160418_data20160418v2_seed12.csv')
     
     # Read xfolds only need the ID and fold 5.
     print("Reading cross folds")
@@ -161,18 +164,20 @@ if __name__ == "__main__":
     xtest2 = pd.DataFrame(xtest2); xtest2.columns = xtest.columns
     
     ## add summary statistics: mean, median, min, max
-    xtrain2['xmin'] = xtrain2.min(axis = 1)
-    xtest2['xmin'] = xtest2.min(axis = 1)
-    xtrain2['xmax'] = xtrain2.max(axis = 1)
-    xtest2['xmax'] = xtest2.max(axis = 1)
-    xtrain2['xmedian'] = xtrain2.median(axis = 1)
-    xtest2['xmedian'] = xtest2.median(axis = 1)
-    
+#    xtrain2['xmin'] = xtrain2.min(axis = 1)
+#    xtest2['xmin'] = xtest2.min(axis = 1)
+#    xtrain2['xmax'] = xtrain2.max(axis = 1)
+#    xtest2['xmax'] = xtest2.max(axis = 1)
+#    xtrain2['xmedian'] = xtrain2.median(axis = 1)
+#    xtest2['xmedian'] = xtest2.median(axis = 1)
+#    
     xtrain2['target'] = y; xtrain2['ID'] = id_train
     xtest2['ID'] = id_test
     
     
-    xtrain2.to_csv('../input2/xtrain_c'+str(c_val)+'d'+dataset_version+'.csv', index = False, header = True)
-    xtest2.to_csv('../input2/xtest_c'+str(c_val)+'d'+dataset_version+'.csv', index = False, header = True)
+    # xtrain2.to_csv('../input2/xtrain_c'+str(c_val)+'d'+dataset_version+'.csv', index = False, header = True)
+    # xtest2.to_csv('../input2/xtest_c'+str(c_val)+'d'+dataset_version+'.csv', index = False, header = True)
+    xtrain2.to_csv('../metafeatures2/prval_xgbc_20160418_data20160418v2_seed12.csv', index= False)
+    xtest2.to_csv('../metafeatures2/prfull_xgbc_20160418_data20160418v2_seed12.csv', index = False)
     
         

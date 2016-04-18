@@ -15,7 +15,7 @@ import datetime
 if __name__ == '__main__':
 
     ## settings
-    dataset_version = "20160407r5"
+    dataset_version = "16v2k50"
     model_type = "etrees" 
     seed_value = 789
     todate = datetime.datetime.now().strftime("%Y%m%d")

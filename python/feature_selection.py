@@ -18,7 +18,7 @@ if __name__ == '__main__':
     target_folder = 'input2'
     
     ## settings
-    dataset_version = "20160414v1"
+    dataset_version = "20160416v2"
     seed_value = 789
     todate = datetime.datetime.now().strftime("%Y%m%d")
     	    
