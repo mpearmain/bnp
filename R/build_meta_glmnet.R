@@ -3,9 +3,10 @@ require(readr)
 require(glmnet)
 require(caret)
 require(stringr)
+require(Metrics)
 
-dataset_version <- "c20160330"
-seed_value <- 43
+dataset_version <- "16v2k100"
+seed_value <- 493
 model_type <- "glmnet"
 todate <- str_replace_all(Sys.Date(), "-","")
 
@@ -17,7 +18,7 @@ msg <- function(mmm,...)
 }
 
 # wrapper around logloss preventing Inf/-Inf for 1/0 values
-log_loss <- function(predicted, actual, cutoff = 1e-15)
+log_loss <- function(actual, predicted, cutoff = 1e-15)
 {
   predicted <- pmax(predicted, cutoff)
   predicted <- pmin(predicted, 1- cutoff)
@@ -40,8 +41,8 @@ nfolds <- length(unique(xfolds$fold_index))
 
 ## fit models ####
 # parameter grid
-param_grid <- expand.grid(alpha = seq(0,10)/10,
-                          stand = c(TRUE, FALSE))
+param_grid <- expand.grid(alpha = c(0.8, 0.85, 0.9, 0.95, 1),
+                          stand = c(TRUE))
 
 # storage structures 
 mtrain <- array(0, c(nrow(xtrain), nrow(param_grid)))
@@ -64,6 +65,7 @@ for (ii in 1:nrow(param_grid))
     pred0 <- predict(mod0, x1,type = "response")
     pred0 <- pred0[,ncol(pred0)]
     mtrain[isValid,ii] <- pred0
+    print(log_loss(y1,pred0))
   }
   
   # full version 

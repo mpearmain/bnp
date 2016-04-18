@@ -5,7 +5,7 @@ require(stringr)
 require(Metrics)
 require(caret)
 
-dataset_version <- "20160407r5"
+dataset_version <- "16v2k25"
 seed_value <- 1901
 model_type <- "ada"
 todate <- str_replace_all(Sys.Date(), "-","")
@@ -43,9 +43,9 @@ nfolds <- length(unique(xfolds$fold_index))
 ## fit models ####
 # parameter grid
 param_grid <- expand.grid(type = c("real", "gentle"),
-                          iter = c(25,50),
+                          iter = c(50,50),
                           nu = c(0.01, 0.05, 0.1),
-                          bagfrac = c(0.5, 0.9))
+                          bagfrac = c(0.1, 0.9))
 write.csv(param_grid, 
           paste('../meta_parameters2/D', dataset_version, '_M',model_type,
                 '_',todate,'.csv',sep = ""),
@@ -74,7 +74,7 @@ for (ii in 1:nrow(param_grid))
                      verbose = T, rpart.control(maxdepth=1,cp=-1,minsplit=0,xval=0))
     
     pred_valid <- predict(ada.model, x1, type = "probs")
-    print(y1, pred_valid)
+    print(log_loss(y1, pred_valid))
     mtrain[isValid,ii] <- pred_valid
   }
   
